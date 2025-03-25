@@ -1,0 +1,106 @@
+#root {
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 2rem;
+	text-align: center;
+}
+
+.logo {
+	height: 6em;
+	padding: 1.5em;
+	will-change: filter;
+	transition: filter 300ms;
+}
+.logo:hover {
+	filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+	filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	a:nth-of-type(2) .logo {
+		animation: logo-spin infinite 20s linear;
+	}
+}
+
+.card {
+	padding: 2em;
+}
+
+.read-the-docs {
+	color: #888;
+}
+
+.app-container {
+	padding: 2rem;
+	text-align: center;
+}
+
+nav {
+	margin-bottom: 2rem;
+}
+
+nav ul {
+	list-style: none;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	gap: 2rem;
+}
+
+nav a {
+	color: #646cff;
+	text-decoration: inherit;
+	font-weight: 500;
+}
+
+nav a:hover {
+	color: #535bf2;
+}
+
+.about-container,
+.id-container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 2rem;
+}
+
+.about-container ul {
+	list-style: disc;
+	text-align: left;
+	margin: 1rem auto;
+	max-width: 400px;
+}
+
+.api-data {
+	margin: 2rem auto;
+	padding: 1rem;
+	max-width: 600px;
+	background: #1a1a1a;
+	border-radius: 8px;
+	overflow: auto;
+}
+
+.api-data pre {
+	text-align: left;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	color: #98c379;
+	margin: 0;
+}
+
+.api-data h2 {
+	margin-top: 0;
+	color: #61dafb;
+	margin-bottom: 1rem;
+}

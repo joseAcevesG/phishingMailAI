@@ -1,0 +1,39 @@
+{
+  "name": "test_monorepo",
+  "version": "1.0.0",
+  "private": true,
+	"scripts": {
+		"start": "pnpm run --filter backend start",
+		"dev": "pnpm run -r --parallel --aggregate-output dev",
+		"dev:backend": "pnpm run --filter backend dev",
+		"dev:frontend": "pnpm run --filter frontend dev",
+		"build": "pnpm run --filter frontend build && pnpm run --filter backend build",
+		"build:backend": "pnpm run --filter backend build",
+		"build:frontend": "pnpm run --filter frontend build",
+		"format": "pnpm run -r --parallel --aggregate-output format",
+		"format:backend": "pnpm run --filter backend format",
+		"format:frontend": "pnpm run --filter frontend format",
+		"format:detailed": "pnpm run --filter backend format:detailed && pnpm run --filter frontend format:detailed",
+		"format:detailed:backend": "pnpm run --filter backend format:detailed",
+		"format:detailed:frontend": "pnpm run --filter frontend format:detailed",
+		"lint": "pnpm run -r --parallel --aggregate-output lint",
+		"lint:backend": "pnpm run --filter backend lint",
+		"lint:frontend": "pnpm run --filter frontend lint",
+		"lint:detailed": "pnpm run --filter backend lint:detailed && pnpm run --filter frontend lint:detailed",
+		"lint:detailed:backend": "pnpm run --filter backend lint:detailed",
+		"lint:detailed:frontend": "pnpm run --filter frontend lint:detailed",
+		"check": "pnpm run -r --parallel --aggregate-output check",
+		"check:backend": "pnpm run --filter backend check",
+		"check:frontend": "pnpm run --filter frontend check",
+		"check:detailed": "pnpm run --filter backend check:detailed && pnpm run --filter frontend check:detailed",
+		"check:detailed:backend": "pnpm run --filter backend check:detailed",
+		"check:detailed:frontend": "pnpm run --filter frontend check:detailed"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.5.0",
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4"
+  }
+}

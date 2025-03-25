@@ -1,0 +1,6 @@
+@base_url = http://localhost:3000/api
+@token = 
+
+### test api ###
+GET {{base_url}}
+
