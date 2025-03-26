@@ -1,0 +1,80 @@
+.result-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 64px);
+  padding: 2rem;
+  background-color: var(--bg-primary);
+}
+
+.result-card {
+  background: var(--bg-secondary);
+  padding: 3rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+}
+
+.loading {
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+}
+
+.error {
+  color: var(--error);
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+}
+
+.status {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.status.safe {
+  color: var(--success);
+  background-color: rgba(0, 200, 83, 0.1);
+  border: 1px solid var(--success);
+}
+
+.status.suspicious {
+  color: var(--warning);
+  background-color: rgba(255, 214, 0, 0.1);
+  border: 1px solid var(--warning);
+}
+
+.status.phishing {
+  color: var(--error);
+  background-color: rgba(255, 68, 68, 0.1);
+  border: 1px solid var(--error);
+}
+
+.summary {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-size: 1.2rem;
+  margin-bottom: 3rem;
+  padding: 0 2rem;
+}
+
+.back-button {
+  font-size: 1.1rem;
+  padding: 1rem 2rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  min-width: 200px;
+}
+
+.back-button:hover {
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+  background-color: rgba(74, 158, 255, 0.1);
+}

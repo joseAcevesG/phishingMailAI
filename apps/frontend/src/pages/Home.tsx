@@ -1,69 +1,87 @@
-import { useEffect, useState } from "react";
-import viteLogo from "/vite.svg";
-import reactLogo from "../assets/react.svg";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './Home.css';
 
-interface ApiData {
-	name: string;
-	// Add more fields as needed based on your API response
-}
+const Home = () => {
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-export default function Home() {
-	const [count, setCount] = useState(0);
-	const [data, setData] = useState<ApiData | null>(null);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile?.name.endsWith('.eml')) {
+      setFile(selectedFile);
+      setError(null);
+    } else {
+      setFile(null);
+      setError('Please select a valid .eml file');
+    }
+  };
 
-	useEffect(() => {
-		fetchData();
-	}, []);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!file) return;
 
-	const fetchData = async () => {
-		try {
-			const response = await fetch("/api");
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
-			}
-			const jsonData = await response.json();
-			setData(jsonData);
-			setError(null);
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "An error occurred");
-		} finally {
-			setLoading(false);
-		}
-	};
+    setUploading(true);
+    setError(null);
 
-	if (loading) {
-		return <div>Loading...</div>;
-	}
+    try {
+      // For development, simulate file upload
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Uncomment when backend is ready
+      /*
+      const formData = new FormData();
+      formData.append('email', file);
 
-	if (error) {
-		return <div>Error: {error}</div>;
-	}
+      const response = await fetch('/api/analyze-email', {
+        method: 'POST',
+        body: formData,
+      });
 
-	return (
-		<>
-			<div>
-				<a href="https://vite.dev" rel="noreferrer" target="_blank">
-					<img alt="Vite logo" className="logo" src={viteLogo} />
-				</a>
-				<a href="https://react.dev" rel="noreferrer" target="_blank">
-					<img alt="React logo" className="logo react" src={reactLogo} />
-				</a>
-			</div>
-			<h1>{data?.name}</h1>
+      if (!response.ok) {
+        throw new Error('Failed to analyze email');
+      }
+      */
 
-			<div className="card">
-				<button onClick={() => setCount((count) => count + 1)} type="button">
-					count is {count}
-				</button>
-				<p>
-					Edit <code>src/App.tsx</code> and save to test HMR
-				</p>
-			</div>
-			<p className="read-the-docs">
-				Click on the Vite and React logos to learn more
-			</p>
-		</>
-	);
-}
+      navigate('/result');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="home-container">
+      <div className="upload-card">
+        <h1>Upload Email for Analysis</h1>
+        <form onSubmit={handleSubmit} className="upload-form">
+          <div className="file-input-container">
+            <input
+              type="file"
+              accept=".eml"
+              onChange={handleFileChange}
+              id="email-file"
+              className="file-input"
+            />
+            <label htmlFor="email-file" className="file-label">
+              {file ? file.name : 'Choose .eml file'}
+            </label>
+          </div>
+          {error && <p className="error-message">{error}</p>}
+          <button
+            type="submit"
+            disabled={!file || uploading}
+            className="submit-button"
+          >
+            {uploading ? 'Analyzing...' : 'Analyze Email'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Home;
