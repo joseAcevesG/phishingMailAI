@@ -1,6 +1,17 @@
 @base_url = http://localhost:3000/api
-@token = 
+@token = HqW1Ywo0ncSlRBUCNwFlp4YGBPD_xpZJDaP2s_SYflOM
 
 ### test api ###
 GET {{base_url}}
 
+
+### login ###
+POST {{base_url}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "jose.acevesgon@gmail.com"
+}
+
+### authenticate ###
+GET {{base_url}}/auth/authenticate?stytch_token_type=magic_links&token={{token}}

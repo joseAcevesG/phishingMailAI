@@ -1,19 +1,36 @@
 import path from "node:path";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import express, { type Request, type Response } from "express";
+import { EnvConfig } from "./config/env.config";
+import routes from "./routes";
+import connectDB from "./config/mongoose";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = EnvConfig().port;
 
+app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
-app.get("/api/", (_req: Request, res: Response) => {
-	res.json({ name: "test monorepo" });
-});
+app.use("/api", routes);
 
 app.get("*", (_req: Request, res: Response) => {
 	res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
 });
 
-app.listen(PORT, () => {
-	console.log(`Server is running on port ${PORT}`);
-});
+// Start server after DB connection
+const startServer = async () => {
+    try {
+        await connectDB();
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        process.exit(1);
+    }
+};
+
+startServer();
