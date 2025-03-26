@@ -28,7 +28,11 @@ export default (req: RequestUser, res: Response, next: NextFunction) => {
 			if (!user) {
 				throw new UnauthorizedError("Unauthorized");
 			}
-			req.user = user;
+			// Convert Mongoose document to a plain object and ensure _id is a string
+			req.user = {
+				...user.toObject(),
+				_id: user._id.toString()
+			};
 			next();
 		})
 		.catch((error) => {

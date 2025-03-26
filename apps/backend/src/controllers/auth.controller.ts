@@ -14,13 +14,11 @@ const cookieOptions: CookieOptions = {
 class AuthController {
 	login(req: Request, res: Response) {
 		const email = req.body.email;
-		console.log({ email });
 		stytchClient.magicLinks.email
 			.loginOrCreate({
 				email: email,
 			})
 			.then((response) => {
-				console.log({ response });
 				res.json(response);
 			})
 			.catch((err) => {
