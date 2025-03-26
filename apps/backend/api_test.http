@@ -1,5 +1,5 @@
 @base_url = http://localhost:3000/api
-@token = HqW1Ywo0ncSlRBUCNwFlp4YGBPD_xpZJDaP2s_SYflOM
+@token = dG_wVzcFu0Gn5Iu5R1QXhz0_G-wcudvWUw7fxcYoJFMi
 
 ### test api ###
 GET {{base_url}}
@@ -15,3 +15,10 @@ Content-Type: application/json
 
 ### authenticate ###
 GET {{base_url}}/auth/authenticate?stytch_token_type=magic_links&token={{token}}
+
+### logout ###
+POST {{base_url}}/auth/logout
+
+### validate mail ###
+POST {{base_url}}/analyze-mail/validate
+

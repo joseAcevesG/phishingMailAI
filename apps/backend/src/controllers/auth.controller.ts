@@ -50,32 +50,30 @@ class AuthController {
 				token: token,
 				session_duration_minutes: 60,
 			})
-			.then(async (response) => {
-				try {
-					const email = response.user.emails[0].email;
-					const user = await User.findOne({ email });
-					if (!user) {
-						const newUser = await User.create({
-							email: email,
-						});
+			.then((response) => {
+				const email = response.user.emails[0].email;
+				User.findOne({ email })
+					.then((user) => {
+						if (!user) {
+							return User.create({
+								email: email,
+							});
+						}
+						return Promise.resolve(user);
+					})
+					.then((user) => {
 						res
 							.cookie("session_token", createToken({ email }), cookieOptions)
 							.json({
-								email: newUser.email,
+								email: user.email,
 							});
-						return;
-					}
-					res
-						.cookie("session_token", response.session_token, cookieOptions)
-						.json({
-							email: user.email,
-						});
-				} catch (err) {
-					console.error(err);
-					res
-						.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
-						.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
-				}
+					})
+					.catch((err) => {
+						console.error(err);
+						res
+							.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
+							.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
+					});
 			})
 			.catch((err) => {
 				console.error(err);
@@ -84,17 +82,10 @@ class AuthController {
 					.send(StatusCodes.UNAUTHORIZED.message);
 			});
 	}
+
+	logout(_req: Request, res: Response) {
+		res.clearCookie("session_token").send();
+	}
 }
-
-/* 
-res.cookie("stytch_session", response.session_token, {
-					httpOnly: true,
-					secure: EnvConfig().environment === "production",
-					sameSite: "strict",
-					maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
-				});
-
-				res.send(`Hello, ${response.user.emails[0].email}!`);
-*/
 
 export default new AuthController();
