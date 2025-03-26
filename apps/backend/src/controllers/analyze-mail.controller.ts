@@ -1,7 +1,9 @@
-import type { Request, Response } from "express";
+import type { Response } from "express";
+import type { RequestUser } from "../types";
 
 class AnalyzeMailController {
-	validateMail(_req: Request, res: Response) {
+	validateMail(req: RequestUser, res: Response) {
+		console.log("Uploaded file:", req.file?.originalname);
 		res.send("validateMail");
 	}
 }

@@ -1,0 +1,251 @@
+Delivered-To: jose.acevesgon@gmail.com
+Received: by 2002:a17:907:94c1:b0:ac3:e9b7:9142 with SMTP id dn1csp2839595ejc;
+        Tue, 25 Mar 2025 13:10:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEuA4eIBfjF2SqWbuL6FbtdwqVG14jMYK4Rlv20MC2rNFTRHKsE2Ogfb25ZILwqwSPkhxtH
+X-Received: by 2002:a05:6102:dd2:b0:4bb:b809:36c6 with SMTP id ada2fe7eead31-4c50d4fb6admr15546685137.11.1742933423617;
+        Tue, 25 Mar 2025 13:10:23 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1742933423; cv=none;
+        d=google.com; s=arc-20240605;
+        b=grALDe2qR7T78F9gTSRNMS5jFzpgz2ZzVJ0jYCVcfh1ukH3Ws5WZos5arQeq+uaKWl
+         tO7KgIR8hFaB5h2PiQ6tdIfc3pmpQ3cZQm3Z2xUqJB6HupEEi7jig//hL/uZCMcm9cIx
+         zlxYh4aIKVaww2a+hMxwq2DVbSs7xWVWfRnxWygMuT2xaG5Doy+ngXV7NiF1GL2Mps7q
+         CkTYb2vDhJ8T8PgCIUyoxAgu//azkYlWw+PmuZQ3B2EYMHZa1mzGg2bHUPKxGz1HNA2t
+         plOqvdl6Y50YUXInz8iEd58wwjGs2rPbcx3/z8SCzQPQ0Xel674jF1jy5SdN0o3mp4uC
+         EPDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=message-id:list-unsubscribe-post:list-unsubscribe:reply-to:to:from
+         :subject:mime-version:date:dkim-signature:dkim-signature;
+        bh=jrHPvVEjzrusLYii0pwEHVNkkzdzmqegZLUgT1U1fvw=;
+        fh=PBFkQMDhgrjLEy0IdzjfPYsyY/dYuyAgu81IEJ2zLxw=;
+        b=aeyz9aEZYooX2Irh+IX2lSZRjxKTMr0qTTtDK8Z0VzJ9bgmOtrJP4fTYI9zPL+chNU
+         sOhTHJxIQIkqqsRnyUNRbrw1PHOtyy3PHQCWW08AzXwEpns4edYMvCzpdUFaaalK1oHX
+         CKy5i7k31Neeqed2aOnej5ZCY+ExTFtDN/FsYYkfGGz6XfpNBIpfNesOf8mw61B503PZ
+         tyF/KnaGIAj1iK+dduJf8uTlOtI3hN98FuPwje/mDQJ9Ofc3jWeGaeM7Tnl7Qz2sfsYL
+         XaIY6ieb6E/nC/3uig0ReXNkOF1fI0z1l2cLvlQW9Px2xUAocTb+K1nG0nftzz/sd5o5
+         p+tg==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@cio101817.mail.daily.dev header.s=smtp header.b=RN8F3vkp;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=O55RtC9G;
+       spf=pass (google.com: domain of postmaster@cio101817.mail.daily.dev designates 159.112.241.98 as permitted sender) smtp.mailfrom=postmaster@cio101817.mail.daily.dev;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=daily.dev
+Return-Path: <postmaster@cio101817.mail.daily.dev>
+Received: from m241-98.mailgun.net (m241-98.mailgun.net. [159.112.241.98])
+        by mx.google.com with UTF8SMTPS id ada2fe7eead31-4c50bceab4fsi2443069137.14.2025.03.25.13.10.23
+        for <jose.acevesgon@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 25 Mar 2025 13:10:23 -0700 (PDT)
+Received-SPF: pass (google.com: domain of postmaster@cio101817.mail.daily.dev designates 159.112.241.98 as permitted sender) client-ip=159.112.241.98;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@cio101817.mail.daily.dev header.s=smtp header.b=RN8F3vkp;
+       dkim=pass header.i=@mailgun.org header.s=mg header.b=O55RtC9G;
+       spf=pass (google.com: domain of postmaster@cio101817.mail.daily.dev designates 159.112.241.98 as permitted sender) smtp.mailfrom=postmaster@cio101817.mail.daily.dev;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=daily.dev
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=cio101817.mail.daily.dev; q=dns/txt; s=smtp; t=1742933423; x=1742940623;
+ h=Message-Id: List-Unsubscribe-Post: List-Unsubscribe: Reply-To: To: To: From: From: Subject: Subject: Content-Type: Mime-Version: Date: X-Feedback-Id: Sender;
+ bh=jrHPvVEjzrusLYii0pwEHVNkkzdzmqegZLUgT1U1fvw=;
+ b=RN8F3vkp7t+5/zlCE5jFw5yXx8i8sieWn7N6X4jT4vwToGBi+KJaT/Xt2PdyH4XzF3XoVFbA3lpEnRqJqwlqiPllel9VDnJvo8gK4unrV2gZDqTzD2IaLmhaqB2a1Ghs5OdCW6wE3nFAqLfnc2upTMYhKNAmlHjOTbtdFOvpcq0=
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mailgun.org; q=dns/txt; s=mg; t=1742933423; x=1742940623;
+ h=Message-Id: List-Unsubscribe-Post: List-Unsubscribe: Reply-To: To: To: From: From: Subject: Subject: Content-Type: Mime-Version: Date: X-Feedback-Id: Sender;
+ bh=jrHPvVEjzrusLYii0pwEHVNkkzdzmqegZLUgT1U1fvw=;
+ b=O55RtC9GIK2hwOUFjpJJ2JF7t06036h5H85/XxedStrWFG+ewLJXPNf8KwlRK91mEnK+auTSWFRULmtd9YIiKfTZhzjF5YzrJjIolEm9Dq6KLiq/5hjspfwY+PK1GsnOG94okLIk4a6Z5jZUYkEGyT5nMwGfi4vcllgdzuUAeI8=
+X-Feedback-Id: postmaster@cio101817.mail.daily.dev::664b0a06f2e49d3951f716d6:mailgun
+X-Mailgun-Sending-Ip: 159.112.241.98
+X-Mailgun-Sending-Ip-Pool-Name: 
+X-Mailgun-Sending-Ip-Pool: 
+X-Mailgun-Sid: WyIwMjRmMCIsImpvc2UuYWNldmVzZ29uQGdtYWlsLmNvbSIsIjljYmJmMCJd
+Received: by dc4acf3f6e6c with HTTP id 67e30dadbf1edfd678f836c9; Tue, 25 Mar 2025
+ 20:10:21 GMT
+Date: Tue, 25 Mar 2025 20:10:21 +0000
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="02a6e01e70e9dee0df8ae0d2a398680c5b62c18f68d945ed078f3603c1e0"
+Subject: =?UTF-8?q?=F0=9F=A6=84_Welcome!_Let's_finish_setting_up_your_account?=
+From: daily.dev <hello@mail.daily.dev>
+To: jose.acevesgon@gmail.com
+X-Mailgun-Dkim: true
+X-Mailgun-Native-Send: true
+X-Mailgun-Track-Clicks: false
+X-Mailgun-Track-Opens: false
+Reply-To: Feedback <feedback@daily.dev>
+X-Report-Abuse-To: badactor@customer.io
+List-Unsubscribe: <mailto:32.MRTVGNLXM5VUCQKNIRRVUTC7MNNECR2WPJ2TC5DQIE3TANDMKN3GO32WI5QVMUJ5@unsubscribe2.customer.io>,
+ <https://t.daily.dev/unsubscribe/dgS5wgkAAMDcZL_cZAGVzu1tpA704lSvgoVGaVQ=>
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+X-Mailer: Customer.io (dgS5wgkAAMDcZL_cZAGVzu1tpA704lSvgoVGaVQ=;
+ +https://whatis.customeriomail.com)
+X-Mailgun-Variables: {"email_id": "dgS5wgkAAMDcZL_cZAGVzu1tpA704lSvgoVGaVQ="}
+Message-Id: <20250325201021.b110e6a6125eecf2@cio101817.mail.daily.dev>
+
+--02a6e01e70e9dee0df8ae0d2a398680c5b62c18f68d945ed078f3603c1e0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+
+Hi jose,
+
+Welcome to daily.dev, where developers suffer together, but at least now yo=
+u can suffer efficiently.
+
+Your feed is packed with content, but to make it truly yours, you need to t=
+rain it a bit. Upvote posts that actually help, downvote the ones that make=
+ you question the mere existence of this platform, and your feed will
+start working for you.
+
+If something keeps showing up that you never want to see again, click the m=
+ore options button on any post to block tags, sources, or topics. If you wa=
+nt more of the good stuff, follow sources
+and join squads ( https://app.daily.dev/squads/discover ) that match your i=
+nterests.
+
+Oh, and there=E2=80=99s an
+optional upgrade to Plus ( https://app.daily.dev/plus ) if you ever want to=
+ unlock more. No rush, the free version is yours forever, just like that TO=
+DO comment you left "for now."
+
+Would love to hear what you think. Just hit reply.
+
+Cheers,
+
+Core Team @ daily.dev
+
+=E2=80=94
+
+You can personalize your notifications ( https://app.daily.dev/account/noti=
+fications ) or unsubscribe ( http://track.customer.io/manage_subscription_p=
+references/dgS5wgkAAMDcZL_cZAGVzu1tpA704lSvgoVGaVQ=3D ) anytime.
+--02a6e01e70e9dee0df8ae0d2a398680c5b62c18f68d945ed078f3603c1e0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="utf-8"
+
+<!DOCTYPE html><html><head>
+      </head>
+  <body>
+    <!-- We'll replace this content tag with whatever you write in your ema=
+il  -->
+    <p style=3D"margin-right: 0px; margin-bottom: 0px; margin-left: 0px; fo=
+nt-variant-numeric: normal; font-variant-east-asian: normal; font-variant-a=
+lternates: normal; font-size-adjust: none; font-kerning: auto; font-optical=
+-sizing: auto; font-feature-settings: normal; font-variation-settings: norm=
+al; font-variant-position: normal; font-variant-emoji: normal; font-stretch=
+: normal; line-height: normal; font-family: " class=3D"p1">Hi jose,</p><p s=
+tyle=3D"margin-right: 0px; margin-bottom: 0px; margin-left: 0px; font-varia=
+nt-numeric: normal; font-variant-east-asian: normal; font-variant-alternate=
+s: normal; font-size-adjust: none; font-kerning: auto; font-optical-sizing:=
+ auto; font-feature-settings: normal; font-variation-settings: normal; font=
+-variant-position: normal; font-variant-emoji: normal; font-stretch: normal=
+; line-height: normal; font-family: " class=3D"p1">Welcome to daily.dev, wh=
+ere developers suffer together, but at least now you can suffer <i></i>effi=
+ciently<i></i>.</p><p style=3D"margin: 0px; font-variant-numeric: normal; f=
+ont-variant-east-asian: normal; font-variant-alternates: normal; font-size-=
+adjust: none; font-kerning: auto; font-optical-sizing: auto; font-feature-s=
+ettings: normal; font-variation-settings: normal; font-variant-position: no=
+rmal; font-variant-emoji: normal; font-stretch: normal; line-height: normal=
+; font-family: " class=3D"p2"><br/></p><p style=3D"margin: 0px; font-varian=
+t-numeric: normal; font-variant-east-asian: normal; font-variant-alternates=
+: normal; font-size-adjust: none; font-kerning: auto; font-optical-sizing: =
+auto; font-feature-settings: normal; font-variation-settings: normal; font-=
+variant-position: normal; font-variant-emoji: normal; font-stretch: normal;=
+ line-height: normal; font-family: " class=3D"p1">Your feed is packed with =
+content, but to make it truly yours, you need to train it a bit. Upvote pos=
+ts that actually help, downvote the ones that make you question the mere ex=
+istence of this platform, and your feed will
+start working for you.</p><p style=3D"margin: 0px; font-variant-numeric: no=
+rmal; font-variant-east-asian: normal; font-variant-alternates: normal; fon=
+t-size-adjust: none; font-kerning: auto; font-optical-sizing: auto; font-fe=
+ature-settings: normal; font-variation-settings: normal; font-variant-posit=
+ion: normal; font-variant-emoji: normal; font-stretch: normal; line-height:=
+ normal; font-family: " class=3D"p1"><br/></p><p style=3D"margin: 0px; font=
+-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alt=
+ernates: normal; font-size-adjust: none; font-kerning: auto; font-optical-s=
+izing: auto; font-feature-settings: normal; font-variation-settings: normal=
+; font-variant-position: normal; font-variant-emoji: normal; font-stretch: =
+normal; line-height: normal; font-family: " class=3D"p1">If something keeps=
+ showing up that you never want to see again, click the more options button=
+ on any post to block tags, sources, or topics. If you want more of the goo=
+d stuff, follow sources
+and <a target=3D"_blank" href=3D"https://t.daily.dev/e/c/eyJlbWFpbF9pZCI6Im=
+RnUzV3Z2tBQU1EY1pMX2NaQUdWenUxdHBBNzA0bFN2Z29WR2FWUT0iLCJocmVmIjoiaHR0cHM6L=
+y9hcHAuZGFpbHkuZGV2L3NxdWFkcy9kaXNjb3ZlciIsImludGVybmFsIjoiYjljMjA5MzdlZjAx=
+YzBkYzY0IiwibGlua19pZCI6NjAwfQ/88805c2e8584214bd8be05ab0655af60211b7758ba22=
+2b544b1a1107a2a55dc5">join squads</a>  that match your interests.</p><p sty=
+le=3D"margin: 0px; font-variant-numeric: normal; font-variant-east-asian: n=
+ormal; font-variant-alternates: normal; font-size-adjust: none; font-kernin=
+g: auto; font-optical-sizing: auto; font-feature-settings: normal; font-var=
+iation-settings: normal; font-variant-position: normal; font-variant-emoji:=
+ normal; font-stretch: normal; line-height: normal; font-family: " class=3D=
+"p1"><br/></p><p style=3D"margin: 0px; font-variant-numeric: normal; font-v=
+ariant-east-asian: normal; font-variant-alternates: normal; font-size-adjus=
+t: none; font-kerning: auto; font-optical-sizing: auto; font-feature-settin=
+gs: normal; font-variation-settings: normal; font-variant-position: normal;=
+ font-variant-emoji: normal; font-stretch: normal; line-height: normal; fon=
+t-family: " class=3D"p1">Oh, and there=E2=80=99s an
+optional <a target=3D"_blank" href=3D"https://t.daily.dev/e/c/eyJlbWFpbF9pZ=
+CI6ImRnUzV3Z2tBQU1EY1pMX2NaQUdWenUxdHBBNzA0bFN2Z29WR2FWUT0iLCJocmVmIjoiaHR0=
+cHM6Ly9hcHAuZGFpbHkuZGV2L3BsdXMiLCJpbnRlcm5hbCI6ImI5YzIwOTM3ZWYwMWMwZGM2NCI=
+sImxpbmtfaWQiOjUxMH0/0c67317cdeec899b1c5afc121ae2b8951712f69616a5753958bf64=
+b3e5b578d6">upgrade to Plus</a>  if you ever want to unlock more. <b></b>No=
+ rush, the free version is yours forever, just like that TODO comment you l=
+eft &#34;for now.&#34;</p><p style=3D"margin: 0px; font-variant-numeric: no=
+rmal; font-variant-east-asian: normal; font-variant-alternates: normal; fon=
+t-size-adjust: none; font-kerning: auto; font-optical-sizing: auto; font-fe=
+ature-settings: normal; font-variation-settings: normal; font-variant-posit=
+ion: normal; font-variant-emoji: normal; font-stretch: normal; line-height:=
+ normal; font-family: " class=3D"p2"><br/></p><p style=3D"margin: 0px; font=
+-variant-numeric: normal; font-variant-east-asian: normal; font-variant-alt=
+ernates: normal; font-size-adjust: none; font-kerning: auto; font-optical-s=
+izing: auto; font-feature-settings: normal; font-variation-settings: normal=
+; font-variant-position: normal; font-variant-emoji: normal;
+font-stretch: normal; line-height: normal; font-family: " class=3D"p1">Woul=
+d love to hear what you think. Just hit reply.</p><p style=3D"margin: 0px; =
+font-variant-numeric: normal; font-variant-east-asian: normal; font-variant=
+-alternates: normal; font-size-adjust: none; font-kerning: auto; font-optic=
+al-sizing: auto; font-feature-settings: normal; font-variation-settings: no=
+rmal; font-variant-position: normal; font-variant-emoji: normal; font-stret=
+ch: normal; line-height: normal; font-family: " class=3D"p1"><br/></p><p st=
+yle=3D"margin: 0px; font-variant-numeric: normal; font-variant-east-asian: =
+normal; font-variant-alternates: normal; font-size-adjust: none; font-kerni=
+ng: auto; font-optical-sizing: auto; font-feature-settings: normal; font-va=
+riation-settings: normal; font-variant-position: normal; font-variant-emoji=
+: normal; font-stretch: normal; line-height: normal; font-family: " class=
+=3D"p1">Cheers,</p><p style=3D"margin: 0px; font-variant-numeric: normal; f=
+ont-variant-east-asian:
+normal; font-variant-alternates: normal; font-size-adjust: none; font-kerni=
+ng: auto; font-optical-sizing: auto; font-feature-settings: normal; font-va=
+riation-settings: normal; font-variant-position: normal; font-variant-emoji=
+: normal; font-stretch: normal; line-height: normal; font-family: " class=
+=3D"p1">Core Team @ daily.dev</p><p style=3D"margin: 0px; font-variant-nume=
+ric: normal; font-variant-east-asian: normal; font-variant-alternates: norm=
+al; font-size-adjust: none; font-kerning: auto; font-optical-sizing: auto; =
+font-feature-settings: normal; font-variation-settings: normal; font-varian=
+t-position: normal; font-variant-emoji: normal; font-stretch: normal; line-=
+height: normal; font-family: " class=3D"p2"><br/></p><p style=3D"margin: 0p=
+x; font-variant-numeric: normal; font-variant-east-asian: normal; font-vari=
+ant-alternates: normal; font-size-adjust: none; font-kerning: auto; font-op=
+tical-sizing: auto; font-feature-settings: normal; font-variation-settings:=
+ normal;
+font-variant-position: normal; font-variant-emoji: normal; font-stretch: no=
+rmal; line-height: normal; font-family: " class=3D"p1">=E2=80=94</p><p styl=
+e=3D"margin: 0px; font-variant-numeric: normal; font-variant-east-asian: no=
+rmal; font-variant-alternates: normal; font-size-adjust: none; font-kerning=
+: auto; font-optical-sizing: auto; font-feature-settings: normal; font-vari=
+ation-settings: normal; font-variant-position: normal; font-variant-emoji: =
+normal; font-stretch: normal; line-height: normal; font-family: " class=3D"=
+p1"><br/></p><p style=3D"margin: 0px; font-variant-numeric: normal; font-va=
+riant-east-asian: normal; font-variant-alternates: normal; font-size-adjust=
+: none; font-kerning: auto; font-optical-sizing: auto; font-feature-setting=
+s: normal; font-variation-settings: normal; font-variant-position: normal; =
+font-variant-emoji: normal; font-stretch: normal; line-height: normal; font=
+-family: " class=3D"p1">You can <a href=3D"https://t.daily.dev/e/c/eyJlbWFp=
+bF9pZCI6ImRnUzV3Z2tBQU1EY1pMX2NaQUdWenUxdHBBNzA0bFN2Z29WR2FWUT0iLCJocmVmIjo=
+iaHR0cHM6Ly9hcHAuZGFpbHkuZGV2L2FjY291bnQvbm90aWZpY2F0aW9ucyIsImludGVybmFsIj=
+oiYjljMjA5MzdlZjAxYzBkYzY0IiwibGlua19pZCI6MTB9/05dcba22d3c1a473dd65a633f2ec=
+ed2875dfb2796f1056db676b3ffabc1649f3">personalize your notifications</a> or=
+ <a href=3D"https://t.daily.dev/manage_subscription_preferences/dgS5wgkAAMD=
+cZL_cZAGVzu1tpA704lSvgoVGaVQ=3D">unsubscribe</a> anytime.</p>
+   =20
+ =20
+  <img src=3D"https://t.daily.dev/e/o/eyJlbWFpbF9pZCI6ImRnUzV3Z2tBQU1EY1pMX=
+2NaQUdWenUxdHBBNzA0bFN2Z29WR2FWUT0ifQ=3D=3D" style=3D"height: 1px !importan=
+t; max-height: 1px !important; max-width: 1px !important; width: 1px !impor=
+tant; display: none !important;" alt=3D""/></body></html>
+--02a6e01e70e9dee0df8ae0d2a398680c5b62c18f68d945ed078f3603c1e0--
