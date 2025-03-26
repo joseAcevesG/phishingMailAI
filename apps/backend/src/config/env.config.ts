@@ -12,8 +12,10 @@ const envSchema = z.object({
 	STYTCH_PROJECT_ID: z.string().min(1, "STYTCH_PROJECT_ID is required"),
 	STYTCH_SECRET: z.string().min(1, "STYTCH_SECRET is required"),
 	SECRET_KEY: z.string().min(1, "SECRET_KEY is required"),
+	SALT: z.string().min(1, "SALT is required"),
 	TOKEN_KEY: z.string().min(1, "TOKEN_KEY is required"),
 	DB_URL: z.string().min(1, "DB_URL is required"),
+	OPENAI_API_KEY: z.string().min(1, "OPENAI_API_KEY is required"),
 });
 
 let env: z.infer<typeof envSchema>;
@@ -36,8 +38,12 @@ export const EnvConfig = () => {
 			secret: env.STYTCH_SECRET,
 		},
 		secretKey: env.SECRET_KEY,
+		salt: env.SALT,
 		tokenKey: env.TOKEN_KEY,
 		dbUrl: env.DB_URL,
+		openai: {
+			apiKey: env.OPENAI_API_KEY,
+		},
 	} as const;
 
 	return config;

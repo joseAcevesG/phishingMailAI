@@ -31,4 +31,6 @@ dist-ssr
 .env.test
 .env.production
 
-test.*
+# Test files
+test*
+uploads
