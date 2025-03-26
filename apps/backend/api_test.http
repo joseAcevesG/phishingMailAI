@@ -1,5 +1,5 @@
 @base_url = http://localhost:3000/api
-@token = XYF7kyU0pk_zxtbJuKT7_Johv0U7OhXQFQ6OgwpuBpeJ
+@token = TTtqgKl5T_wvEHCPoQCLzuzrUk50ObgJD40i2xgtHhag
 
 ### test api ###
 GET {{base_url}}
@@ -27,5 +27,5 @@ Content-Type: multipart/form-data; boundary=validate-boundary
 Content-Disposition: form-data; name="emlFile"; filename="test2.eml"
 Content-Type: message/rfc822
 
-< ./test2.eml
+< ./test.eml
 --validate-boundary--

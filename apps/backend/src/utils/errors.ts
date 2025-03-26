@@ -48,3 +48,10 @@ ${errorMessages.map((msg) => `  - ${msg}`).join("\n")}`);
 		Error.captureStackTrace = () => {};
 	}
 }
+
+export class EncryptError extends Error {
+	constructor(message: string) {
+		super(message);
+		this.name = "EncryptError";
+	}
+}
