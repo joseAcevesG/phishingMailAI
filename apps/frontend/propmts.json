@@ -16,7 +16,11 @@
 		"result": ""
 	},
 	{
-		"prompt": "create a page /authenticate that is going to recive a param, extract the token param and send it to /api/authenticate?token=[token value] and when the respond of the back is good redirect to home",
+		"prompt": "create a page /authenticate that is going to receive a param, extract the token param and send it to /api/authenticate?token=[token value] and when the respond of the back is good redirect to home",
+		"result": ""
+	},
+	{
+		"prompt": "change the app to stop using demo data and start using the api, the auth is provided via HTTP-only cookies",
 		"result": ""
 	}
 ]

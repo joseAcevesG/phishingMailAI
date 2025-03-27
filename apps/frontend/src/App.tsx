@@ -21,25 +21,19 @@ function App() {
 	useEffect(() => {
 		const checkAuth = async () => {
 			try {
-				// For development, since backend is not ready yet
-				setIsAuthenticated(true);
-				setUserEmail("demo@example.com");
-				setLoading(false);
-
-				// Uncomment this when backend is ready
-				/*
-        const response = await fetch('/api/auth/status');
-        if (response.ok) {
-          const data = await response.json();
-          setIsAuthenticated(data.authenticated);
-          setUserEmail(data.email);
-        }
-        */
+				const response = await fetch('/api/auth/status');
+				if (response.ok) {
+					const data = await response.json();
+					setIsAuthenticated(data.authenticated);
+					setUserEmail(data.email);
+				} else {
+					setIsAuthenticated(false);
+					setUserEmail(undefined);
+				}
 			} catch (error) {
 				console.error("Auth check failed:", error);
-				// For development, set demo state
-				setIsAuthenticated(true);
-				setUserEmail("demo@example.com");
+				setIsAuthenticated(false);
+				setUserEmail(undefined);
 			} finally {
 				setLoading(false);
 			}
@@ -49,26 +43,23 @@ function App() {
 	}, []);
 
 	const handleLogin = async () => {
-		// For development
-		setIsAuthenticated(true);
-		setUserEmail("demo@example.com");
-
-		// Uncomment when backend is ready
-		// window.location.href = '/api/auth/login';
+		window.location.href = '/api/auth/login';
 	};
 
 	const handleLogout = async () => {
 		try {
-			// For development
-			setIsAuthenticated(false);
-			setUserEmail(undefined);
-
-			// Uncomment when backend is ready
-			/*
-      await fetch('/api/auth/logout', { method: 'POST' });
-      setIsAuthenticated(false);
-      setUserEmail(undefined);
-      */
+			const response = await fetch('/api/auth/logout', { 
+				method: 'POST',
+				credentials: 'include' // This is important for cookies
+			});
+			
+			if (response.ok) {
+				setIsAuthenticated(false);
+				setUserEmail(undefined);
+				window.location.href = '/login';
+			} else {
+				console.error('Logout failed');
+			}
 		} catch (error) {
 			console.error("Logout failed:", error);
 		}
