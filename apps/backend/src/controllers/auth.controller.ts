@@ -1,11 +1,13 @@
 import type { CookieOptions, Request, Response } from "express";
+import type { JwtPayload } from "jsonwebtoken";
 import { EnvConfig } from "../config/env.config";
 import { stytchClient } from "../config/stytch";
 import User from "../models/user.model";
 import type { RequestUser } from "../types";
 import StatusCodes from "../types/response-codes";
 import { code as createToken } from "../utils/create-token";
-import { encrypt } from "../utils/encrypt-string"; // Assuming the encrypt function is in this file
+import { decode as decodeToken } from "../utils/create-token"; // Assuming the encrypt function is in this file
+import { encrypt } from "../utils/encrypt-string";
 
 const cookieOptions: CookieOptions = {
 	httpOnly: true,
@@ -122,6 +124,39 @@ class AuthController {
 					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
 					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
 			});
+	}
+
+	status(req: Request, res: Response) {
+		const token = req.cookies.session_token;
+
+		if (!token) {
+			res.status(StatusCodes.UNAUTHORIZED.code).json({
+				authenticated: false,
+				email: undefined,
+			});
+			return;
+		}
+
+		try {
+			const decoded = decodeToken(token);
+			if (!decoded) {
+				res.status(StatusCodes.UNAUTHORIZED.code).json({
+					authenticated: false,
+					email: undefined,
+				});
+				return;
+			}
+			res.json({
+				authenticated: true,
+				email: (decoded as JwtPayload).email,
+			});
+		} catch (err) {
+			console.error("Error verifying token:", err);
+			res.status(StatusCodes.UNAUTHORIZED.code).json({
+				authenticated: false,
+				email: undefined,
+			});
+		}
 	}
 }
 

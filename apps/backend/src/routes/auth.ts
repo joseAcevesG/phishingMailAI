@@ -7,5 +7,6 @@ router.post("/login", AuthController.login);
 router.get("/authenticate", AuthController.authenticate);
 router.post("/logout", AuthController.logout);
 router.post("/changeTrial", auth, AuthController.changeTrial);
+router.get("/status", AuthController.status);
 
 export default router;

@@ -26,5 +26,9 @@
 	{
 		"prompt": "add a validation to check if the emailContent is not empty",
 		"result": "Added email content validation. Empty emails are now properly rejected with appropriate error message."
+	},
+	{
+		"prompt": "create the /api/auth/status send {authenticated: bool, email: email | undefine } if is not auth send a 401",
+		"result": ""
 	}
 ]
