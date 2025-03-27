@@ -1,0 +1,30 @@
+[
+	{
+		"prompt": "I have a monorepo project using React for the frontend and Node.js (Express) for the backend. The project is already set up, so do not modify anything that already exists.\n\nI want to implement user authentication using Stytch.\n\nUse a Model-View-Controller (MVC) folder structure in the backend.\n\nThe backend should expose routes under the `/api` base path. Create the necessary backend route to handle authentication using Stytch, including:\n\n- Initializing the Stytch client\n- Accepting a POST request to `/api/authenticate`\n- Reading a `token` from the request body\n- Verifying the token using the Stytch SDK\n- Returning a user session or error response\n\nAssume I'm using email magic links for authentication.",
+		"result": "Implemented Stytch authentication with magic links. Added /api/authenticate endpoint and middleware for token verification. MVC structure maintained."
+	},
+	{
+		"prompt": "create a model using mongoDB\n\nimport { Schema, model } from \"mongoose\";\nimport Roles from \"../types/roles\";\n\nconst schema = new Schema({\n\tname: {\n\t\ttype: String,\n\t\trequired: true,\n\t},\n\tusername: {\n\t\ttype: String,\n\t\trequired: true,\n\t\tunique: true,\n\t},\n\tpassword: {\n\t\ttype: String,\n\t},\n\temail: {\n\t\ttype: String,\n\t\trequired: true,\n\t\tunique: true,\n\t},\n\trole: {\n\t\ttype: String,\n\t\trequired: true,\n\t\tenum: Object.values(Roles),\n\t\tdefault: \"user\",\n\t},\n\timage: {\n\t\ttype: String,\n\t},\n});\n\nexport default model(\"User\", schema);\n\n\nuse this as an examle, the field y want is mail, api_key, freeTrial, usageFreeTrial",
+		"result": "Created User model with email, encrypted api_key, freeTrial boolean, and usageFreeTrial counter fields. Schema works correctly with MongoDB."
+	},
+	{
+		"prompt": "create the file to config the connection to mongoose add this to the .env\nDB_IRL = ",
+		"result": "Added MongoDB connection configuration with DB_URL in .env. Connection established successfully."
+	},
+	{
+		"prompt": "add a multer to receive .eml files, use the route /validate",
+		"result": "Configured Multer for .eml file uploads at /validate endpoint. File storage and validation working properly."
+	},
+	{
+		"prompt": "What I want is to create a function with express that receive a .eml file, then send that file to gpt4o-mini and analyze if it is a fishing mail or not\n\nadd setting on for openAI API to set up a format on the return, I want a json with the probability to be fishing, and a description for why that score \n\nalso add a system prompt",
+		"result": "Implemented email analysis with GPT. Returns JSON with phishing probability and detailed explanation. System prompt guides accurate assessments."
+	},
+	{
+		"prompt": "create a method to change the freeTrial to false and add a api_key that is on the body of the request, encrypt the api_key using the encrypt-strings.ts save the changes using the user model",
+		"result": "Added API key management with encryption. FreeTrial status updates correctly when API key is added. Changes persist in database."
+	},
+	{
+		"prompt": "add a validation to check if the emailContent is not empty",
+		"result": "Added email content validation. Empty emails are now properly rejected with appropriate error message."
+	}
+]
