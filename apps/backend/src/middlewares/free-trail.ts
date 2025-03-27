@@ -1,4 +1,5 @@
 import type { NextFunction, Response } from "express";
+import { EnvConfig } from "../config/env.config";
 import openai from "../config/openai";
 import userModel from "../models/user.model";
 import type { RequestUser } from "../types";
@@ -9,7 +10,7 @@ export default (req: RequestUser, res: Response, next: NextFunction) => {
 	console.log("free trail middleware");
 	console.log(req.user);
 	if (req.user?.freeTrial) {
-		if (req.user.usageFreeTrial >= 10) {
+		if (req.user.usageFreeTrial >= EnvConfig().freeTrialLimit) {
 			res
 				.status(ResponseStatus.FORBIDDEN.code)
 				.send("Free trial limit exceeded");

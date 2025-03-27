@@ -2,8 +2,10 @@ import type { CookieOptions, Request, Response } from "express";
 import { EnvConfig } from "../config/env.config";
 import { stytchClient } from "../config/stytch";
 import User from "../models/user.model";
+import type { RequestUser } from "../types";
 import StatusCodes from "../types/response-codes";
 import { code as createToken } from "../utils/create-token";
+import { encrypt } from "../utils/encrypt-string"; // Assuming the encrypt function is in this file
 
 const cookieOptions: CookieOptions = {
 	httpOnly: true,
@@ -83,6 +85,43 @@ class AuthController {
 
 	logout(_req: Request, res: Response) {
 		res.clearCookie("session_token").send();
+	}
+
+	changeTrial(req: RequestUser, res: Response) {
+		const { api_key } = req.body;
+
+		if (!api_key) {
+			res.status(StatusCodes.BAD_REQUEST.code).send("API key is required");
+			return;
+		}
+
+		encrypt(api_key)
+			.then((encryptedApiKey: string) => {
+				return User.findOneAndUpdate(
+					{ _id: req.user?._id },
+					{
+						api_key: encryptedApiKey,
+						freeTrial: false,
+					},
+					{ new: true },
+				);
+			})
+			.then((user) => {
+				if (!user) {
+					res.status(StatusCodes.NOT_FOUND.code).send("User not found");
+					return;
+				}
+
+				res.json({
+					message: "API key updated successfully",
+				});
+			})
+			.catch((error: Error) => {
+				console.error(error);
+				res
+					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
+					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
+			});
 	}
 }
 

@@ -1,6 +1,6 @@
 @base_url = http://localhost:3000/api
-@token = TTtqgKl5T_wvEHCPoQCLzuzrUk50ObgJD40i2xgtHhag
-
+@token = okeUXqNi73YjIj0LjkYY8hnh2gx5ZtDqLkAlkydGJD_K
+@api_key = 
 ### test api ###
 GET {{base_url}}
 
@@ -19,6 +19,14 @@ GET {{base_url}}/auth/authenticate?stytch_token_type=magic_links&token={{token}}
 ### logout ###
 POST {{base_url}}/auth/logout
 
+### change trial ###
+POST {{base_url}}/auth/changeTrial
+Content-Type: application/json
+
+{
+    "api_key": "{{api_key}}"
+}
+
 ### validate mail ###
 POST {{base_url}}/analyze-mail/validate
 Content-Type: multipart/form-data; boundary=validate-boundary
@@ -27,5 +35,5 @@ Content-Type: multipart/form-data; boundary=validate-boundary
 Content-Disposition: form-data; name="emlFile"; filename="test2.eml"
 Content-Type: message/rfc822
 
-< ./test.eml
+< ./test2.eml
 --validate-boundary--

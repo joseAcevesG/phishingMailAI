@@ -9,6 +9,7 @@ const envSchema = z.object({
 		.enum(["development", "production", "local"])
 		.default("development"),
 	PORT: z.string().default("3000"),
+	FREE_TRIAL_LIMIT: z.string().default("3"),
 	STYTCH_PROJECT_ID: z.string().min(1, "STYTCH_PROJECT_ID is required"),
 	STYTCH_SECRET: z.string().min(1, "STYTCH_SECRET is required"),
 	SECRET_KEY: z.string().min(1, "SECRET_KEY is required"),
@@ -33,6 +34,7 @@ export const EnvConfig = () => {
 	const config = {
 		environment: env.NODE_ENV,
 		port: Number.parseInt(env.PORT, 10),
+		freeTrialLimit: Number.parseInt(env.FREE_TRIAL_LIMIT, 10),
 		stytch: {
 			projectId: env.STYTCH_PROJECT_ID,
 			secret: env.STYTCH_SECRET,
