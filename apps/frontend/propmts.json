@@ -14,5 +14,9 @@
 	{
 		"prompt": "make the login work, the route on the back that is going to use is /api/auth/login this is going to send a magic link to the user, disable the button for 15 sec, while is disable put on the button 'you can resend a magic link in: n seconds' after that change the button to resend, the auth is provided via HTTP-only cookies",
 		"result": ""
+	},
+	{
+		"prompt": "create a page /authenticate that is going to recive a param, extract the token param and send it to /api/authenticate?token=[token value] and when the respond of the back is good redirect to home",
+		"result": ""
 	}
 ]
