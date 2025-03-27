@@ -28,6 +28,26 @@
   color: var(--text-secondary);
 }
 
+.input-group {
+  margin-bottom: 2rem;
+}
+
+.email-input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: border-color 0.3s ease;
+}
+
+.email-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
 .login-button {
   font-size: 1.1rem;
   padding: 1rem 2rem;
@@ -35,6 +55,16 @@
   color: white;
   border: none;
   min-width: 200px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-button:disabled {
+  background: var(--bg-disabled);
+  cursor: not-allowed;
+  transform: none;
+  opacity: 0.7;
 }
 
 .login-button:hover:not(:disabled) {
