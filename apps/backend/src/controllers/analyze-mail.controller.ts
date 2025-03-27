@@ -4,6 +4,7 @@ import { simpleParser } from "mailparser";
 import openaiConfig from "../config/openai";
 import type { RequestUser } from "../types";
 import StatusCodes from "../types/response-codes";
+import { BadRequestError } from "../utils/errors";
 
 class AnalyzeMailController {
 	validateMail(req: RequestUser, res: Response): void {
@@ -16,8 +17,16 @@ class AnalyzeMailController {
 
 		// Parse the email file
 		readFile(req.file.path, "utf-8")
-			.then((emailContent) => simpleParser(emailContent))
+			.then((emailContent) => {
+				if (!emailContent || emailContent.trim() === "") {
+					throw new BadRequestError("Email content cannot be empty");
+				}
+				return simpleParser(emailContent);
+			})
 			.then((parsedEmail) => {
+				if (!parsedEmail?.html) {
+					throw new BadRequestError("Email content cannot be empty");
+				}
 				// Extract relevant email information
 				const emailData = {
 					subject: parsedEmail.subject,
@@ -46,11 +55,15 @@ class AnalyzeMailController {
 			})
 			.then((completion) => {
 				const analysis = JSON.parse(
-					completion.choices[0].message?.content || "",
+					completion?.choices[0].message?.content || "",
 				);
 				res.json(analysis);
 			})
 			.catch((error) => {
+				if (error instanceof BadRequestError) {
+					res.status(StatusCodes.BAD_REQUEST.code).send(error.message);
+					return;
+				}
 				console.error("Error analyzing email:", error);
 
 				res
