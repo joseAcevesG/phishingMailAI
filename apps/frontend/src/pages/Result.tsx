@@ -1,94 +1,99 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Result.css';
-
-interface AnalysisResult {
-  status: 'Safe' | 'Suspicious' | 'Phishing';
-  summary: string;
-}
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import type { AnalysisResult } from "../types/api";
+import "./Result.css";
 
 export const Result = () => {
-  const [result, setResult] = useState<AnalysisResult | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+	const navigate = useNavigate();
+	const [result, setResult] = useState<AnalysisResult | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchResult = async () => {
-      try {
-        // For development, simulate an API response
-        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate loading
-        setResult({
-          status: 'Suspicious',
-          summary: 'This is a demo result. The email contains suspicious elements that might indicate a phishing attempt. Please exercise caution.'
-        });
-        
-        // Uncomment when backend is ready
-        /*
-        const response = await fetch('/api/analysis-result');
-        if (!response.ok) {
-          throw new Error('Failed to fetch analysis result');
-        }
-        const data = await response.json();
-        setResult(data);
-        */
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
+	useEffect(() => {
+		const fetchResult = async () => {
+			try {
+				const response = await fetch("/api/analyze-email/result");
+				if (!response.ok) {
+					throw new Error("Failed to fetch result");
+				}
+				const data = await response.json();
+				setResult(data);
+			} catch (err) {
+				setError(err instanceof Error ? err.message : "An error occurred");
+			} finally {
+				setLoading(false);
+			}
+		};
 
-    fetchResult();
-  }, []);
+		fetchResult();
+	}, []);
 
-  if (loading) {
-    return (
-      <div className="result-container">
-        <div className="result-card">
-          <div className="loading">Analyzing email...</div>
-        </div>
-      </div>
-    );
-  }
+	if (loading) {
+		return (
+			<div className="result-container">
+				<div className="result-box loading">
+					<h2>Analyzing email...</h2>
+					<div className="loader" />
+				</div>
+			</div>
+		);
+	}
 
-  if (error) {
-    return (
-      <div className="result-container">
-        <div className="result-card">
-          <div className="error">{error}</div>
-          <button type="button" onClick={() => navigate('/')} className="back-button">
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
+	if (error) {
+		return (
+			<div className="result-container">
+				<div className="result-box error">
+					<h2>Error</h2>
+					<p>{error}</p>
+					<button
+						type="button"
+						onClick={() => navigate("/")}
+						className="back-button"
+					>
+						Try Again
+					</button>
+				</div>
+			</div>
+		);
+	}
 
-  if (!result) {
-    return (
-      <div className="result-container">
-        <div className="result-card">
-          <div className="error">No analysis result found</div>
-          <button type="button" onClick={() => navigate('/')} className="back-button">
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
+	if (!result) {
+		return (
+			<div className="result-container">
+				<div className="result-box error">
+					<h2>No Result Found</h2>
+					<p>Could not find analysis result. Please try again.</p>
+					<button
+						type="button"
+						onClick={() => navigate("/")}
+						className="back-button"
+					>
+						Try Again
+					</button>
+				</div>
+			</div>
+		);
+	}
 
-  return (
-    <div className="result-container">
-      <div className="result-card">
-        <div className={`status ${result.status.toLowerCase()}`}>
-          {result.status}
-        </div>
-        <p className="summary">{result.summary}</p>
-        <button type="button" onClick={() => navigate('/')} className="back-button">
-          Analyze Another Email
-        </button>
-      </div>
-    </div>
-  );
+	return (
+		<div className="result-container">
+			<div className="result-box">
+				<h2>Analysis Result</h2>
+				<div className="result-details">
+					<p className="probability">
+						Probability of being phishing:{" "}
+						{(result.probability * 100).toFixed(1)}%
+					</p>
+					<p className="description">{result.description}</p>
+				</div>
+				<button
+					type="button"
+					onClick={() => navigate("/")}
+					className="back-button"
+				>
+					Analyze Another Email
+				</button>
+			</div>
+		</div>
+	);
 };
