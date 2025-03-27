@@ -6,5 +6,9 @@
 	{
 		"prompt": "create a types folder and move all the types or interfaces to there",
 		"result": ""
+	},
+	{
+		"prompt": "check all the css files and the ones that are global styles add them to the index.css, also check the components folder and the pages folder and add the styles to the index.css",
+		"result": ""
 	}
 ]
