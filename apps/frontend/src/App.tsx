@@ -11,7 +11,6 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Authenticate } from "./pages/Authenticate";
 import Home from "./pages/Home";
 import { Login } from "./pages/Login";
-import { Result } from "./pages/Result";
 import "./App.css";
 
 const AppContent = () => {
@@ -103,14 +102,6 @@ const AppContent = () => {
 					<Route
 						element={<Authenticate onAuthenticate={handleAuthenticate} />}
 						path="/authenticate"
-					/>
-					<Route
-						element={
-							<ProtectedRoute isAuthenticated={isAuthenticated}>
-								<Result />
-							</ProtectedRoute>
-						}
-						path="/result"
 					/>
 					<Route element={<Navigate replace to="/" />} path="*" />
 				</Routes>

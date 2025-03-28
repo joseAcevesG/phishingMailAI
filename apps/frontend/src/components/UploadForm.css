@@ -1,0 +1,103 @@
+.upload-card {
+	background: var(--bg-secondary);
+	padding: 3rem;
+	border-radius: 8px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+	width: 100%;
+	max-width: 600px;
+	text-align: center;
+}
+
+.upload-card h1 {
+	margin-bottom: 2rem;
+	color: var(--text-primary);
+	font-size: 2.5rem;
+}
+
+.upload-form {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
+.file-input-container {
+	position: relative;
+	margin: 0 auto;
+	width: 100%;
+}
+
+.file-input {
+	position: absolute;
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	z-index: -1;
+}
+
+.file-label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem;
+	background-color: var(--bg-primary);
+	border: 2px dashed var(--border);
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.2s;
+	font-size: 1.1rem;
+	color: var(--text-secondary);
+}
+
+.file-label:hover {
+	border-color: var(--accent-primary);
+	background-color: rgba(74, 158, 255, 0.1);
+	color: var(--text-primary);
+}
+
+.error-message {
+	color: var(--error);
+	margin: 0;
+	font-size: 0.875rem;
+}
+
+.submit-button {
+	font-size: 1.1rem;
+	padding: 1rem 2rem;
+	background: linear-gradient(
+		135deg,
+		var(--accent-primary),
+		var(--accent-secondary)
+	);
+	margin: 0 auto;
+	min-width: 200px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	color: var(--text-primary);
+}
+
+.submit-button:disabled {
+	background: var(--bg-primary);
+	border: 1px solid var(--border);
+	opacity: 0.7;
+	cursor: not-allowed;
+}
+
+@keyframes analyzing {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+.submit-button:not(:disabled) {
+	animation: analyzing 3s ease infinite;
+	background-size: 200% 200%;
+}

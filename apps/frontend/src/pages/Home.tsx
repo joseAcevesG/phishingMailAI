@@ -1,85 +1,65 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { ResultView } from "../components/ResultView";
+import { UploadForm } from "../components/UploadForm";
+import type { AnalysisResult } from "../types/api";
 import "./Home.css";
 
 const Home = () => {
-	const [file, setFile] = useState<File | null>(null);
 	const [uploading, setUploading] = useState(false);
+	const [result, setResult] = useState<AnalysisResult | null>(null);
 	const [error, setError] = useState<string | null>(null);
-	const navigate = useNavigate();
 
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const selectedFile = e.target.files?.[0];
-		if (selectedFile?.name.endsWith(".eml")) {
-			setFile(selectedFile);
-			setError(null);
-		} else {
-			setFile(null);
-			setError("Please select a valid .eml file");
-		}
-	};
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!file) return;
-
+	const handleAnalyze = async (file: File) => {
 		setUploading(true);
 		setError(null);
 
 		try {
-			// For development, simulate file upload
-			await new Promise((resolve) => setTimeout(resolve, 2000));
+			const formData = new FormData();
+			formData.append("emlFile", file);
 
-			// Uncomment when backend is ready
-			/*
-      const formData = new FormData();
-      formData.append('email', file);
+			const response = await fetch("/api/analyze-mail/validate", {
+				method: "POST",
+				body: formData,
+			});
 
-      const response = await fetch('/api/analyze-email', {
-        method: 'POST',
-        body: formData,
-      });
+			if (!response.ok) {
+				const errorData = await response.json().catch(() => ({}));
+				console.error(errorData);
+				throw new Error("Failed to analyze email");
+			}
 
-      if (!response.ok) {
-        throw new Error('Failed to analyze email');
-      }
-      */
-
-			navigate("/result");
+			const result: AnalysisResult = await response.json();
+			setResult(result);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "An error occurred");
+			// throw err;
 		} finally {
 			setUploading(false);
 		}
 	};
 
+	const handleReset = () => {
+		setResult(null);
+		setError(null);
+	};
+
 	return (
 		<div className="home-container">
-			<div className="upload-card">
-				<h1>Upload Email for Analysis</h1>
-				<form className="upload-form" onSubmit={handleSubmit}>
-					<div className="file-input-container">
-						<input
-							accept=".eml"
-							className="file-input"
-							id="email-file"
-							onChange={handleFileChange}
-							type="file"
-						/>
-						<label className="file-label" htmlFor="email-file">
-							{file ? file.name : "Choose .eml file"}
-						</label>
-					</div>
-					{error && <p className="error-message">{error}</p>}
-					<button
-						className="submit-button"
-						disabled={!file || uploading}
-						type="submit"
-					>
-						{uploading ? "Analyzing..." : "Analyze Email"}
+			{error && (
+				<div className="error-box">
+					<h2>Error</h2>
+					<p>{error}</p>
+					<button onClick={handleReset} type="button" className="back-button">
+						Try Again
 					</button>
-				</form>
-			</div>
+				</div>
+			)}
+			{!error &&
+				(result ? (
+					<ResultView result={result} onReset={handleReset} />
+				) : (
+					<UploadForm onAnalyze={handleAnalyze} isUploading={uploading} />
+				))}
 		</div>
 	);
 };

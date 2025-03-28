@@ -1,0 +1,87 @@
+.result-box {
+	background: var(--bg-secondary);
+	padding: 3rem;
+	border-radius: 8px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+	width: 100%;
+	max-width: 600px;
+	text-align: center;
+}
+
+.result-box h2 {
+	margin-bottom: 2rem;
+	color: var(--text-primary);
+	font-size: 2.5rem;
+}
+
+.result-details {
+	margin: 2rem 0;
+	text-align: left;
+}
+
+.probability {
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: var(--text-primary);
+	margin-bottom: 1.5rem;
+}
+
+.description {
+	line-height: 1.6;
+	color: var(--text-secondary);
+	margin-bottom: 2rem;
+}
+
+.red-flags {
+	margin-top: 2rem;
+	padding: 1.5rem;
+	background: var(--bg-primary);
+	border-radius: 8px;
+}
+
+.red-flags h3 {
+	color: var(--error);
+	margin-bottom: 1rem;
+	font-size: 1.2rem;
+}
+
+.red-flags ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.red-flags li {
+	color: var(--error);
+	margin: 0.75rem 0;
+	padding-left: 2rem;
+	position: relative;
+}
+
+.red-flags li::before {
+	content: "⚠️";
+	position: absolute;
+	left: 0;
+}
+
+.back-button {
+	font-size: 1.1rem;
+	padding: 1rem 2rem;
+	background: linear-gradient(
+		135deg,
+		var(--accent-primary),
+		var(--accent-secondary)
+	);
+	margin: 0 auto;
+	min-width: 200px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	color: var(--text-primary);
+	display: block;
+}
+
+.back-button:hover {
+	opacity: 0.9;
+}

@@ -22,5 +22,13 @@
 	{
 		"prompt": "change the app to stop using demo data and start using the api, the auth is provided via HTTP-only cookies",
 		"result": ""
+	},
+	{
+		"prompt": "make the home component work, use @api_test.http to see the endpoints you need to use ",
+		"result": ""
+	},
+	{
+		"prompt": "change to home to components, one is the component tu upload the .eml y the other is the component of the result, with this changes the route /result is not necessary",
+		"result": ""
 	}
 ]
