@@ -1,42 +1,46 @@
-import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-export const Authenticate = () => {
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
+export const Authenticate: React.FC<{
+	onAuthenticate: (data: { authenticated: boolean; email: string }) => void;
+}> = ({ onAuthenticate }) => {
+	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
 
-    useEffect(() => {
-        const authenticateUser = async () => {
-            const token = searchParams.get('token');
-            
-            if (!token) {
-                console.error('No token provided');
-                navigate('/login');
-                return;
-            }
+	useEffect(() => {
+		const authenticateUser = async () => {
+			const queryString = searchParams.toString();
 
-            try {
-                const response = await fetch(`/api/authenticate?token=${token}`);
-                if (response.ok) {
-                    // If authentication is successful, redirect to home
-                    navigate('/');
-                } else {
-                    // If authentication fails, redirect to login
-                    console.error('Authentication failed');
-                    navigate('/login');
-                }
-            } catch (error) {
-                console.error('Authentication error:', error);
-                navigate('/login');
-            }
-        };
+			if (!queryString) {
+				console.error("No query parameters provided");
+				navigate("/login");
+				return;
+			}
 
-        authenticateUser();
-    }, [navigate, searchParams]);
+			try {
+				const response = await fetch(`/api/auth/authenticate?${queryString}`, {
+					credentials: "include",
+				});
+				if (response.ok) {
+					onAuthenticate(await response.json());
+				} else {
+					// If authentication fails, redirect to login
+					console.error("Authentication failed");
+					alert("Authentication failed, please try again");
+					navigate("/login");
+				}
+			} catch (error) {
+				console.error("Authentication error:", error);
+				navigate("/login");
+			}
+		};
 
-    return (
-        <div className="authenticate-container">
-            <p>Authenticating...</p>
-        </div>
-    );
+		authenticateUser();
+	}, [navigate, searchParams, onAuthenticate]);
+
+	return (
+		<div className="authenticate-container">
+			<p>Authenticating...</p>
+		</div>
+	);
 };
