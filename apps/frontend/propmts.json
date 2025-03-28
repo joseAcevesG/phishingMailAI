@@ -38,5 +38,9 @@
 	{
 		"prompt": "@UploadForm.tsx do something similar for the error handle on for the login, i want the login to match the uploadFrom",
 		"result": "Enhanced login component with consistent error handling pattern matching UploadForm. Improved form submission and user feedback."
+	},
+	{
+		"prompt": "move the auth logic (fetching status, updating state, handling logout/authenticate) into a custom hook",
+		"result": "Created useAuth custom hook to encapsulate authentication logic. Moved auth state management, login/logout handling, and status checks into the hook. Improved code organization and reusability by separating concerns."
 	}
 ]
