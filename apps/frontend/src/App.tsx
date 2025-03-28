@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
 	Navigate,
 	Route,
@@ -37,14 +37,19 @@ const AppContent = () => {
 		}
 	};
 
-	const handleAuthenticate = async (data: {
-		authenticated: boolean;
-		email: string;
-	}) => {
-		setIsAuthenticated(data.authenticated);
-		setUserEmail(data.email);
-		navigate("/");
-	};
+	const handleAuthenticate = useCallback(
+		async (data: { authenticated: boolean; email: string }) => {
+			setIsAuthenticated(data.authenticated);
+			setUserEmail(data.email);
+		},
+		[]
+	);
+
+	useEffect(() => {
+		if (isAuthenticated) {
+			navigate("/");
+		}
+	}, [isAuthenticated, navigate]);
 
 	useEffect(() => {
 		const checkAuth = async () => {
