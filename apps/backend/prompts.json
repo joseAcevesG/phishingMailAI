@@ -29,6 +29,6 @@
 	},
 	{
 		"prompt": "create the /api/auth/status send {authenticated: bool, email: email | undefine } if is not auth send a 401",
-		"result": ""
+		"result": "Added status endpoint to verify authentication state. Returns JSON with authenticated status and email. Handles invalid/missing tokens with 401 response."
 	}
 ]

@@ -5,38 +5,38 @@
 	},
 	{
 		"prompt": "create a types folder and move all the types or interfaces to there",
-		"result": ""
+		"result": "Refactored codebase to centralize type definitions. Created types folder and moved all interfaces and types for better organization and reusability."
 	},
 	{
 		"prompt": "check all the css files and the ones that are global styles add them to the index.css, also check the components folder and the pages folder and add the styles to the index.css",
-		"result": ""
+		"result": "Standardized CSS structure by moving global styles to index.css. Enhanced theme variables and layout properties for consistent styling across components."
 	},
 	{
 		"prompt": "make the login work, the route on the back that is going to use is /api/auth/login this is going to send a magic link to the user, disable the button for 15 sec, while is disable put on the button 'you can resend a magic link in: n seconds' after that change the button to resend, the auth is provided via HTTP-only cookies",
-		"result": ""
+		"result": "Implemented login functionality with magic link flow. Added countdown timer for resend button, email validation, and proper error handling. Authentication uses HTTP-only cookies."
 	},
 	{
 		"prompt": "create a page /authenticate that is going to receive a param, extract the token param and send it to /api/authenticate?token=[token value] and when the respond of the back is good redirect to home",
-		"result": ""
+		"result": "Created Authenticate component to handle magic link verification. Implemented token extraction from URL and authentication flow with proper redirection."
 	},
 	{
 		"prompt": "change the app to stop using demo data and start using the api, the auth is provided via HTTP-only cookies",
-		"result": ""
+		"result": "Refactored app to use real API endpoints instead of demo data. Enhanced authentication flow with proper session handling using HTTP-only cookies."
 	},
 	{
 		"prompt": "make the home component work, use @api_test.http to see the endpoints you need to use ",
-		"result": ""
+		"result": "Integrated Home component with backend API endpoints. Implemented file upload functionality and proper error handling for email analysis."
 	},
 	{
 		"prompt": "change to home to components, one is the component tu upload the .eml y the other is the component of the result, with this changes the route /result is not necessary",
-		"result": ""
+		"result": "Split Home into UploadForm and ResultView components. Removed separate result route for better UX. Enhanced component structure with proper state management."
 	},
 	{
 		"prompt": "search all the css classes that aren't use and delete them, check on the components, pages and app.css",
-		"result": ""
+		"result": "Cleaned up CSS files by removing unused classes. Optimized styles across components and pages for better maintainability."
 	},
 	{
 		"prompt": "@UploadForm.tsx do something similar for the error handle on for the login, i want the login to match the uploadFrom",
-		"result": ""
+		"result": "Enhanced login component with consistent error handling pattern matching UploadForm. Improved form submission and user feedback."
 	}
 ]
