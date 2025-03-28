@@ -30,5 +30,9 @@
 	{
 		"prompt": "change to home to components, one is the component tu upload the .eml y the other is the component of the result, with this changes the route /result is not necessary",
 		"result": ""
+	},
+	{
+		"prompt": "search all the css classes that aren't use and delete them, check on the components, pages and app.css",
+		"result": ""
 	}
 ]

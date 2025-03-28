@@ -40,3 +40,9 @@
 	color: var(--text-primary);
 	transform: none;
 }
+
+.login-button-nav:hover:not(:disabled) {
+	background-color: var(--primary);
+	color: var(--text-primary);
+	transform: none;
+}
