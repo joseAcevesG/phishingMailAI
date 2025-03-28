@@ -23,9 +23,8 @@ const Home = () => {
 			});
 
 			if (!response.ok) {
-				const errorData = await response.json().catch(() => ({}));
-				console.error(errorData);
-				throw new Error("Failed to analyze email");
+				const errorData = await response.json().catch(() => ({ message: "Failed to analyze email" }));
+				throw new Error(errorData.message || "Failed to analyze email");
 			}
 
 			const result: AnalysisResult = await response.json();

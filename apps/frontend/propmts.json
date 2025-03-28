@@ -34,5 +34,9 @@
 	{
 		"prompt": "search all the css classes that aren't use and delete them, check on the components, pages and app.css",
 		"result": ""
+	},
+	{
+		"prompt": "@UploadForm.tsx do something similar for the error handle on for the login, i want the login to match the uploadFrom",
+		"result": ""
 	}
 ]

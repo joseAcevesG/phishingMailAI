@@ -10,6 +10,7 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 	const [email, setEmail] = useState("");
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const [countdown, setCountdown] = useState(15);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		let timer: NodeJS.Timeout;
@@ -31,11 +32,12 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 
 	const handleMagicLinkRequest = async () => {
 		if (!email) {
-			alert("Please enter your email address");
+			setError("Please enter your email address");
 			return;
 		}
 
 		try {
+			setError(null);
 			const response = await fetch("/api/auth/login", {
 				method: "POST",
 				headers: {
@@ -45,16 +47,14 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 				credentials: "include",
 			});
 
-			if (response.ok) {
-				setIsButtonDisabled(true);
-				alert("Magic link has been sent to your email!");
-			} else {
-				const error = await response.json();
-				alert(error.message || "Failed to send magic link");
+			if (!response.ok) {
+				const errorData = await response.json().catch(() => ({ message: "Failed to send magic link" }));
+				throw new Error(errorData.message || "Failed to send magic link");
 			}
-		} catch (error) {
-			console.error("Error:", error);
-			alert("An error occurred while sending the magic link");
+
+			setIsButtonDisabled(true);
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "An error occurred while sending the magic link");
 		}
 	};
 
@@ -67,25 +67,35 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 			<div className="login-box">
 				<h1>Welcome to Phishing Mail AI</h1>
 				<p>Please log in to continue</p>
-				<div className="input-group">
-					<input
-						className="email-input"
-						onChange={(e) => setEmail(e.target.value)}
-						placeholder="Enter your email"
-						type="email"
-						value={email}
-					/>
-				</div>
-				<button
-					className="login-button"
-					disabled={isButtonDisabled}
-					onClick={handleMagicLinkRequest}
-					type="button"
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						handleMagicLinkRequest();
+					}}
 				>
-					{isButtonDisabled
-						? `You can resend a magic link in: ${countdown} seconds`
-						: "Login with Magic Link"}
-				</button>
+					<div className="input-group">
+						<input
+							className="email-input"
+							onChange={(e) => {
+								setEmail(e.target.value);
+								setError(null);
+							}}
+							placeholder="Enter your email"
+							type="email"
+							value={email}
+						/>
+					</div>
+					{error && <p className="error-message">{error}</p>}
+					<button
+						className="login-button"
+						disabled={isButtonDisabled}
+						type="submit"
+					>
+						{isButtonDisabled
+							? `You can resend a magic link in: ${countdown} seconds`
+							: "Login with Magic Link"}
+					</button>
+				</form>
 			</div>
 		</div>
 	);

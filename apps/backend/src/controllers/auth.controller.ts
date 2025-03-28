@@ -67,6 +67,7 @@ class AuthController {
 						res
 							.cookie("session_token", createToken({ email }), cookieOptions)
 							.json({
+								authenticated: true,
 								email: user.email,
 							});
 					})
