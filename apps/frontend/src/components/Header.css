@@ -1,6 +1,7 @@
 .header {
 	background-color: var(--bg-secondary);
 	padding: 1.5rem 2rem;
+	margin: 1rem;
 	border-bottom: 1px solid var(--border);
 	height: var(--header-height);
 }
