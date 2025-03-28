@@ -1,8 +1,12 @@
 import "./Header.css";
 import { useNavigate } from "react-router-dom";
-import type { HeaderProps } from "../types/components";
 
-export const Header: React.FC<HeaderProps> = ({ userEmail, onLogout }) => {
+interface Props {
+	userEmail: string | null;
+	onLogout: () => void;
+}
+
+export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
 	const navigate = useNavigate();
 
 	return (

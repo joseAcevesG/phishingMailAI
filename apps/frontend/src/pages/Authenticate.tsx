@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-export const Authenticate: React.FC<{
+interface Props {
 	onAuthenticate: (data: { authenticated: boolean; email: string }) => void;
-}> = ({ onAuthenticate }) => {
+}
+
+export const Authenticate: React.FC<Props> = ({ onAuthenticate }) => {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 

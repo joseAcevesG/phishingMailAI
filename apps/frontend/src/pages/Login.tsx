@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import type { LoginProps } from "../types/components";
 import "./Login.css";
 
-export const Login: React.FC<LoginProps> = ({ isAuthenticated }) => {
+interface Props {
+	isAuthenticated?: boolean;
+}
+
+export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 	const [email, setEmail] = useState("");
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const [countdown, setCountdown] = useState(15);

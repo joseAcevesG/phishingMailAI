@@ -1,7 +1,11 @@
 import { Navigate } from "react-router-dom";
-import type { ProtectedRouteProps } from "../types/components";
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+interface Props {
+	children: React.ReactNode;
+	isAuthenticated: boolean;
+}
+
+export const ProtectedRoute: React.FC<Props> = ({
 	children,
 	isAuthenticated,
 }) => {

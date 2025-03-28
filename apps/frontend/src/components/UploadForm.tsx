@@ -1,12 +1,12 @@
 import { useState } from "react";
 import "./UploadForm.css";
 
-interface UploadFormProps {
+interface Props {
 	onAnalyze: (file: File) => Promise<void>;
 	isUploading: boolean;
 }
 
-export const UploadForm = ({ onAnalyze, isUploading }: UploadFormProps) => {
+export const UploadForm = ({ onAnalyze, isUploading }: Props) => {
 	const [file, setFile] = useState<File | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
