@@ -1,5 +1,5 @@
 export interface AnalysisResult {
-  probability: number;
-  description: string;
-  score?: string;
+	probability: number;
+	description: string;
+	score?: string;
 }

@@ -46,9 +46,9 @@ export const Result = () => {
 					<h2>Error</h2>
 					<p>{error}</p>
 					<button
-						type="button"
-						onClick={() => navigate("/")}
 						className="back-button"
+						onClick={() => navigate("/")}
+						type="button"
 					>
 						Try Again
 					</button>
@@ -64,9 +64,9 @@ export const Result = () => {
 					<h2>No Result Found</h2>
 					<p>Could not find analysis result. Please try again.</p>
 					<button
-						type="button"
-						onClick={() => navigate("/")}
 						className="back-button"
+						onClick={() => navigate("/")}
+						type="button"
 					>
 						Try Again
 					</button>
@@ -87,9 +87,9 @@ export const Result = () => {
 					<p className="description">{result.description}</p>
 				</div>
 				<button
-					type="button"
-					onClick={() => navigate("/")}
 					className="back-button"
+					onClick={() => navigate("/")}
+					type="button"
 				>
 					Analyze Another Email
 				</button>

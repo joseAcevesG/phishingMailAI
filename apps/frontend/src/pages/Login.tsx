@@ -56,7 +56,7 @@ export const Login: React.FC<LoginProps> = ({ isAuthenticated }) => {
 	};
 
 	if (isAuthenticated) {
-		return <Navigate to="/" replace />;
+		return <Navigate replace to="/" />;
 	}
 
 	return (
@@ -66,18 +66,18 @@ export const Login: React.FC<LoginProps> = ({ isAuthenticated }) => {
 				<p>Please log in to continue</p>
 				<div className="input-group">
 					<input
-						type="email"
-						value={email}
+						className="email-input"
 						onChange={(e) => setEmail(e.target.value)}
 						placeholder="Enter your email"
-						className="email-input"
+						type="email"
+						value={email}
 					/>
 				</div>
 				<button
-					type="button"
-					onClick={handleMagicLinkRequest}
-					disabled={isButtonDisabled}
 					className="login-button"
+					disabled={isButtonDisabled}
+					onClick={handleMagicLinkRequest}
+					type="button"
 				>
 					{isButtonDisabled
 						? `You can resend a magic link in: ${countdown} seconds`
