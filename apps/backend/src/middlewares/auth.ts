@@ -7,7 +7,6 @@ import { decode } from "../utils/create-token";
 import { UnauthorizedError } from "../utils/errors";
 
 export default (req: RequestUser, res: Response, next: NextFunction) => {
-	console.log("auth middleware");
 	const token = req.cookies.session_token;
 	if (!token) {
 		res
@@ -31,7 +30,7 @@ export default (req: RequestUser, res: Response, next: NextFunction) => {
 			// Convert Mongoose document to a plain object and ensure _id is a string
 			req.user = {
 				...user.toObject(),
-				_id: user._id.toString()
+				_id: user._id.toString(),
 			};
 			next();
 		})

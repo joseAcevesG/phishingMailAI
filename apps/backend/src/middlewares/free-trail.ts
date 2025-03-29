@@ -7,8 +7,6 @@ import ResponseStatus from "../types/response-codes";
 import { decrypt } from "../utils/encrypt-string";
 
 export default (req: RequestUser, res: Response, next: NextFunction) => {
-	console.log("free trail middleware");
-	console.log(req.user);
 	if (req.user?.freeTrial) {
 		if (req.user.usageFreeTrial >= EnvConfig().freeTrialLimit) {
 			res
@@ -23,7 +21,6 @@ export default (req: RequestUser, res: Response, next: NextFunction) => {
 				{ usageFreeTrial: req.user.usageFreeTrial },
 			)
 			.then(() => {
-				console.log("Free trial usage incremented");
 				next();
 				return;
 			})
