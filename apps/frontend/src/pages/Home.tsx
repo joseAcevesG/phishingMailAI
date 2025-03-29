@@ -23,7 +23,9 @@ const Home = () => {
 			});
 
 			if (!response.ok) {
-				const errorData = await response.json().catch(() => ({ message: "Failed to analyze email" }));
+				const errorData = await response
+					.json()
+					.catch(() => ({ message: "Failed to analyze email" }));
 				throw new Error(errorData.message || "Failed to analyze email");
 			}
 
@@ -48,16 +50,16 @@ const Home = () => {
 				<div className="error-box">
 					<h2>Error</h2>
 					<p>{error}</p>
-					<button onClick={handleReset} type="button" className="back-button">
+					<button className="back-button" onClick={handleReset} type="button">
 						Try Again
 					</button>
 				</div>
 			)}
 			{!error &&
 				(result ? (
-					<ResultView result={result} onReset={handleReset} />
+					<ResultView onReset={handleReset} result={result} />
 				) : (
-					<UploadForm onAnalyze={handleAnalyze} isUploading={uploading} />
+					<UploadForm isUploading={uploading} onAnalyze={handleAnalyze} />
 				))}
 		</div>
 	);

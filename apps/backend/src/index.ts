@@ -3,8 +3,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { type Request, type Response } from "express";
 import { EnvConfig } from "./config/env.config";
-import routes from "./routes";
 import connectDB from "./config/mongoose";
+import routes from "./routes";
 
 const app = express();
 const PORT = EnvConfig().port;
@@ -22,15 +22,15 @@ app.get("*", (_req: Request, res: Response) => {
 
 // Start server after DB connection
 const startServer = async () => {
-    try {
-        await connectDB();
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        });
-    } catch (error) {
-        console.error('Failed to start server:', error);
-        process.exit(1);
-    }
+	try {
+		await connectDB();
+		app.listen(PORT, () => {
+			console.log(`Server is running on port ${PORT}`);
+		});
+	} catch (error) {
+		console.error("Failed to start server:", error);
+		process.exit(1);
+	}
 };
 
 startServer();

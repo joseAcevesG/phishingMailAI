@@ -48,13 +48,19 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 			});
 
 			if (!response.ok) {
-				const errorData = await response.json().catch(() => ({ message: "Failed to send magic link" }));
+				const errorData = await response
+					.json()
+					.catch(() => ({ message: "Failed to send magic link" }));
 				throw new Error(errorData.message || "Failed to send magic link");
 			}
 
 			setIsButtonDisabled(true);
 		} catch (err) {
-			setError(err instanceof Error ? err.message : "An error occurred while sending the magic link");
+			setError(
+				err instanceof Error
+					? err.message
+					: "An error occurred while sending the magic link",
+			);
 		}
 	};
 

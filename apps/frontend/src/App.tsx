@@ -6,14 +6,20 @@ import {
 } from "react-router-dom";
 import { Header } from "./components/Header";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { useAuth } from "./hooks/useAuth";
 import { Authenticate } from "./pages/Authenticate";
 import Home from "./pages/Home";
 import { Login } from "./pages/Login";
-import { useAuth } from "./hooks/useAuth";
 import "./App.css";
 
 const AppContent = () => {
-	const { isAuthenticated, userEmail, loading, handleLogout, handleAuthenticate } = useAuth();
+	const {
+		isAuthenticated,
+		userEmail,
+		loading,
+		handleLogout,
+		handleAuthenticate,
+	} = useAuth();
 
 	if (loading) {
 		return <div>Loading...</div>;
@@ -33,13 +39,7 @@ const AppContent = () => {
 						path="/"
 					/>
 					<Route
-						element={
-							isAuthenticated ? (
-								<Navigate replace to="/" />
-							) : (
-								<Login />
-							)
-						}
+						element={isAuthenticated ? <Navigate replace to="/" /> : <Login />}
 						path="/login"
 					/>
 					<Route
