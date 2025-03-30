@@ -40,11 +40,11 @@ export const UploadForm = ({ onAnalyze, isUploading }: Props) => {
 					<input
 						accept=".eml"
 						className="file-input"
-						id="email-file"
+						id="file-input"
 						onChange={handleFileChange}
 						type="file"
 					/>
-					<label className="file-label" htmlFor="email-file">
+					<label className="file-label" htmlFor="file-input">
 						{file ? file.name : "Choose .eml file"}
 					</label>
 				</div>

@@ -54,5 +54,9 @@
 	{
 		"prompt": "add a button to go to /set-api-key only when is login",
 		"result": ""
+	},
+	{
+		"prompt": "on the frontend catch the 400 and show the same error as when the user doesnt have more free tries, changing the message to that it was an error with their open AI key",
+		"result": ""
 	}
 ]

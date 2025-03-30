@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ErrorMessages from "../types/error-messages";
 import type { AnalysisResult } from "../types/api";
 
 export const useEmailAnalysis = () => {
@@ -23,19 +24,26 @@ export const useEmailAnalysis = () => {
 
 			if (!response.ok) {
 				if (response.status === 403) {
-					setError("You are out of free tries");
+					setError(ErrorMessages.FREE_TRIAL_EXPIRED);
 					return;
+				}
+				if (response.status === 400) {
+					const errorData = await response.text();
+					if (errorData.includes('Invalid OpenAI API key')) {
+						setError(ErrorMessages.INVALID_API_KEY);
+						return;
+					}
 				}
 				const errorData = await response
 					.json()
-					.catch(() => ({ message: "Failed to analyze email" }));
-				throw new Error(errorData.message || "Failed to analyze email");
+					.catch(() => ({ message: ErrorMessages.FAILED_ANALYSIS }));
+				throw new Error(errorData.message || ErrorMessages.FAILED_ANALYSIS);
 			}
 
 			const result: AnalysisResult = await response.json();
 			setResult(result);
 		} catch (err) {
-			setError(err instanceof Error ? err.message : "An error occurred");
+			setError(err instanceof Error ? err.message : ErrorMessages.GENERIC_ERROR);
 		} finally {
 			setUploading(false);
 		}

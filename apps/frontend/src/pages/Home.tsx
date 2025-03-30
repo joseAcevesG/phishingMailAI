@@ -1,6 +1,7 @@
 import { useEmailAnalysis } from "../hooks/useEmailAnalysis";
 import { ResultView } from "../components/ResultView";
 import { UploadForm } from "../components/UploadForm";
+import ErrorMessages from "../types/error-messages";
 import "./Home.css";
 
 const Home = () => {
@@ -19,7 +20,8 @@ const Home = () => {
 				<div className="error-box">
 					<h2>Error</h2>
 					<p>{error}</p>
-					{error === "You are out of free tries" ? (
+					{(error === ErrorMessages.FREE_TRIAL_EXPIRED || 
+					  error === ErrorMessages.INVALID_API_KEY) ? (
 						<button className="api-key-button" onClick={goToSetApiKey} type="button">
 							Set OpenAI Key
 						</button>
