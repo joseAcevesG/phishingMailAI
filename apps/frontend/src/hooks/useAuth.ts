@@ -9,7 +9,7 @@ export interface AuthState {
 
 export const useAuth = () => {
 	const [state, setState] = useState<AuthState>({
-		isAuthenticated: false,
+		isAuthenticated: true,
 		userEmail: null,
 		loading: true,
 	});
@@ -48,8 +48,8 @@ export const useAuth = () => {
 	);
 
 	useEffect(() => {
-		if (state.isAuthenticated) {
-			navigate("/");
+		if (!state.isAuthenticated) {
+			navigate("/login");
 		}
 	}, [state.isAuthenticated, navigate]);
 
