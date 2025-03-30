@@ -46,5 +46,9 @@
 	{
 		"prompt": "on the handleAnalyze if the response is a 403 i want that the error say that 'you are out of free tries' and a button that say 'set openAI key' or something like that, then take the user to another page with a form to enter his api key of openAi, on submit the endpoint that is need to use is /api/changeTrial {'api_key': '{{api_key}}'} using that body, create also this page",
 		"result": ""
+	},
+	{
+		"prompt": "@fishingMailAI.ico change to use this as the fav ico",
+		"result": ""
 	}
 ]
