@@ -7,6 +7,7 @@ import {
 import { Header } from "./components/Header";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useAuth } from "./hooks/useAuth";
+import ApiKeyForm from "./pages/ApiKeyForm";
 import { Authenticate } from "./pages/Authenticate";
 import Home from "./pages/Home";
 import { Login } from "./pages/Login";
@@ -37,6 +38,14 @@ const AppContent = () => {
 							</ProtectedRoute>
 						}
 						path="/"
+					/>
+					<Route
+						element={
+							<ProtectedRoute isAuthenticated={isAuthenticated}>
+								<ApiKeyForm />
+							</ProtectedRoute>
+						}
+						path="/set-api-key"
 					/>
 					<Route
 						element={isAuthenticated ? <Navigate replace to="/" /> : <Login />}
