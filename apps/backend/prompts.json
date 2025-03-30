@@ -30,5 +30,9 @@
 	{
 		"prompt": "create the /api/auth/status send {authenticated: bool, email: email | undefine } if is not auth send a 401",
 		"result": "Added status endpoint to verify authentication state. Returns JSON with authenticated status and email. Handles invalid/missing tokens with 401 response."
+	},
+	{
+		"prompt": "add a validation that if openai answer to send a 400 with the message that the api they provide is wrong",
+		"result": ""
 	}
 ]

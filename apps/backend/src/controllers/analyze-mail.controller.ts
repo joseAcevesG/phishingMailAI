@@ -64,6 +64,13 @@ class AnalyzeMailController {
 					res.status(StatusCodes.BAD_REQUEST.code).send(error.message);
 					return;
 				}
+
+				// Check for OpenAI API authentication error
+				if (error.response?.status === 401 || error.message?.includes('API key')) {
+					res.status(StatusCodes.BAD_REQUEST.code).send('Invalid OpenAI API key provided');
+					return;
+				}
+				
 				console.error("Error analyzing email:", error);
 
 				res
