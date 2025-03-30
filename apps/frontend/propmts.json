@@ -50,5 +50,9 @@
 	{
 		"prompt": "@fishingMailAI.ico change to use this as the fav ico",
 		"result": ""
+	},
+	{
+		"prompt": "add a button to go to /set-api-key only when is login",
+		"result": ""
 	}
 ]

@@ -16,9 +16,18 @@ export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
 					{userEmail && <span>Logged in as {userEmail}</span>}
 				</div>
 				{userEmail ? (
-					<button className="logout-button" onClick={onLogout} type="button">
-						Logout
-					</button>
+					<div className="header-buttons">
+						<button
+							className="api-key-button"
+							onClick={() => navigate("/set-api-key")}
+							type="button"
+						>
+							Set API Key
+						</button>
+						<button className="logout-button" onClick={onLogout} type="button">
+							Logout
+						</button>
+					</div>
 				) : (
 					<button
 						className="login-button-nav"

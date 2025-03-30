@@ -20,6 +20,25 @@
 	font-size: 1rem;
 }
 
+.header-buttons {
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+}
+
+.api-key-button {
+	background-color: transparent;
+	border: 1px solid var(--primary);
+	color: var(--primary);
+	font-weight: 500;
+	padding: 0.5rem 1.5rem;
+}
+
+.api-key-button:hover {
+	background-color: var(--primary);
+	color: var(--bg-primary);
+}
+
 .logout-button {
 	background-color: transparent;
 	border: 1px solid var(--error);
