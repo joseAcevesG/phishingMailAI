@@ -24,6 +24,13 @@ export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
 						>
 							Set API Key
 						</button>
+						<button
+							className="home-button"
+							onClick={() => navigate("/")}
+							type="button"
+						>
+							Home
+						</button>
 						<button className="logout-button" onClick={onLogout} type="button">
 							Logout
 						</button>
