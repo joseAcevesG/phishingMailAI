@@ -1,32 +1,30 @@
-import { useEmailAnalysis } from "../hooks/useEmailAnalysis";
 import { ResultView } from "../components/ResultView";
 import { UploadForm } from "../components/UploadForm";
+import { useEmailAnalysis } from "../hooks/useEmailAnalysis";
 import ErrorMessages from "../types/error-messages";
-import "./Home.css";
+import styles from "./Home.module.css";
 
 const Home = () => {
-	const {
-		uploading,
-		result,
-		error,
-		analyzeEmail,
-		reset,
-		goToSetApiKey
-	} = useEmailAnalysis();
+	const { uploading, result, error, analyzeEmail, reset, goToSetApiKey } =
+		useEmailAnalysis();
 
 	return (
-		<div className="home-container">
+		<div className={styles.homeContainer}>
 			{error && (
-				<div className="error-box">
+				<div className={styles.errorBox}>
 					<h2>Error</h2>
 					<p>{error}</p>
-					{(error === ErrorMessages.FREE_TRIAL_EXPIRED || 
-					  error === ErrorMessages.INVALID_API_KEY) ? (
-						<button className="api-key-button" onClick={goToSetApiKey} type="button">
+					{error === ErrorMessages.FREE_TRIAL_EXPIRED ||
+					error === ErrorMessages.INVALID_API_KEY ? (
+						<button
+							className={styles.apiKeyButton}
+							onClick={goToSetApiKey}
+							type="button"
+						>
 							Set OpenAI Key
 						</button>
 					) : (
-						<button className="back-button" onClick={reset} type="button">
+						<button className={styles.backButton} onClick={reset} type="button">
 							Try Again
 						</button>
 					)}

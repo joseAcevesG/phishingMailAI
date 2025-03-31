@@ -1,4 +1,4 @@
-.api-key-form-container {
+.apiKeyFormContainer {
 	background: var(--bg-secondary);
 	padding: 3rem;
 	border-radius: 8px;
@@ -9,25 +9,25 @@
 	margin: 2rem auto;
 }
 
-.api-key-form-container h1 {
+.apiKeyFormContainer h1 {
 	margin-bottom: 2rem;
 	color: var(--text-primary);
 	font-size: 2.5rem;
 }
 
-.api-key-form {
+.apiKeyForm {
 	display: flex;
 	flex-direction: column;
 	gap: 2rem;
 }
 
-.form-group {
+.formGroup {
 	position: relative;
 	margin: 0 auto;
 	width: 100%;
 }
 
-.form-group label {
+.formGroup label {
 	display: block;
 	margin-bottom: 1rem;
 	color: var(--text-secondary);
@@ -35,7 +35,7 @@
 	text-align: left;
 }
 
-.form-group input {
+.formGroup input {
 	box-sizing: border-box;
 	width: 100%;
 	padding: 1rem;
@@ -47,13 +47,13 @@
 	transition: all 0.2s;
 }
 
-.form-group input:focus {
+.formGroup input:focus {
 	border-color: var(--accent-primary);
 	outline: none;
 	background-color: rgba(74, 158, 255, 0.1);
 }
 
-.error-message {
+.errorMessage {
 	color: var(--error);
 	background-color: rgba(255, 0, 0, 0.1);
 	padding: 1rem;

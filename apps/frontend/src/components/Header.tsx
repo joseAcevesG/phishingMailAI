@@ -1,5 +1,5 @@
-import "./Header.css";
 import { useNavigate } from "react-router-dom";
+import styles from "./Header.module.css";
 
 interface Props {
 	userEmail: string | null;
@@ -10,36 +10,40 @@ export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
 	const navigate = useNavigate();
 
 	return (
-		<header className="header">
-			<div className="header-content">
-				<div className="user-info">
+		<header className={styles.header}>
+			<div className={styles.headerContent}>
+				<div className={styles.userInfo}>
 					{userEmail && <span>Logged in as {userEmail}</span>}
 				</div>
 				{userEmail ? (
-					<div className="header-buttons">
+					<div className={styles.headerButtons}>
 						<button
-							className="api-key-button"
-							onClick={() => navigate("/set-api-key")}
 							type="button"
+							className={styles.apiKeyButton}
+							onClick={() => navigate("/set-api-key")}
 						>
-							Set API Key
+							API Key
 						</button>
 						<button
-							className="home-button"
-							onClick={() => navigate("/")}
 							type="button"
+							className={styles.homeButton}
+							onClick={() => navigate("/")}
 						>
 							Home
 						</button>
-						<button className="logout-button" onClick={onLogout} type="button">
+						<button
+							type="button"
+							className={styles.logoutButton}
+							onClick={onLogout}
+						>
 							Logout
 						</button>
 					</div>
 				) : (
 					<button
-						className="login-button-nav"
-						onClick={() => navigate("/login")}
 						type="button"
+						className={styles.loginButtonNav}
+						onClick={() => navigate("/login")}
 					>
 						Login
 					</button>

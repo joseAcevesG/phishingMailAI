@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./UploadForm.css";
+import styles from "./UploadForm.module.css";
 
 interface Props {
 	onAnalyze: (file: File) => Promise<void>;
@@ -33,24 +33,24 @@ export const UploadForm = ({ onAnalyze, isUploading }: Props) => {
 	};
 
 	return (
-		<div className="upload-card">
+		<div className={styles.uploadCard}>
 			<h1>Upload Email for Analysis</h1>
-			<form className="upload-form" onSubmit={handleSubmit}>
-				<div className="file-input-container">
+			<form className={styles.uploadForm} onSubmit={handleSubmit}>
+				<div className={styles.fileInputContainer}>
 					<input
 						accept=".eml"
-						className="file-input"
+						className={styles.fileInput}
 						id="file-input"
 						onChange={handleFileChange}
 						type="file"
 					/>
-					<label className="file-label" htmlFor="file-input">
+					<label className={styles.fileInputLabel} htmlFor="file-input">
 						{file ? file.name : "Choose .eml file"}
 					</label>
 				</div>
-				{error && <p className="error-message">{error}</p>}
+				{error && <p className={styles.errorMessage}>{error}</p>}
 				<button
-					className="submit-button"
+					className={styles.submitButton}
 					disabled={!file || isUploading}
 					type="submit"
 				>

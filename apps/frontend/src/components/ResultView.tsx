@@ -1,5 +1,5 @@
 import type { AnalysisResult } from "../types/api";
-import "./ResultView.css";
+import styles from "./ResultView.module.css";
 
 interface Props {
 	result: AnalysisResult;
@@ -8,16 +8,16 @@ interface Props {
 
 export const ResultView = ({ result, onReset }: Props) => {
 	return (
-		<div className="result-box">
+		<div className={styles.resultBox}>
 			<h2>Analysis Result</h2>
-			<div className="result-details">
-				<p className="probability">
+			<div className={styles.resultDetails}>
+				<p className={styles.probability}>
 					Probability of being phishing:&nbsp;
 					{(result.phishingProbability * 100).toFixed(1)}%
 				</p>
-				<p className="description">{result.reasons}</p>
+				<p className={styles.description}>{result.reasons}</p>
 				{result.redFlags.length > 0 && (
-					<div className="red-flags">
+					<div className={styles.redFlags}>
 						<h3>Red Flags:</h3>
 						<ul>
 							{result.redFlags.map((flag) => (
@@ -27,7 +27,7 @@ export const ResultView = ({ result, onReset }: Props) => {
 					</div>
 				)}
 			</div>
-			<button className="back-button" onClick={onReset} type="button">
+			<button className={styles.backButton} onClick={onReset} type="button">
 				Analyze Another Email
 			</button>
 		</div>

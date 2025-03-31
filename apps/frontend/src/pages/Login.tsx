@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import "./Login.css";
+import styles from "./Login.module.css";
 
 interface Props {
 	isAuthenticated?: boolean;
@@ -59,7 +59,7 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 			setError(
 				err instanceof Error
 					? err.message
-					: "An error occurred while sending the magic link",
+					: "An error occurred while sending the magic link"
 			);
 		}
 	};
@@ -69,8 +69,8 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 	}
 
 	return (
-		<div className="login-container">
-			<div className="login-box">
+		<div id="login" className={styles.loginContainer}>
+			<div className={styles.loginBox}>
 				<h1>Welcome to Phishing Mail AI</h1>
 				<p>Please log in to continue</p>
 				<form
@@ -79,9 +79,9 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 						handleMagicLinkRequest();
 					}}
 				>
-					<div className="input-group">
+					<div className={styles.inputGroup}>
 						<input
-							className="email-input"
+							className={styles.emailInput}
 							onChange={(e) => {
 								setEmail(e.target.value);
 								setError(null);
@@ -91,9 +91,9 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 							value={email}
 						/>
 					</div>
-					{error && <p className="error-message">{error}</p>}
+					{error && <p className={styles.errorMessage}>{error}</p>}
 					<button
-						className="login-button"
+						className={styles.loginButton}
 						disabled={isButtonDisabled}
 						type="submit"
 					>

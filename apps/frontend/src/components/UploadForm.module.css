@@ -1,4 +1,4 @@
-.upload-card {
+.uploadCard {
 	background: var(--bg-secondary);
 	padding: 3rem;
 	border-radius: 8px;
@@ -8,25 +8,25 @@
 	text-align: center;
 }
 
-.upload-card h1 {
+.uploadCard h1 {
 	margin-bottom: 2rem;
 	color: var(--text-primary);
 	font-size: 2.5rem;
 }
 
-.upload-form {
+.uploadForm {
 	display: flex;
 	flex-direction: column;
 	gap: 2rem;
 }
 
-.file-input-container {
+.fileInputContainer {
 	position: relative;
 	margin: 0 auto;
 	width: 100%;
 }
 
-.file-input {
+.fileInput {
 	position: absolute;
 	width: 0.1px;
 	height: 0.1px;
@@ -35,7 +35,7 @@
 	z-index: -1;
 }
 
-.file-label {
+.fileInputLabel {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -49,19 +49,19 @@
 	color: var(--text-secondary);
 }
 
-.file-label:hover {
+.fileInputLabel:hover {
 	border-color: var(--accent-primary);
 	background-color: rgba(74, 158, 255, 0.1);
 	color: var(--text-primary);
 }
 
-.error-message {
+.errorMessage {
 	color: var(--error);
 	margin: 0;
 	font-size: 0.875rem;
 }
 
-.submit-button {
+.submitButton {
 	font-size: 1.1rem;
 	padding: 1rem 2rem;
 	background: linear-gradient(
@@ -78,7 +78,7 @@
 	color: var(--text-primary);
 }
 
-.submit-button:disabled {
+.submitButton:disabled {
 	background: var(--bg-primary);
 	border: 1px solid var(--border);
 	opacity: 0.7;
@@ -97,7 +97,7 @@
 	}
 }
 
-.submit-button:not(:disabled) {
+.submitButton:not(:disabled) {
 	animation: analyzing 3s ease infinite;
 	background-size: 200% 200%;
 }

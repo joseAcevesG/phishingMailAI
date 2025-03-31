@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./ApiKeyForm.css";
+import styles from "./ApiKeyForm.module.css";
 
 const ApiKeyForm = () => {
 	const [apiKey, setApiKey] = useState("");
@@ -39,14 +39,14 @@ const ApiKeyForm = () => {
 	};
 
 	return (
-		<div className="api-key-form-container">
+		<div id="api-key-form" className={styles.apiKeyFormContainer}>
 			<h1>Set OpenAI API Key</h1>
 			<p>Please enter your OpenAI API key to continue using the service.</p>
 
-			{error && <div className="error-message">{error}</div>}
+			{error && <div className={styles.errorMessage}>{error}</div>}
 
-			<form onSubmit={handleSubmit} className="api-key-form">
-				<div className="form-group">
+			<form onSubmit={handleSubmit} className={styles.apiKeyForm}>
+				<div className={styles.formGroup}>
 					<label htmlFor="apiKey">API Key:</label>
 					<input
 						type="password"

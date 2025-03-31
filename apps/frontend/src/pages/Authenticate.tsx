@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import styles from "./Authenticate.module.css";
 
 interface Props {
 	onAuthenticate: (data: { authenticated: boolean; email: string }) => void;
@@ -41,7 +42,7 @@ export const Authenticate: React.FC<Props> = ({ onAuthenticate }) => {
 	}, [navigate, searchParams, onAuthenticate]);
 
 	return (
-		<div className="authenticate-container">
+		<div className={styles.authenticateContainer}>
 			<p>Authenticating...</p>
 		</div>
 	);
