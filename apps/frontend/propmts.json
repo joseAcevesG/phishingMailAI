@@ -65,10 +65,10 @@
 	},
 	{
 		"prompt": "change all the css files on @apps/frontend to use css module",
-		"result": ""
+		"result": "All CSS files have been converted to use CSS modules with .module.css extension"
 	},
 	{
 		"prompt": "crate a landing page for this project, i want that when you enter to the domain and you aren't login redirect to there, but if you try to go to a ProtectedRoute go to logIn",
-		"result": ""
+		"result": "Landing page implemented with authentication redirects using useAuth hook. Unauthenticated users see landing page, authenticated users are redirected to home, and protected routes redirect to login"
 	}
 ]

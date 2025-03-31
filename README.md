@@ -96,6 +96,10 @@ Here are the **5 UI prompts** that were implemented:
    _Prompt:_ Add an additional button in the header to navigate back to Home.  
    _Response:_ A Home button was added, enhancing user navigation throughout the app.
 
+6. **Landing Page:**  
+   _Prompt:_ Create a landing page that redirects unauthenticated users to the login page and protected routes to the home page.  
+   _Response:_ Landing page implemented with authentication redirects using useAuth hook. Unauthenticated users see landing page, authenticated users are redirected to home, and protected routes redirect to login.
+
 ## Summary
 
 **Final App Description:**

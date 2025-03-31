@@ -89,6 +89,11 @@ Built React SPA with protected routes and clean UI. Implemented login flow, file
    **Response:**  
    Enhanced error handling to display a consistent UI message for both free trial exhaustion and invalid OpenAI API key errors. Improved error messages and user guidance accordingly.
 
+10. **Prompt:**  
+    "change all the css files on @apps/frontend to use css module"  
+    **Response:**  
+    All CSS files have been converted to use CSS modules with .module.css extension for better CSS scoping and maintainability.
+
 ## Followup Prompts Regarding User Interface, and Cursor Responses
 
 1. **Prompt:**  
@@ -115,6 +120,11 @@ Built React SPA with protected routes and clean UI. Implemented login flow, file
    "add another button to go to home"  
    **Response:**  
    Added a Home navigation button in the header with consistent styling, enhancing overall user navigation throughout the app.
+
+6. **Prompt:**  
+   "crate a landing page for this project, i want that when you enter to the domain and you aren't login redirect to there, but if you try to go to a ProtectedRoute go to logIn"  
+   **Response:**  
+   Landing page implemented with authentication redirects using useAuth hook. Unauthenticated users see landing page, authenticated users are redirected to home, and protected routes redirect to login.
 
 ## Summary
 
