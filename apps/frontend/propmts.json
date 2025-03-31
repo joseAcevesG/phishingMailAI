@@ -62,5 +62,13 @@
 	{
 		"prompt": "add another button to go to home",
 		"result": "Added Home navigation button to header with consistent styling. Enhanced user navigation experience."
+	},
+	{
+		"prompt": "change all the css files on @apps/frontend to use css module",
+		"result": ""
+	},
+	{
+		"prompt": "crate a landing page for this project, i want that when you enter to the domain and you aren't login redirect to there, but if you try to go to a ProtectedRoute go to logIn",
+		"result": ""
 	}
 ]

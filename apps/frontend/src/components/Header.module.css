@@ -41,15 +41,15 @@
 
 .apiKeyButton {
 	background-color: transparent;
-	border: 1px solid var(--primary);
-	color: var(--primary);
+	border: 1px solid var(--accent-primary);
+	color: var(--accent-primary);
 	font-weight: 500;
 	padding: 0.5rem 1.5rem;
 }
 
 .apiKeyButton:hover {
-	background-color: var(--primary);
-	color: var(--bg-primary);
+	background-color: var(--accent-primary);
+	color: var(--text-primary);
 }
 
 .logoutButton {
@@ -60,7 +60,7 @@
 	padding: 0.5rem 1.5rem;
 }
 
-.loginButtonNav {
+.loginButton {
 	background-color: transparent;
 	border: 1px solid var(--accent-primary);
 	color: var(--accent-primary);
@@ -74,7 +74,7 @@
 	transform: none;
 }
 
-.loginButtonNav:hover:not(:disabled) {
+.loginButton:hover:not(:disabled) {
 	background-color: var(--accent-primary);
 	color: var(--text-primary);
 	transform: none;

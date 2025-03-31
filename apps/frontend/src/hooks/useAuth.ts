@@ -48,12 +48,6 @@ export const useAuth = () => {
 	);
 
 	useEffect(() => {
-		if (!state.isAuthenticated) {
-			navigate("/login");
-		}
-	}, [state.isAuthenticated, navigate]);
-
-	useEffect(() => {
 		const checkAuth = async () => {
 			try {
 				const response = await fetch("/api/auth/status", {

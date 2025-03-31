@@ -40,13 +40,22 @@ export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
 						</button>
 					</div>
 				) : (
-					<button
-						type="button"
-						className={styles.loginButtonNav}
-						onClick={() => navigate("/login")}
-					>
-						Login
-					</button>
+					<div className={styles.headerButtons}>
+						<button
+							type="button"
+							className={styles.homeButton}
+							onClick={() => navigate("/")}
+						>
+							Landing Page
+						</button>
+						<button
+							type="button"
+							className={styles.loginButton}
+							onClick={() => navigate("/login")}
+						>
+							Login
+						</button>
+					</div>
 				)}
 			</div>
 		</header>

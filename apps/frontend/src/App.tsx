@@ -4,14 +4,15 @@ import {
 	BrowserRouter as Router,
 	Routes,
 } from "react-router-dom";
+import styles from "./App.module.css";
 import { Header } from "./components/Header";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useAuth } from "./hooks/useAuth";
 import ApiKeyForm from "./pages/ApiKeyForm";
 import { Authenticate } from "./pages/Authenticate";
 import Home from "./pages/Home";
+import { Landing } from "./pages/Landing";
 import { Login } from "./pages/Login";
-import "./App.css";
 
 const AppContent = () => {
 	const {
@@ -23,21 +24,29 @@ const AppContent = () => {
 	} = useAuth();
 
 	if (loading) {
-		return <div>Loading...</div>;
+		return (
+			<div className={styles.loading}>
+				<p>Loading...</p>
+			</div>
+		);
 	}
 
 	return (
-		<div className="app-container">
-			<Header onLogout={handleLogout} userEmail={userEmail} />
-			<main className="main-content">
+		<div className={styles.appContainer}>
+			{<Header onLogout={handleLogout} userEmail={userEmail} />}
+			<main className={styles.mainContent}>
 				<Routes>
 					<Route
-						element={
-							<ProtectedRoute isAuthenticated={isAuthenticated}>
-								<Home />
-							</ProtectedRoute>
-						}
 						path="/"
+						element={
+							isAuthenticated ? (
+								<ProtectedRoute isAuthenticated={isAuthenticated}>
+									<Home />
+								</ProtectedRoute>
+							) : (
+								<Landing />
+							)
+						}
 					/>
 					<Route
 						element={

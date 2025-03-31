@@ -1,4 +1,4 @@
-.app-container {
+.appContainer {
 	flex: 1;
 	height: 100%;
 	display: flex;
@@ -6,13 +6,14 @@
 	text-align: center;
 }
 
-.main-content {
+.mainContent {
 	min-height: 100%;
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 	margin: 0 auto;
 	width: 100%;
+	align-items: center;
 }
 
 .loading {
