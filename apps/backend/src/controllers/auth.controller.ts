@@ -22,8 +22,10 @@ class AuthController {
 			.loginOrCreate({
 				email: email,
 			})
-			.then((response) => {
-				res.json(response);
+			.then(() => {
+				res.json({
+					message: "Magic link sent successfully",
+				});
 			})
 			.catch((err) => {
 				console.error(err);
@@ -87,7 +89,9 @@ class AuthController {
 	}
 
 	logout(_req: Request, res: Response) {
-		res.clearCookie("session_token").send();
+		res.clearCookie("session_token").send({
+			message: "Logged out successfully",
+		});
 	}
 
 	changeTrial(req: RequestUser, res: Response) {
