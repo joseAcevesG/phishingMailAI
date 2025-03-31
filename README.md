@@ -6,6 +6,131 @@ This monorepo hosts a full-stack application comprising a React single-page appl
 
 The app tackles a critical challenge in today’s digital landscape: phishing detection. With phishing attacks growing increasingly sophisticated—often leveraging AI techniques to craft deceptive messages—it has become harder to distinguish genuine communication from malicious attempts. Our solution integrates robust user authentication (via Stytch magic links), secure file uploads (accepting only `.eml` files), and advanced phishing analysis powered by GPT-4o to assess the likelihood of an email being a phishing attempt. By combining secure backend processes with a clean, minimalistic frontend, this application offers a comprehensive and user-friendly tool to help mitigate phishing risks.
 
+## Development Setup
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- pnpm (package manager)
+- MongoDB (local or cloud instance)
+- Stytch account for authentication
+- OpenAI API key to use the GPT-4o model
+
+### Why pnpm?
+
+pnpm is a fast, disk space efficient, and secure package manager that provides a more efficient way to manage dependencies in a monorepo. It uses a single global store for all dependencies, which reduces the amount of disk space used and speeds up the installation process. pnpm also provides features like deduplication and zero-installs, which can improve the performance of your development workflow.
+
+Also, this project uses pnpm workspace, which allows you to manage dependencies across multiple packages in a monorepo. for more information, check the [pnpm workspace documentation](https://pnpm.io/workspaces).
+
+### Environment Setup
+
+1. Clone the repository:
+
+   ```bash
+   https://github.com/joseAcevesG/phishingMailAI.git
+   cd phishingMailAI
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   pnpm install
+   ```
+
+3. Set up environment variables:
+
+   - Create `.env` files in `/apps/backend` :
+
+   ```
+   PORT= (number of the port to use, this is optional, by default 3000)
+   FREE_TRIAL_LIMIT= (number of free trials a user can have, this is optional, by default 3)
+   STYTCH_PROJECT_ID= (string of the project id on Stytch)
+   STYTCH_SECRET= (string of the secret key on Stytch)
+   SECRET_KEY= (string of the secret key to encrypt data)
+   SALT= (string of the salt to encrypt data)
+   TOKEN_KEY= (string of the token key for JWT)
+   DB_URL= (string of the MongoDB database url)
+   OPENAI_API_KEY= (string of the OpenAI API key)
+   ```
+
+### Running the Application
+
+- Start both applications:
+
+  ```bash
+  pnpm run dev
+  ```
+
+- Start backend:
+
+  ```bash
+  pnpm run dev:backend
+  ```
+
+- Start frontend:
+
+  ```bash
+  pnpm run dev:frontend
+  ```
+
+### Linter, formatter, and type checker
+
+This project uses biome for linting and formatting.
+
+- To **fix** fixable errors and **show details** of not fixable errors you can use:
+
+  - Check (format and lint):
+
+    ```bash
+    pnpm run check
+    ```
+
+  - Format:
+
+    ```bash
+    pnpm run format
+    ```
+
+  - Lint:
+
+    ```bash
+    pnpm run lint
+    ```
+
+- To **show details** of errors you can use:
+
+  - Check (format and lint):
+
+    ```bash
+    pnpm run check:detailed
+    ```
+
+  - Lint:
+
+    ```bash
+    pnpm run lint:detailed
+    ```
+
+  - Format:
+
+    ```bash
+    pnpm run format:detailed
+    ```
+
+- To run the biome on the front end or the back end add `:backend` or `:frontend` to the command:
+
+  ```bash
+  pnpm run check:detailed:backend
+  pnpm run check:detailed:frontend
+  ```
+
+### Development Notes
+
+- The backend runs on Express and uses MongoDB for data storage
+- Frontend is built with React + Vite
+- Both applications support hot-reloading for development
+- Use `.eml` files for testing email analysis
+
 ## Try the App
 
 The app is deployed at <https://phishingmailai.onrender.com>, and this video shows it off <link>
@@ -14,10 +139,10 @@ The app is deployed at <https://phishingmailai.onrender.com>, and this video sho
 
 **Initial Prompt to Cursor:**
 
-> **Backend:**  
+> **Backend:**
 > Build a Node.js (Express) backend using an MVC folder structure in a monorepo (with an existing React frontend). Implement user authentication via Stytch (using email magic links) by creating endpoints under `/api` (including `/api/authenticate` and `/api/auth/status`). Additionally, set up endpoints to handle `.eml` file uploads (using Multer) and process these files with GPT to analyze their phishing probability, returning a JSON with both a probability score and an explanatory description. Include validations (e.g., non-empty email content) and error handling (e.g., for invalid OpenAI API responses).
 >
-> **Frontend:**  
+> **Frontend:**
 > Build a React SPA using vanilla CSS. The app must include protected routes using React Router. Create a login page (`/login`) that triggers the backend magic link flow, a Home page (`/`) where an authenticated user can upload a `.eml` file, and a mechanism (via a custom hook) to manage authentication state. Ensure the UI provides clear feedback (e.g., disabling the login button with a countdown) and a header that displays user information (e.g., “Logged in as [email]”) along with navigation buttons for actions like logout and setting an OpenAI API key.
 
 **Cursor's Response:**
@@ -32,72 +157,72 @@ Yes, Cursor provided a strong foundation for a full-stack solution that meets ou
 
 Below are the **10 most important feature-related prompts** implemented:
 
-1. **MongoDB User Model:**  
-   _Prompt:_ Create a model using MongoDB with fields for email, encrypted API key, freeTrial (boolean), and usageFreeTrial (counter).  
+1. **MongoDB User Model:**
+   _Prompt:_ Create a model using MongoDB with fields for email, encrypted API key, freeTrial (boolean), and usageFreeTrial (counter).
    _Response:_ The User model was implemented correctly and integrates with MongoDB.
 
-2. **Mongoose Configuration:**  
-   _Prompt:_ Create a configuration file to establish the MongoDB connection, reading the DB URL from the environment variables.  
+2. **Mongoose Configuration:**
+   _Prompt:_ Create a configuration file to establish the MongoDB connection, reading the DB URL from the environment variables.
    _Response:_ MongoDB connection was successfully configured using `DB_URL` in the `.env` file.
 
-3. **Multer for .eml Uploads:**  
-   _Prompt:_ Add Multer to receive `.eml` files on the `/validate` endpoint.  
+3. **Multer for .eml Uploads:**
+   _Prompt:_ Add Multer to receive `.eml` files on the `/validate` endpoint.
    _Response:_ Multer was set up for file uploads at `/validate` with proper file storage and validation.
 
-4. **Phishing Analysis with GPT:**  
-   _Prompt:_ Create an Express function that receives a `.eml` file, sends it to GPT for phishing analysis, and returns a JSON with the phishing probability and explanation. Include a system prompt and API formatting settings.  
+4. **Phishing Analysis with GPT:**
+   _Prompt:_ Create an Express function that receives a `.eml` file, sends it to GPT for phishing analysis, and returns a JSON with the phishing probability and explanation. Include a system prompt and API formatting settings.
    _Response:_ The endpoint was implemented to analyze emails and return a JSON response with detailed assessment.
 
-5. **API Key Management:**  
-   _Prompt:_ Create a method to update the freeTrial status to false and store an encrypted API key from the request body, using a custom encryption utility.  
+5. **API Key Management:**
+   _Prompt:_ Create a method to update the freeTrial status to false and store an encrypted API key from the request body, using a custom encryption utility.
    _Response:_ API key encryption and freeTrial update functionality were added successfully.
 
-6. **Email Content Validation:**  
-   _Prompt:_ Add validation to ensure that the email content is not empty.  
+6. **Email Content Validation:**
+   _Prompt:_ Add validation to ensure that the email content is not empty.
    _Response:_ Empty email submissions are now properly rejected with a clear error message.
 
-7. **Authentication Status Endpoint:**  
-   _Prompt:_ Create the `/api/auth/status` endpoint to return an object with `{ authenticated: bool, email: string | undefined }`, and send a 401 for unauthenticated requests.  
+7. **Authentication Status Endpoint:**
+   _Prompt:_ Create the `/api/auth/status` endpoint to return an object with `{ authenticated: bool, email: string | undefined }`, and send a 401 for unauthenticated requests.
    _Response:_ The endpoint now verifies authentication and returns the appropriate response or 401 error.
 
-8. **OpenAI API Error Handling:**  
-   _Prompt:_ Add a validation that sends a 400 error with an appropriate message when the OpenAI API response indicates an invalid API key.  
+8. **OpenAI API Error Handling:**
+   _Prompt:_ Add a validation that sends a 400 error with an appropriate message when the OpenAI API response indicates an invalid API key.
    _Response:_ Enhanced error handling returns a 400 status with a clear error message when the API key is wrong.
 
-9. **Login Flow with Magic Links (Frontend):**  
-   _Prompt:_ Implement the login page to trigger the magic link flow (POST to `/api/auth/login`), disable the login button for 15 seconds with a countdown, and update the UI accordingly.  
+9. **Login Flow with Magic Links (Frontend):**
+   _Prompt:_ Implement the login page to trigger the magic link flow (POST to `/api/auth/login`), disable the login button for 15 seconds with a countdown, and update the UI accordingly.
    _Response:_ The login functionality was implemented with a countdown timer and proper error handling.
 
-10. **Authentication Custom Hook (Frontend):**  
-    _Prompt:_ Move the authentication logic (fetching status, updating state, handling login/logout) into a custom `useAuth` hook.  
+10. **Authentication Custom Hook (Frontend):**
+    _Prompt:_ Move the authentication logic (fetching status, updating state, handling login/logout) into a custom `useAuth` hook.
     _Response:_ The `useAuth` hook now encapsulates all authentication logic, streamlining state management and reusability.
 
 ## Followup Prompts Regarding User Interface, and Cursor Responses
 
-Here are the **5 UI prompts** that were implemented:
+Here are the **UI prompts** that were implemented:
 
-1. **Global CSS Consolidation:**  
-   _Prompt:_ Review all CSS files and move global styles into `index.css` for consistency.  
+1. **Global CSS Consolidation:**
+   _Prompt:_ Review all CSS files and move global styles into `index.css` for consistency.
    _Response:_ Global styles were consolidated into `index.css`, ensuring a unified theme.
 
-2. **Consistent Error Handling:**  
-   _Prompt:_ Update the login component to mirror the error handling implemented in the UploadForm component.  
+2. **Consistent Error Handling:**
+   _Prompt:_ Update the login component to mirror the error handling implemented in the UploadForm component.
    _Response:_ Error handling was standardized across components, improving user feedback.
 
-3. **Favicon Update:**  
-   _Prompt:_ Change the favicon to use the custom `fishingMailAI.ico` file.  
+3. **Favicon Update:**
+   _Prompt:_ Change the favicon to use the custom `fishingMailAI.ico` file.
    _Response:_ The favicon was updated successfully, replacing the default icon.
 
-4. **Conditional API Key Button:**  
-   _Prompt:_ Add a header button that navigates to `/set-api-key` when the user is logged in.  
+4. **Conditional API Key Button:**
+   _Prompt:_ Add a header button that navigates to `/set-api-key` when the user is logged in.
    _Response:_ A conditional button now appears for authenticated users, improving navigation to the API key setup page.
 
-5. **Home Navigation Button:**  
-   _Prompt:_ Add an additional button in the header to navigate back to Home.  
+5. **Home Navigation Button:**
+   _Prompt:_ Add an additional button in the header to navigate back to Home.
    _Response:_ A Home button was added, enhancing user navigation throughout the app.
 
-6. **Landing Page:**  
-   _Prompt:_ Create a landing page that redirects unauthenticated users to the login page and protected routes to the home page.  
+6. **Landing Page:**
+   _Prompt:_ Create a landing page that redirects unauthenticated users to the login page and protected routes to the home page.
    _Response:_ Landing page implemented with authentication redirects using useAuth hook. Unauthenticated users see landing page, authenticated users are redirected to home, and protected routes redirect to login.
 
 ## Summary
