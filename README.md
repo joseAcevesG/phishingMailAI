@@ -133,7 +133,7 @@ This project uses biome for linting and formatting.
 
 ## Try the App
 
-The app is deployed at <https://phishingmailai.onrender.com>, and this video shows it off <link>
+The app is deployed at <https://phishingmailai.onrender.com>, and this video shows it off <https://res.cloudinary.com/dbdvgci4w/video/upload/v1743474875/FishingMail_eqesvg.mov>
 
 ## Initial Prompt and Cursor Response
 
