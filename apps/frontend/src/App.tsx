@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import styles from "./App.module.css";
 import { Header } from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { useAuth } from "./hooks/useAuth";
 import ApiKeyForm from "./pages/ApiKey/ApiKey";
@@ -72,6 +73,7 @@ const AppContent = () => {
 					/>
 				</Routes>
 			</main>
+			<Footer />
 		</div>
 	);
 };
