@@ -11,7 +11,9 @@ router.post(
 	auth,
 	freeTrail,
 	upload.single("emlFile"),
-	AnalyzeMailController.validateMail,
+	AnalyzeMailController.create,
 );
+
+router.get("/history", auth, AnalyzeMailController.read);
 
 export default router;

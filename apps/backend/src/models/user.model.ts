@@ -17,6 +17,17 @@ const userSchema = new Schema({
 		type: Number,
 		default: 0,
 	},
+	analysis: [
+		{
+			_id: { type: String, required: true },
+			phishingProbability: { type: Number, required: true },
+			reasons: { type: String, required: true },
+			redFlags: { type: [String], required: true },
+			subject: { type: String, required: true },
+			from: { type: String, required: true },
+			to: { type: String, required: true },
+		},
+	],
 });
 
 export default model("User", userSchema);

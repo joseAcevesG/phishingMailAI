@@ -1,19 +1,32 @@
 import { readFile } from "node:fs/promises";
 import type { Response } from "express";
 import { simpleParser } from "mailparser";
+import { Types } from "mongoose";
+import { z } from "zod";
 import openaiConfig from "../config/openai";
-import type { RequestUser } from "../types";
+import userModel from "../models/user.model";
+import type { Analysis, Mail, OpenAIResponse, RequestUser } from "../types";
 import StatusCodes from "../types/response-codes";
 import { BadRequestError } from "../utils/errors";
 
+const MailSchema = z.object({
+	subject: z.string(),
+	from: z.string(),
+	to: z.string(),
+	text: z.string(),
+	html: z.string(),
+});
+
 class AnalyzeMailController {
-	validateMail(req: RequestUser, res: Response): void {
+	create(req: RequestUser, res: Response): void {
 		if (!req.file) {
 			res
 				.status(StatusCodes.BAD_REQUEST.code)
 				.send(StatusCodes.BAD_REQUEST.message);
 			return;
 		}
+
+		let emailData: Mail;
 
 		// Parse the email file
 		readFile(req.file.path, "utf-8")
@@ -27,8 +40,9 @@ class AnalyzeMailController {
 				if (!parsedEmail?.html) {
 					throw new BadRequestError("Email content cannot be empty");
 				}
+
 				// Extract relevant email information
-				const emailData = {
+				const emailRawData = {
 					subject: parsedEmail.subject,
 					from: Array.isArray(parsedEmail.from)
 						? parsedEmail.from[0]?.text
@@ -39,6 +53,15 @@ class AnalyzeMailController {
 					text: parsedEmail.text,
 					html: parsedEmail.html,
 				};
+
+				// Validate emailData with Zod
+				const result = MailSchema.safeParse(emailRawData);
+				if (!result.success) {
+					throw new BadRequestError(
+						`Invalid email data: ${JSON.stringify(result.error.issues)}`,
+					);
+				}
+				emailData = result.data;
 
 				// Analyze with GPT-4o-mini
 				return openaiConfig.openai.chat.completions.create({
@@ -56,8 +79,30 @@ class AnalyzeMailController {
 			.then((completion) => {
 				const analysis = JSON.parse(
 					completion?.choices[0].message?.content || "",
+				) as OpenAIResponse;
+				const analysisData: Analysis = {
+					_id: new Types.ObjectId().toString(),
+					subject: emailData.subject,
+					from: emailData.from,
+					to: emailData.to,
+					phishingProbability: analysis.phishingProbability,
+					reasons: analysis.reasons,
+					redFlags: analysis.redFlags,
+				};
+
+				// Save analysis to user's history
+				req.user?.analysis.push(analysisData);
+				return userModel.findOneAndUpdate(
+					{ _id: req.user?._id },
+					{ $set: { analysis: req.user?.analysis } },
+					{ new: true },
 				);
-				res.json(analysis);
+			})
+			.then((user) => {
+				if (!user) {
+					throw new BadRequestError("User not found");
+				}
+				res.json(user.analysis);
 			})
 			.catch((error) => {
 				if (error instanceof BadRequestError) {
@@ -66,17 +111,39 @@ class AnalyzeMailController {
 				}
 
 				// Check for OpenAI API authentication error
-				if (error.response?.status === 401 || error.message?.includes('API key')) {
-					res.status(StatusCodes.BAD_REQUEST.code).send('Invalid OpenAI API key provided');
+				if (
+					error.response?.status === 401 ||
+					error.message?.includes("API key")
+				) {
+					res
+						.status(StatusCodes.BAD_REQUEST.code)
+						.send("Invalid OpenAI API key provided");
 					return;
 				}
-				
+
 				console.error("Error analyzing email:", error);
 
 				res
 					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
 					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
 			});
+	}
+
+	read(req: RequestUser, res: Response): void {
+		if (!req.user) {
+			res
+				.status(StatusCodes.UNAUTHORIZED.code)
+				.send(StatusCodes.UNAUTHORIZED.message);
+			return;
+		}
+		res.json(
+			req.user.analysis.map((analysis) => ({
+				_id: analysis._id,
+				subject: analysis.subject,
+				from: analysis.from,
+				to: analysis.to,
+			})),
+		);
 	}
 }
 
