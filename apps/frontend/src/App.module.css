@@ -1,39 +1,46 @@
 .appContainer {
-	flex: 1;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	text-align: center;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header"
+    "main"
+    "footer";
+  min-height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #121212;
+  color: #eee;
 }
 
 .mainContent {
-	min-height: 100%;
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	margin: 0 auto;
-	width: 100%;
-	align-items: center;
-	justify-content: center;
-	padding-bottom: 2rem;
+  grid-area: main;
+  min-height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 2rem;
 }
 
 .loading {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	min-height: 100vh;
-	font-size: 1.25rem;
-	color: var(--text-secondary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.25rem;
+  color: var(--text-secondary);
 }
 
 button {
-	cursor: pointer;
-	font-size: 1rem;
-	padding: 0.75rem 1.5rem;
-	border: none;
-	border-radius: 4px;
-	background-color: var(--accent-primary);
-	color: var(--text-primary);
-	transition: background-color 0.2s, transform 0.1s;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--accent-primary);
+  color: var(--text-primary);
+  transition: background-color 0.2s, transform 0.1s;
 }

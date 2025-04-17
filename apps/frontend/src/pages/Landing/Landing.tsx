@@ -1,19 +1,13 @@
 "use client";
 
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import styles from "./Landing.module.css";
 
 export const Landing = () => {
-	const navigate = useNavigate();
 	const { isAuthenticated } = useAuth();
 
-	const handleGetStarted = () => {
-		navigate("/login");
-	};
-
 	if (isAuthenticated) {
-		navigate("/");
 		return null;
 	}
 
@@ -30,13 +24,9 @@ export const Landing = () => {
 					<br />
 					<strong>Start today with 10 free scans!</strong>
 				</p>
-				<button
-					type="button"
-					className={styles.getStartedBtn}
-					onClick={handleGetStarted}
-				>
+				<Link to="/login" className={styles.getStartedBtn}>
 					Get Started
-				</button>
+				</Link>
 			</div>
 		</div>
 	);

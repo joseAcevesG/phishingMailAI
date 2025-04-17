@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "./Header.module.css";
 
 interface Props {
@@ -7,57 +7,50 @@ interface Props {
 }
 
 export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
-	const navigate = useNavigate();
-
 	return (
 		<header className={styles.header}>
-			<div className={styles.headerContent}>
-				<div className={styles.userInfo}>
-					{userEmail && <span>Logged in as {userEmail}</span>}
-				</div>
-				{userEmail ? (
-					<div className={styles.headerButtons}>
-						<button
-							type="button"
-							className={styles.apiKeyButton}
-							onClick={() => navigate("/set-api-key")}
-						>
-							API Key
-						</button>
-						<button
-							type="button"
-							className={styles.homeButton}
-							onClick={() => navigate("/")}
-						>
-							Home
-						</button>
-						<button
-							type="button"
-							className={styles.logoutButton}
-							onClick={onLogout}
-						>
-							Logout
-						</button>
-					</div>
-				) : (
-					<div className={styles.headerButtons}>
-						<button
-							type="button"
-							className={styles.homeButton}
-							onClick={() => navigate("/")}
-						>
-							Landing Page
-						</button>
-						<button
-							type="button"
-							className={styles.loginButton}
-							onClick={() => navigate("/login")}
-						>
-							Login
-						</button>
-					</div>
-				)}
+			<div className={styles.logo}>
+				<img src="/logo.png" alt="PhishingMail AI Logo" />
+				<span className={styles.appName}>PhishingMail AI</span>
 			</div>
+			<nav className={styles.mainNav}>
+				<ul>
+					{userEmail ? (
+						<>
+							<li>
+								<Link to="/">Home</Link>
+							</li>
+							<li>
+								<Link to="/settings">Settings</Link>
+							</li>
+							<li>
+								<Link to="/history">History</Link>
+							</li>
+						</>
+					) : (
+						<>
+							<li>
+								<Link to="/">Landing Page</Link>
+							</li>
+							<li>
+								<Link to="/login">Login</Link>
+							</li>
+						</>
+					)}
+				</ul>
+			</nav>
+			{userEmail && (
+				<div className={styles.userInfo}>
+					<span>Logged in as {userEmail}</span>
+					<button
+						type="button"
+						className={styles.logoutButton}
+						onClick={onLogout}
+					>
+						Logout
+					</button>
+				</div>
+			)}
 		</header>
 	);
 };

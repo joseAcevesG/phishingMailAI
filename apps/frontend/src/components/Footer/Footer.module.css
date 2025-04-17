@@ -1,17 +1,13 @@
 .footer {
-  width: 100%;
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
-  padding: 1rem 0;
-  text-align: center;
-  border-top: 1px solid rgba(0,0,0,0.08);
-  margin-top: 2rem;
-  box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+	grid-area: footer;
+	padding: 1rem;
+	background-color: var(--bg-primary);
+	position: sticky;
+	bottom: 0;
+	width: 100%;
 }
 
-.footerContent {
-  max-width: 900px;
-  margin: 0 auto;
-  font-size: 1rem;
-  letter-spacing: 0.03em;
+.siteFooter p {
+	text-align: center;
+	color: var(--text-primary);
 }
