@@ -1,7 +1,7 @@
-import { ResultView } from "../components/ResultView";
-import { UploadForm } from "../components/UploadForm";
-import { useEmailAnalysis } from "../hooks/useEmailAnalysis";
-import ErrorMessages from "../types/error-messages";
+import { ResultView } from "../../components/ResultView/ResultView";
+import { UploadForm } from "../../components/UploadForm/UploadForm";
+import { useEmailAnalysis } from "../../hooks/useEmailAnalysis";
+import ErrorMessages from "../../types/error-messages";
 import styles from "./Home.module.css";
 
 const Home = () => {

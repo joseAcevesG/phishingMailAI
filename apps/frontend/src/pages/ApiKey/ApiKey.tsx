@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./ApiKeyForm.module.css";
+import styles from "./ApiKey.module.css";
 
 const ApiKeyForm = () => {
 	const [apiKey, setApiKey] = useState("");

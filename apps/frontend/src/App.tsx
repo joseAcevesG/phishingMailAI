@@ -5,14 +5,14 @@ import {
 	Routes,
 } from "react-router-dom";
 import styles from "./App.module.css";
-import { Header } from "./components/Header";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Header } from "./components/Header/Header";
+import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { useAuth } from "./hooks/useAuth";
-import ApiKeyForm from "./pages/ApiKeyForm";
-import { Authenticate } from "./pages/Authenticate";
-import Home from "./pages/Home";
-import { Landing } from "./pages/Landing";
-import { Login } from "./pages/Login";
+import ApiKeyForm from "./pages/ApiKey/ApiKey";
+import { Authenticate } from "./pages/Authenticate/Authenticate";
+import Home from "./pages/Home/Home";
+import { Landing } from "./pages/Landing/Landing";
+import { Login } from "./pages/Login/Login";
 
 const AppContent = () => {
 	const {
