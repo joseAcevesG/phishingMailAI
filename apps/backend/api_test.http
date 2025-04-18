@@ -2,6 +2,7 @@
 @token = 
 @mail = 
 @api_key = 
+@mailId = 
 ### test api ###
 GET {{base_url}}
 
@@ -44,4 +45,10 @@ Content-Type: message/rfc822
 --validate-boundary--
 
 ### history ###
-GET {{base_url}}/analyze-mail/history
+GET {{base_url}}/analyze-mail
+
+### get by id ###
+GET {{base_url}}/analyze-mail/{{mailId}}
+
+### delete ###
+DELETE {{base_url}}/analyze-mail/{{mailId}}

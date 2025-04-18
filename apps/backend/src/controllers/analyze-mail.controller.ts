@@ -1,11 +1,12 @@
 import { readFile } from "node:fs/promises";
+import type { Analysis } from "@shared/types";
 import type { Response } from "express";
 import { simpleParser } from "mailparser";
 import { Types } from "mongoose";
 import { z } from "zod";
 import openaiConfig from "../config/openai";
 import userModel from "../models/user.model";
-import type { Analysis, Mail, OpenAIResponse, RequestUser } from "../types";
+import type { Mail, OpenAIResponse, RequestUser } from "../types";
 import StatusCodes from "../types/response-codes";
 import { BadRequestError } from "../utils/errors";
 
@@ -15,6 +16,13 @@ const MailSchema = z.object({
 	to: z.string(),
 	text: z.string(),
 	html: z.string(),
+});
+
+// Zod validation for id param
+const IdSchema = z.object({
+	id: z
+		.string()
+		.regex(/^[a-f\d]{24}$/i, { message: "Invalid ObjectId format" }),
 });
 
 class AnalyzeMailController {
@@ -27,6 +35,7 @@ class AnalyzeMailController {
 		}
 
 		let emailData: Mail;
+		let mailId: string;
 
 		// Parse the email file
 		readFile(req.file.path, "utf-8")
@@ -80,8 +89,10 @@ class AnalyzeMailController {
 				const analysis = JSON.parse(
 					completion?.choices[0].message?.content || "",
 				) as OpenAIResponse;
+
+				mailId = new Types.ObjectId().toString();
 				const analysisData: Analysis = {
-					_id: new Types.ObjectId().toString(),
+					_id: mailId,
 					subject: emailData.subject,
 					from: emailData.from,
 					to: emailData.to,
@@ -102,7 +113,7 @@ class AnalyzeMailController {
 				if (!user) {
 					throw new BadRequestError("User not found");
 				}
-				res.json(user.analysis);
+				res.json(user.analysis.find((mail) => mail._id === mailId));
 			})
 			.catch((error) => {
 				if (error instanceof BadRequestError) {
@@ -144,6 +155,74 @@ class AnalyzeMailController {
 				to: analysis.to,
 			})),
 		);
+	}
+
+	getById(req: RequestUser, res: Response): void {
+		if (!req.user) {
+			res
+				.status(StatusCodes.UNAUTHORIZED.code)
+				.send(StatusCodes.UNAUTHORIZED.message);
+			return;
+		}
+		const parseResult = IdSchema.safeParse(req.params);
+		if (!parseResult.success) {
+			res
+				.status(StatusCodes.BAD_REQUEST.code)
+				.json({ error: parseResult.error.errors[0].message });
+			return;
+		}
+		const { id } = parseResult.data;
+		const analysis = req.user.analysis.find((mail) => mail._id === id);
+		if (!analysis) {
+			res.status(StatusCodes.NOT_FOUND.code).send("Analysis not found");
+			return;
+		}
+		res.json(analysis);
+	}
+
+	delete(req: RequestUser, res: Response): void {
+		if (!req.user) {
+			res
+				.status(StatusCodes.UNAUTHORIZED.code)
+				.send(StatusCodes.UNAUTHORIZED.message);
+			return;
+		}
+		const parseResult = IdSchema.safeParse(req.params);
+		if (!parseResult.success) {
+			res
+				.status(StatusCodes.BAD_REQUEST.code)
+				.json({ error: parseResult.error.errors[0].message });
+			return;
+		}
+		const { id } = parseResult.data;
+		const analysis = req.user.analysis.find((mail) => mail._id === id);
+		if (!analysis) {
+			res.send("analysis deleted successfully");
+			return;
+		}
+		req.user.analysis = req.user.analysis.filter((mail) => mail._id !== id);
+		userModel
+			.findOneAndUpdate(
+				{ _id: req.user._id },
+				{ $set: { analysis: req.user.analysis } },
+				{ new: true },
+			)
+			.then((user) => {
+				if (!user) {
+					throw new BadRequestError("User not found");
+				}
+				res.send("analysis deleted successfully");
+			})
+			.catch((error) => {
+				if (error instanceof BadRequestError) {
+					res.status(StatusCodes.BAD_REQUEST.code).send(error.message);
+					return;
+				}
+				console.error("Error deleting analysis:", error);
+				res
+					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
+					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
+			});
 	}
 }
 
