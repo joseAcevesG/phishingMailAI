@@ -36,6 +36,8 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 			return;
 		}
 
+		const controller = new AbortController();
+
 		try {
 			setError(null);
 			const response = await fetch("/api/auth/login", {
@@ -56,11 +58,17 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 
 			setIsButtonDisabled(true);
 		} catch (err) {
+			if (err instanceof DOMException && err.name === "AbortError") {
+				// Fetch was aborted, do nothing
+				return;
+			}
 			setError(
 				err instanceof Error
 					? err.message
 					: "An error occurred while sending the magic link"
 			);
+		} finally {
+			controller.abort();
 		}
 	};
 

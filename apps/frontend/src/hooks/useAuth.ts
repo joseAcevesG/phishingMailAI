@@ -11,10 +11,12 @@ export const useAuth = () => {
 	const navigate = useNavigate();
 
 	const handleLogout = useCallback(async () => {
+		const controller = new AbortController();
 		try {
 			const response = await fetch("/api/auth/logout", {
 				method: "POST",
 				credentials: "include",
+				signal: controller.signal,
 			});
 			if (response.ok) {
 				setState((prev) => ({
@@ -27,8 +29,14 @@ export const useAuth = () => {
 			}
 			console.error("Logout failed");
 		} catch (error) {
+			if (error instanceof DOMException && error.name === "AbortError") {
+				// Fetch was aborted, do nothing
+				return;
+			}
 			console.error("Logout failed:", error);
 		}
+		// Optionally return abort method for manual cancellation
+		return () => controller.abort();
 	}, [navigate]);
 
 	const handleAuthenticate = useCallback(
@@ -43,10 +51,12 @@ export const useAuth = () => {
 	);
 
 	useEffect(() => {
+		const controller = new AbortController();
 		const checkAuth = async () => {
 			try {
 				const response = await fetch("/api/auth/status", {
 					credentials: "include",
+					signal: controller.signal,
 				});
 				if (response.ok) {
 					const data = await response.json();
@@ -65,6 +75,10 @@ export const useAuth = () => {
 					}));
 				}
 			} catch (error) {
+				if (error instanceof DOMException && error.name === "AbortError") {
+					// Fetch was aborted, do nothing
+					return;
+				}
 				console.error("Auth check failed:", error);
 				setState((prev) => ({
 					...prev,
@@ -76,6 +90,9 @@ export const useAuth = () => {
 		};
 
 		checkAuth();
+		return () => {
+			controller.abort();
+		};
 	}, []);
 
 	return {

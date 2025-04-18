@@ -10,16 +10,28 @@ const HistoryPage = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		fetch("/api/analyze-mail")
-			.then((res) => {
+		const controller = new AbortController();
+		const fetchHistory = async () => {
+			try {
+				const res = await fetch("/api/analyze-mail", {
+					signal: controller.signal,
+				});
 				if (!res.ok) {
 					throw new Error(`Failed to fetch history (status ${res.status})`);
 				}
-				return res.json();
-			})
-			.then((data: History[]) => setHistory(data))
-			.catch((err: Error) => setError(err.message))
-			.finally(() => setLoading(false));
+				const data: History[] = await res.json();
+				setHistory(data);
+			} catch (err) {
+				if (err instanceof DOMException && err.name === "AbortError") {
+					return;
+				}
+				setError(err instanceof Error ? err.message : String(err));
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchHistory();
+		return () => controller.abort();
 	}, []);
 
 	if (loading) return <div>Loading history...</div>;

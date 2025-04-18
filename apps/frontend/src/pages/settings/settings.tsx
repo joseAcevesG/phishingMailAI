@@ -13,6 +13,8 @@ const ApiKeyForm = () => {
 		setIsSubmitting(true);
 		setError(null);
 
+		const controller = new AbortController();
+
 		try {
 			const response = await fetch("/api/auth/changeTrial", {
 				method: "POST",
@@ -20,6 +22,7 @@ const ApiKeyForm = () => {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({ api_key: apiKey }),
+				signal: controller.signal,
 			});
 
 			if (!response.ok) {
@@ -32,9 +35,14 @@ const ApiKeyForm = () => {
 			// Success - redirect to home
 			navigate("/");
 		} catch (err) {
+			if (err instanceof DOMException && err.name === "AbortError") {
+				// Fetch was aborted, do nothing
+				return;
+			}
 			setError(err instanceof Error ? err.message : "An error occurred");
 		} finally {
 			setIsSubmitting(false);
+			controller.abort();
 		}
 	};
 

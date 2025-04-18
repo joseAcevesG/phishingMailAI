@@ -11,6 +11,7 @@ export const Authenticate: React.FC<Props> = ({ onAuthenticate }) => {
 	const [searchParams] = useSearchParams();
 
 	useEffect(() => {
+		const controller = new AbortController();
 		const authenticateUser = async () => {
 			const queryString = searchParams.toString();
 
@@ -20,19 +21,27 @@ export const Authenticate: React.FC<Props> = ({ onAuthenticate }) => {
 			}
 
 			try {
-				const response = await fetch(`/api/auth/authenticate?${queryString}`);
+				const response = await fetch(`/api/auth/authenticate?${queryString}`, {
+					signal: controller.signal,
+				});
 				if (response.ok) {
 					onAuthenticate(await response.json());
 				} else {
 					// If authentication fails, redirect to login
 					navigate("/login");
 				}
-			} catch {
+			} catch (error) {
+				if (error instanceof DOMException && error.name === "AbortError") {
+					// Fetch was aborted, do nothing
+					return;
+				}
 				navigate("/login");
 			}
 		};
 
 		authenticateUser();
+
+		return () => controller.abort();
 	}, [navigate, searchParams, onAuthenticate]);
 
 	return (

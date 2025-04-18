@@ -12,6 +12,7 @@ export const useEmailAnalysis = () => {
 		setUploading(true);
 		setError(null);
 
+		const controller = new AbortController();
 		try {
 			const formData = new FormData();
 			formData.append("emlFile", file);
@@ -19,6 +20,7 @@ export const useEmailAnalysis = () => {
 			const response = await fetch("/api/analyze-mail/validate", {
 				method: "POST",
 				body: formData,
+				signal: controller.signal,
 			});
 
 			if (!response.ok) {
@@ -44,11 +46,16 @@ export const useEmailAnalysis = () => {
 			// redirect to analysis page
 			navigate(`/analyze/${result._id}`);
 		} catch (err) {
+			if (err instanceof DOMException && err.name === "AbortError") {
+				// Fetch was aborted, do nothing
+				return;
+			}
 			setError(
 				err instanceof Error ? err.message : ErrorMessages.GENERIC_ERROR,
 			);
 		} finally {
 			setUploading(false);
+			controller.abort();
 		}
 	};
 
