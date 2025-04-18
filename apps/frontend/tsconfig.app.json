@@ -1,15 +1,15 @@
 {
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"useDefineForClassFields": true,
-		"lib": ["ES2020", "DOM", "DOM.Iterable"],
-		"allowImportingTsExtensions": true,
-
-		/* Bundler mode */
+		"jsx": "react-jsx",
 		"moduleResolution": "bundler",
-		"moduleDetection": "force",
-		"noEmit": true,
-		"jsx": "react-jsx"
+		"baseUrl": ".",
+		"paths": {
+			"@shared": ["../../packages/shared/src"],
+			"@shared/*": ["../../packages/shared/src/*"]
+		},
+		"noEmit": true
 	},
+	"references": [{ "path": "../../packages/shared" }],
 	"include": ["src"]
 }

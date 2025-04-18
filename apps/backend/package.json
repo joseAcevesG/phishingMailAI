@@ -2,12 +2,12 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
     "local": "cross-env NODE_ENV=local ts-node src/index.ts",
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc -b",
     "format": "biome format --write src",
     "format:detailed": "biome format src",
     "lint": "biome lint --write src",
@@ -43,7 +43,6 @@
     "@types/node": "^22.13.11",
     "nodemon": "^3.1.9",
     "rimraf": "^6.0.1",
-    "ts-node": "^10.9.2",
-    "typescript": "~5.7.2"
+    "ts-node": "^10.9.2"
   }
 }

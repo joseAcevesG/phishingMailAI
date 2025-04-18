@@ -4,7 +4,13 @@
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
 		"outDir": "./dist",
-		"rootDir": "./src"
+		"rootDir": "./src",
+		"baseUrl": ".",
+		"paths": {
+			"@shared": ["../../packages/shared/src"],
+			"@shared/*": ["../../packages/shared/src/*"]
+		}
 	},
-	"include": ["src/**/*.ts"]
+	"references": [{ "path": "../../packages/shared" }],
+	"include": ["src"]
 }

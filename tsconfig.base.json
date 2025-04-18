@@ -3,18 +3,11 @@
 		"target": "ES2022",
 		"module": "ESNext",
 		"moduleResolution": "node",
+		"baseUrl": ".",
 		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true,
-		"noUncheckedSideEffectImports": true,
 		"skipLibCheck": true,
-		"isolatedModules": true,
-		"esModuleInterop": true,
-		"noImplicitAny": true,
-		"removeComments": true,
 		"forceConsistentCasingInFileNames": true,
-		"baseUrl": "."
+		"esModuleInterop": true
 	},
-	"exclude": ["node_modules"]
+	"exclude": ["node_modules", "dist"]
 }
