@@ -15,25 +15,19 @@ export const Authenticate: React.FC<Props> = ({ onAuthenticate }) => {
 			const queryString = searchParams.toString();
 
 			if (!queryString) {
-				console.error("No query parameters provided");
 				navigate("/login");
 				return;
 			}
 
 			try {
-				const response = await fetch(`/api/auth/authenticate?${queryString}`, {
-					credentials: "include",
-				});
+				const response = await fetch(`/api/auth/authenticate?${queryString}`);
 				if (response.ok) {
 					onAuthenticate(await response.json());
 				} else {
 					// If authentication fails, redirect to login
-					console.error("Authentication failed");
-					alert("Authentication failed, please try again");
 					navigate("/login");
 				}
-			} catch (error) {
-				console.error("Authentication error:", error);
+			} catch {
 				navigate("/login");
 			}
 		};

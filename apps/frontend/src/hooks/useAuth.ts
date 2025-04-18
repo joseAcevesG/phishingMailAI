@@ -1,11 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-export interface AuthState {
-	isAuthenticated: boolean;
-	userEmail: string | null;
-	loading: boolean;
-}
+import type { AuthState } from "../types";
 
 export const useAuth = () => {
 	const [state, setState] = useState<AuthState>({

@@ -12,8 +12,10 @@ import { useAuth } from "./hooks/useAuth";
 import ApiKeyForm from "./pages/settings/settings";
 import { Authenticate } from "./pages/Authenticate/Authenticate";
 import Home from "./pages/Home/Home";
+import Analyze from "./pages/Analyze/Analyze";
 import { Landing } from "./pages/Landing/Landing";
 import { Login } from "./pages/Login/Login";
+import HistoryPage from "./pages/History/History";
 
 const AppContent = () => {
 	const {
@@ -50,12 +52,28 @@ const AppContent = () => {
 						}
 					/>
 					<Route
+						path="/analyze/:id"
+						element={
+							<ProtectedRoute isAuthenticated={isAuthenticated}>
+								<Analyze />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
 						element={
 							<ProtectedRoute isAuthenticated={isAuthenticated}>
 								<ApiKeyForm />
 							</ProtectedRoute>
 						}
 						path="/settings"
+					/>
+					<Route
+						path="/history"
+						element={
+							<ProtectedRoute isAuthenticated={isAuthenticated}>
+								<HistoryPage />
+							</ProtectedRoute>
+						}
 					/>
 					<Route
 						element={isAuthenticated ? <Navigate replace to="/" /> : <Login />}

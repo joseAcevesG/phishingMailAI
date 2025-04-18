@@ -1,8 +1,8 @@
-import type { AnalysisResult } from "../types/api";
+import type { Analysis } from "@shared/types";
 import styles from "./ResultView.module.css";
 
 interface Props {
-	result: AnalysisResult;
+	result: Analysis;
 	onReset: () => void;
 }
 
@@ -11,6 +11,9 @@ export const ResultView = ({ result, onReset }: Props) => {
 		<div className={styles.resultBox}>
 			<h2>Analysis Result</h2>
 			<div className={styles.resultDetails}>
+				<p>Subject: {result.subject}</p>
+				<p>From: {result.from}</p>
+				<p>To: {result.to}</p>
 				<p className={styles.probability}>
 					Probability of being phishing:&nbsp;
 					{(result.phishingProbability * 100).toFixed(1)}%

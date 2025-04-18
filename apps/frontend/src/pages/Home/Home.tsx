@@ -1,11 +1,10 @@
-import { ResultView } from "../../components/ResultView/ResultView";
 import { UploadForm } from "../../components/UploadForm/UploadForm";
 import { useEmailAnalysis } from "../../hooks/useEmailAnalysis";
 import ErrorMessages from "../../types/error-messages";
 import styles from "./Home.module.css";
 
 const Home = () => {
-	const { uploading, result, error, analyzeEmail, reset, goToSetApiKey } =
+	const { uploading, error, analyzeEmail, reset, goToSetApiKey } =
 		useEmailAnalysis();
 
 	return (
@@ -30,12 +29,9 @@ const Home = () => {
 					)}
 				</div>
 			)}
-			{!error &&
-				(result ? (
-					<ResultView onReset={reset} result={result} />
-				) : (
-					<UploadForm isUploading={uploading} onAnalyze={analyzeEmail} />
-				))}
+			{!error && (
+				<UploadForm isUploading={uploading} onAnalyze={analyzeEmail} />
+			)}
 		</div>
 	);
 };
