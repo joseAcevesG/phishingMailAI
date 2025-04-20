@@ -1,37 +1,37 @@
 import type { NextFunction, Response } from "express";
-import type { JwtPayload } from "jsonwebtoken";
-import User from "../models/user.model";
 import type { RequestUser } from "../types";
 import ResponseStatus from "../types/response-codes";
-import { decode } from "../utils/create-token";
 import { UnauthorizedError } from "../utils/errors";
+import { rotateAuthTokens, verifyAccessToken } from "../utils/token-service";
 
 export default (req: RequestUser, res: Response, next: NextFunction) => {
-	const token = req.cookies.session_token;
-	if (!token) {
-		res
-			.status(ResponseStatus.UNAUTHORIZED.code)
-			.send(ResponseStatus.UNAUTHORIZED.message);
-		return;
+	const accessToken = req.cookies.session_token;
+	if (accessToken) {
+		verifyAccessToken(accessToken)
+			.then((user) => {
+				req.user = { ...user.toObject(), _id: user._id.toString() };
+				next();
+			})
+			.catch(() => processRefresh(req, res, next));
+	} else {
+		processRefresh(req, res, next);
 	}
-	const data = decode(token);
-	if (!data) {
-		res
-			.status(ResponseStatus.UNAUTHORIZED.code)
-			.send(ResponseStatus.UNAUTHORIZED.message);
-		return;
-	}
+};
 
-	User.findOne({ email: (data as JwtPayload).email })
-		.then((user) => {
-			if (!user) {
-				throw new UnauthorizedError("Unauthorized");
-			}
-			// Convert Mongoose document to a plain object and ensure _id is a string
-			req.user = {
-				...user.toObject(),
-				_id: user._id.toString(),
-			};
+function processRefresh(req: RequestUser, res: Response, next: NextFunction) {
+	const refreshToken = req.cookies.refresh_token;
+	if (!refreshToken) {
+		res
+			.status(ResponseStatus.UNAUTHORIZED.code)
+			.send(ResponseStatus.UNAUTHORIZED.message);
+		return;
+	}
+	rotateAuthTokens(refreshToken, res)
+		.then(({ user, newRefreshToken }) => {
+			req.user = { ...user.toObject(), _id: user._id.toString() };
+			// flag that a rotation happened
+			req.tokenRotated = true;
+			req.newRefreshToken = newRefreshToken;
 			next();
 		})
 		.catch((error) => {
@@ -39,11 +39,11 @@ export default (req: RequestUser, res: Response, next: NextFunction) => {
 				res
 					.status(ResponseStatus.UNAUTHORIZED.code)
 					.send(ResponseStatus.UNAUTHORIZED.message);
-				return;
+			} else {
+				console.error(error);
+				res
+					.status(ResponseStatus.INTERNAL_SERVER_ERROR.code)
+					.send(ResponseStatus.INTERNAL_SERVER_ERROR.message);
 			}
-			res
-				.status(ResponseStatus.INTERNAL_SERVER_ERROR.code)
-				.send(ResponseStatus.INTERNAL_SERVER_ERROR.message);
-			console.error(error);
 		});
-};
+}

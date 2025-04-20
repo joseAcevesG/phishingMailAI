@@ -1,20 +1,19 @@
-import type { CookieOptions, Request, Response } from "express";
-import type { JwtPayload } from "jsonwebtoken";
+import type { Request, Response } from "express";
 import { z } from "zod";
-import { EnvConfig } from "../config/env.config";
+// Removed unused EnvConfig import
 import { stytchClient } from "../config/stytch";
 import User from "../models/user.model";
 import type { RequestUser } from "../types";
 import StatusCodes from "../types/response-codes";
-import { code as createToken } from "../utils/create-token";
-import { decode as decodeToken } from "../utils/create-token"; // Assuming the encrypt function is in this file
 import { encrypt } from "../utils/encrypt-string";
-const cookieOptions: CookieOptions = {
-	httpOnly: true,
-	secure: EnvConfig().environment === "production",
-	sameSite: "strict" as const,
-	maxAge: 60 * 60 * 1000, // 1 hour in milliseconds
-};
+import {
+	deleteAllAuthTokens,
+	deleteAuthToken,
+	issueAuthTokens,
+	rotateAuthTokens,
+	verifyAccessToken,
+} from "../utils/token-service";
+
 const emailSchema = z.object({
 	email: z.string().email("Invalid email format"),
 });
@@ -70,19 +69,15 @@ class AuthController {
 				User.findOne({ email })
 					.then((user) => {
 						if (!user) {
-							return User.create({
-								email: email,
-							});
+							return User.create({ email });
 						}
-						return Promise.resolve(user);
+						return user;
 					})
 					.then((user) => {
-						res
-							.cookie("session_token", createToken({ email }), cookieOptions)
-							.json({
-								authenticated: true,
-								email: user.email,
-							});
+						return issueAuthTokens(res, email, user._id);
+					})
+					.then(() => {
+						res.json({ authenticated: true, email });
 					})
 					.catch((err) => {
 						console.error(err);
@@ -99,10 +94,57 @@ class AuthController {
 			});
 	}
 
-	logout(_req: Request, res: Response) {
-		res.clearCookie("session_token").send({
-			message: "Logged out successfully",
-		});
+	logout(req: RequestUser, res: Response) {
+		const refreshToken = req.tokenRotated
+			? req.newRefreshToken
+			: req.cookies.refresh_token;
+
+		if (!refreshToken) {
+			res
+				.status(StatusCodes.UNAUTHORIZED.code)
+				.send(StatusCodes.UNAUTHORIZED.message);
+			return;
+		}
+		if (!req.user?._id) {
+			res
+				.status(StatusCodes.UNAUTHORIZED.code)
+				.send(StatusCodes.UNAUTHORIZED.message);
+			return;
+		}
+		deleteAuthToken(req.user._id, refreshToken)
+			.then(() => {
+				res.clearCookie("session_token").clearCookie("refresh_token").send({
+					message: "Logged out successfully",
+				});
+			})
+			.catch((err) => {
+				console.error(err);
+				res
+					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
+					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
+			});
+	}
+
+	logoutAll(req: RequestUser, res: Response) {
+		const userId = req.user?._id;
+		if (!userId) {
+			res
+				.status(StatusCodes.UNAUTHORIZED.code)
+				.send(StatusCodes.UNAUTHORIZED.message);
+			return;
+		}
+		deleteAllAuthTokens(userId)
+			.then(() => {
+				res.clearCookie("session_token").clearCookie("refresh_token").json({
+					message: "Logged out from all sessions",
+				});
+			})
+			.catch((error) => {
+				console.error(error);
+				res
+					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
+					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
+			});
 	}
 
 	changeTrial(req: RequestUser, res: Response) {
@@ -143,36 +185,34 @@ class AuthController {
 	}
 
 	status(req: Request, res: Response) {
-		const token = req.cookies.session_token;
+		const accessToken = req.cookies.session_token;
 
-		if (!token) {
-			res.status(StatusCodes.UNAUTHORIZED.code).json({
-				authenticated: false,
-				email: undefined,
-			});
+		if (accessToken) {
+			verifyAccessToken(accessToken)
+				.then((user) => res.json({ authenticated: true, email: user.email }))
+				.catch(() =>
+					res
+						.status(StatusCodes.UNAUTHORIZED.code)
+						.json({ authenticated: false, email: undefined }),
+				);
 			return;
 		}
-
-		try {
-			const decoded = decodeToken(token);
-			if (!decoded) {
-				res.status(StatusCodes.UNAUTHORIZED.code).json({
-					authenticated: false,
-					email: undefined,
-				});
-				return;
-			}
-			res.json({
-				authenticated: true,
-				email: (decoded as JwtPayload).email,
-			});
-		} catch (err) {
-			console.error("Error verifying token:", err);
-			res.status(StatusCodes.UNAUTHORIZED.code).json({
-				authenticated: false,
-				email: undefined,
-			});
+		const refreshToken = req.cookies.refresh_token;
+		if (!refreshToken) {
+			res
+				.status(StatusCodes.UNAUTHORIZED.code)
+				.json({ authenticated: false, email: undefined });
+			return;
 		}
+		rotateAuthTokens(refreshToken, res)
+			.then(({ user }) => {
+				res.json({ authenticated: true, email: user.email });
+			})
+			.catch(() => {
+				res
+					.status(StatusCodes.UNAUTHORIZED.code)
+					.json({ authenticated: false, email: undefined });
+			});
 	}
 }
 

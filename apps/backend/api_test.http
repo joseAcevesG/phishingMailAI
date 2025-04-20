@@ -25,6 +25,9 @@ GET {{base_url}}/auth/status
 ### logout ###
 POST {{base_url}}/auth/logout
 
+### logout all ###
+POST {{base_url}}/auth/logoutAll
+
 ### change trial ###
 POST {{base_url}}/auth/changeTrial
 Content-Type: application/json

@@ -16,6 +16,8 @@ export interface User {
 
 export interface RequestUser extends Request {
 	user?: User;
+	tokenRotated?: boolean;
+	newRefreshToken?: string;
 }
 
 export type OpenAIResponse = Omit<Analysis, "_id">;
