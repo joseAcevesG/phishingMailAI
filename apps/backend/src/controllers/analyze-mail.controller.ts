@@ -197,7 +197,14 @@ class AnalyzeMailController {
 		const { id } = parseResult.data;
 		const analysis = req.user.analysis.find((mail) => mail._id === id);
 		if (!analysis) {
-			res.send("analysis deleted successfully");
+			res.send(
+				req.user.analysis.map((mail) => ({
+					_id: mail._id,
+					subject: mail.subject,
+					from: mail.from,
+					to: mail.to,
+				})),
+			);
 			return;
 		}
 		req.user.analysis = req.user.analysis.filter((mail) => mail._id !== id);
@@ -211,7 +218,14 @@ class AnalyzeMailController {
 				if (!user) {
 					throw new BadRequestError("User not found");
 				}
-				res.send("analysis deleted successfully");
+				res.send(
+					user.analysis.map((mail) => ({
+						_id: mail._id,
+						subject: mail.subject,
+						from: mail.from,
+						to: mail.to,
+					})),
+				);
 			})
 			.catch((error) => {
 				if (error instanceof BadRequestError) {
