@@ -6,7 +6,7 @@ dotenv.config();
 
 const envSchema = z.object({
 	NODE_ENV: z
-		.enum(["development", "production", "local"])
+		.enum(["development", "production", "local", "test"])
 		.default("development"),
 	PORT: z.string().default("3000"),
 	FREE_TRIAL_LIMIT: z.string().default("3"),

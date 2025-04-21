@@ -13,7 +13,10 @@
     "lint": "biome lint --write src",
     "lint:detailed": "biome lint src",
     "check": "biome check --write src",
-    "check:detailed": "biome check src"
+    "check:detailed": "biome check src",
+    "test": "cross-env NODE_ENV=test vitest run",
+    "test:watch": "cross-env NODE_ENV=test vitest",
+    "test:coverage": "cross-env NODE_ENV=test vitest run --coverage"
   },
   "keywords": [],
   "author": "",
@@ -41,8 +44,11 @@
     "@types/mailparser": "^3.4.5",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.13.11",
+    "@types/supertest": "^6.0.3",
     "nodemon": "^3.1.9",
     "rimraf": "^6.0.1",
-    "ts-node": "^10.9.2"
+    "supertest": "^7.1.0",
+    "ts-node": "^10.9.2",
+    "vitest": "^3.1.1"
   }
 }
