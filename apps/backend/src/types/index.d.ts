@@ -1,5 +1,6 @@
 import type { Analysis } from "@shared/types";
 import type { Request } from "express";
+import type { ResponseCodes } from "../utils/response-codes";
 
 export type InputToken = {
 	email: string;
@@ -29,3 +30,7 @@ export interface Mail {
 	text: string;
 	html: string;
 }
+
+// Extract types from the object
+export type ResponseCodeKeys = keyof typeof ResponseCodes;
+export type ResponseCodeValues = (typeof ResponseCodes)[ResponseCodeKeys];

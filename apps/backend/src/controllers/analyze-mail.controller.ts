@@ -7,8 +7,8 @@ import { z } from "zod";
 import openaiConfig from "../config/openai";
 import userModel from "../models/user.model";
 import type { Mail, OpenAIResponse, RequestUser } from "../types";
-import StatusCodes from "../types/response-codes";
 import { BadRequestError } from "../utils/errors";
+import StatusCodes from "../utils/response-codes";
 
 const MailSchema = z.object({
 	subject: z.string(),

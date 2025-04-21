@@ -4,8 +4,8 @@ import { z } from "zod";
 import { stytchClient } from "../config/stytch";
 import User from "../models/user.model";
 import type { RequestUser } from "../types";
-import StatusCodes from "../types/response-codes";
 import { encrypt } from "../utils/encrypt-string";
+import StatusCodes from "../utils/response-codes";
 import {
 	deleteAllAuthTokens,
 	deleteAuthToken,

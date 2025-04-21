@@ -29,9 +29,4 @@ export const ResponseCodes = {
 			"Something went wrong on our end. Please try again later or contact support if the issue persists",
 	},
 } as const;
-
-// Extract types from the object
-export type ResponseCodeKeys = keyof typeof ResponseCodes;
-export type ResponseCodeValues = (typeof ResponseCodes)[ResponseCodeKeys];
-
 export default ResponseCodes;

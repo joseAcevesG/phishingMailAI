@@ -1,7 +1,7 @@
 import type { NextFunction, Response } from "express";
 import type { RequestUser } from "../types";
-import ResponseStatus from "../types/response-codes";
 import { UnauthorizedError } from "../utils/errors";
+import ResponseStatus from "../utils/response-codes";
 import { rotateAuthTokens, verifyAccessToken } from "../utils/token-service";
 
 export default (req: RequestUser, res: Response, next: NextFunction) => {

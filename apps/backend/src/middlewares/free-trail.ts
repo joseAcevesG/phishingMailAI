@@ -3,8 +3,8 @@ import { EnvConfig } from "../config/env.config";
 import openai from "../config/openai";
 import userModel from "../models/user.model";
 import type { RequestUser } from "../types";
-import ResponseStatus from "../types/response-codes";
 import { decrypt } from "../utils/encrypt-string";
+import ResponseStatus from "../utils/response-codes";
 
 export default (req: RequestUser, res: Response, next: NextFunction) => {
 	if (req.user?.freeTrial) {
