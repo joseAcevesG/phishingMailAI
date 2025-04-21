@@ -26,10 +26,10 @@ export const Authenticate: React.FC<Props> = ({ onAuthenticate }) => {
 				});
 				if (response.ok) {
 					onAuthenticate(await response.json());
-				} else {
-					// If authentication fails, redirect to login
-					navigate("/login");
+					return;
 				}
+				// If authentication fails, redirect to login
+				navigate("/login");
 			} catch (error) {
 				if (error instanceof DOMException && error.name === "AbortError") {
 					// Fetch was aborted, do nothing

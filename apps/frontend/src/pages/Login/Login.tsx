@@ -50,9 +50,7 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 			});
 
 			if (!response.ok) {
-				const errorData = await response
-					.json()
-					.catch(() => ({ message: "Failed to send magic link" }));
+				const errorData = await response.json();
 				throw new Error(errorData.message || "Failed to send magic link");
 			}
 

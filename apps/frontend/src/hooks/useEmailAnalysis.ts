@@ -28,6 +28,7 @@ export const useEmailAnalysis = () => {
 					setError(ErrorMessages.FREE_TRIAL_EXPIRED);
 					return;
 				}
+				// TODO: change errors messages to shared folder to avoid string comparison
 				if (response.status === 400) {
 					const errorData = await response.text();
 					if (errorData.includes("Invalid OpenAI API key")) {

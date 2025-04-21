@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import type { History } from "../../types";
 import styles from "./History.module.css";
 
-const HistoryPage = () => {
+const HistoryPage: React.FC = () => {
 	const [history, setHistory] = useState<History[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -13,13 +13,14 @@ const HistoryPage = () => {
 		const controller = new AbortController();
 		const fetchHistory = async () => {
 			try {
-				const res = await fetch("/api/analyze-mail", {
+				const response = await fetch("/api/analyze-mail", {
 					signal: controller.signal,
 				});
-				if (!res.ok) {
-					throw new Error(`Failed to fetch history (status ${res.status})`);
+				if (!response.ok) {
+					const errorData = await response.json();
+					throw new Error(errorData.message || "Failed to fetch history");
 				}
-				const data: History[] = await res.json();
+				const data: History[] = await response.json();
 				setHistory(data);
 			} catch (err) {
 				if (err instanceof DOMException && err.name === "AbortError") {

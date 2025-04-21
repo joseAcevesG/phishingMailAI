@@ -17,7 +17,7 @@ import { Landing } from "./pages/Landing/Landing";
 import { Login } from "./pages/Login/Login";
 import HistoryPage from "./pages/History/History";
 
-const AppContent = () => {
+const AppContent: React.FC = () => {
 	const {
 		isAuthenticated,
 		userEmail,
@@ -96,7 +96,7 @@ const AppContent = () => {
 	);
 };
 
-const App = () => {
+const App: React.FC = () => {
 	return (
 		<Router>
 			<AppContent />

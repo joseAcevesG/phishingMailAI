@@ -6,7 +6,7 @@ interface Props {
 	onReset: () => void;
 }
 
-export const ResultView = ({ result, onReset }: Props) => {
+export const ResultView: React.FC<Props> = ({ result, onReset }) => {
 	return (
 		<div className={styles.resultBox}>
 			<h2>Analysis Result</h2>

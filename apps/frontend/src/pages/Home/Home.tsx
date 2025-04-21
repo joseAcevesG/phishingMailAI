@@ -3,7 +3,7 @@ import { useEmailAnalysis } from "../../hooks/useEmailAnalysis";
 import ErrorMessages from "../../types/error-messages";
 import styles from "./Home.module.css";
 
-const Home = () => {
+const Home: React.FC = () => {
 	const { uploading, error, analyzeEmail, reset, goToSetApiKey } =
 		useEmailAnalysis();
 

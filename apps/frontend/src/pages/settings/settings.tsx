@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./settings.module.css";
 
-const ApiKeyForm = () => {
+const ApiKeyForm: React.FC = () => {
 	const [apiKey, setApiKey] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,9 +26,7 @@ const ApiKeyForm = () => {
 			});
 
 			if (!response.ok) {
-				const errorData = await response
-					.json()
-					.catch(() => ({ message: "Failed to set API key" }));
+				const errorData = await response.json();
 				throw new Error(errorData.message || "Failed to set API key");
 			}
 

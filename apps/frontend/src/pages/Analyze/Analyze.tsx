@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ResultView } from "../../components/ResultView/ResultView";
 import type { Analysis } from "@shared/types";
 
-const Analyze = () => {
+const Analyze: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const [analysis, setAnalysis] = useState<Analysis | null>(null);
@@ -11,16 +11,36 @@ const Analyze = () => {
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		fetch(`/api/analyze-mail/${id}`)
-			.then((res) => {
-				if (!res.ok) {
-					throw new Error(`Failed to fetch analysis (status ${res.status})`);
+		const controller = new AbortController();
+		const fetchAnalysis = async () => {
+			try {
+				const response = await fetch(`/api/analyze-mail/${id}`, {
+					signal: controller.signal,
+				});
+				if (!response.ok) {
+					const errorData = await response.json();
+					throw new Error(errorData.message || "Failed to fetch analysis");
 				}
-				return res.json();
-			})
-			.then((data: Analysis) => setAnalysis(data))
-			.catch((err: Error) => setError(err.message))
-			.finally(() => setLoading(false));
+				const data: Analysis = await response.json();
+				setAnalysis(data);
+			} catch (err: unknown) {
+				if (err instanceof DOMException && err.name === "AbortError") {
+					// Fetch was aborted, do nothing
+					return;
+				}
+				if (err instanceof Error) {
+					setError(err.message);
+				}
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchAnalysis();
+
+		return () => {
+			controller.abort();
+		};
 	}, [id]);
 
 	if (loading) return <div>Loading analysis...</div>;

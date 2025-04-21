@@ -6,7 +6,7 @@ interface Props {
 	isUploading: boolean;
 }
 
-export const UploadForm = ({ onAnalyze, isUploading }: Props) => {
+export const UploadForm: React.FC<Props> = ({ onAnalyze, isUploading }) => {
 	const [file, setFile] = useState<File | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
