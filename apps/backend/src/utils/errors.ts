@@ -36,6 +36,13 @@ export class InternalServerError extends Error {
 }
 
 export class EnvError extends Error {
+	static [Symbol.hasInstance](instance: unknown): boolean {
+		return Boolean(
+			instance &&
+				typeof (instance as Error).name === "string" &&
+				(instance as Error).name === "EnvError",
+		);
+	}
 	constructor(errors: z.ZodError) {
 		const errorMessages = errors.errors.map((error) => {
 			const path = error.path.join(".");
