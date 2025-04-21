@@ -5,17 +5,17 @@ import {
 	Routes,
 } from "react-router-dom";
 import styles from "./App.module.css";
-import { Header } from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
+import { Header } from "./components/Header/Header";
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { useAuth } from "./hooks/useAuth";
-import ApiKeyForm from "./pages/settings/settings";
-import { Authenticate } from "./pages/Authenticate/Authenticate";
-import Home from "./pages/Home/Home";
 import Analyze from "./pages/Analyze/Analyze";
+import { Authenticate } from "./pages/Authenticate/Authenticate";
+import HistoryPage from "./pages/History/History";
+import Home from "./pages/Home/Home";
 import { Landing } from "./pages/Landing/Landing";
 import { Login } from "./pages/Login/Login";
-import HistoryPage from "./pages/History/History";
+import ApiKeyForm from "./pages/settings/settings";
 
 const AppContent: React.FC = () => {
 	const {
@@ -40,7 +40,6 @@ const AppContent: React.FC = () => {
 			<main className={styles.mainContent}>
 				<Routes>
 					<Route
-						path="/"
 						element={
 							isAuthenticated ? (
 								<ProtectedRoute isAuthenticated={isAuthenticated}>
@@ -50,14 +49,15 @@ const AppContent: React.FC = () => {
 								<Landing />
 							)
 						}
+						path="/"
 					/>
 					<Route
-						path="/analyze/:id"
 						element={
 							<ProtectedRoute isAuthenticated={isAuthenticated}>
 								<Analyze />
 							</ProtectedRoute>
 						}
+						path="/analyze/:id"
 					/>
 					<Route
 						element={
@@ -68,12 +68,12 @@ const AppContent: React.FC = () => {
 						path="/settings"
 					/>
 					<Route
-						path="/history"
 						element={
 							<ProtectedRoute isAuthenticated={isAuthenticated}>
 								<HistoryPage />
 							</ProtectedRoute>
 						}
+						path="/history"
 					/>
 					<Route
 						element={isAuthenticated ? <Navigate replace to="/" /> : <Login />}

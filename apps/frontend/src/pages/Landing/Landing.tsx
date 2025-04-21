@@ -24,7 +24,7 @@ export const Landing: React.FC = () => {
 					<br />
 					<strong>Start today with 10 free scans!</strong>
 				</p>
-				<Link to="/login" className={styles.getStartedBtn}>
+				<Link className={styles.getStartedBtn} to="/login">
 					Get Started
 				</Link>
 			</div>

@@ -10,7 +10,7 @@ export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
 	return (
 		<header className={styles.header}>
 			<div className={styles.logo}>
-				<img src="/logo.png" alt="PhishingMail AI Logo" />
+				<img alt="PhishingMail AI Logo" src="/logo.png" />
 				<span className={styles.appName}>PhishingMail AI</span>
 			</div>
 			<nav className={styles.mainNav}>
@@ -43,9 +43,9 @@ export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
 				<div className={styles.userInfo}>
 					<span>Logged in as {userEmail}</span>
 					<button
-						type="button"
 						className={styles.logoutButton}
 						onClick={onLogout}
+						type="button"
 					>
 						Logout
 					</button>

@@ -1,7 +1,7 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { ResultView } from "../../components/ResultView/ResultView";
 import type { Analysis } from "@shared/types";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ResultView } from "../../components/ResultView/ResultView";
 
 const Analyze: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
@@ -47,7 +47,7 @@ const Analyze: React.FC = () => {
 	if (error) return <div>Error: {error}</div>;
 	if (!analysis) return <div>No analysis found.</div>;
 
-	return <ResultView result={analysis} onReset={() => navigate("/")} />;
+	return <ResultView onReset={() => navigate("/")} result={analysis} />;
 };
 
 export default Analyze;

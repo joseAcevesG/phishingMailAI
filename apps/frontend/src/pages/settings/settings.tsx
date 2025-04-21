@@ -45,25 +45,25 @@ const ApiKeyForm: React.FC = () => {
 	};
 
 	return (
-		<div id="api-key-form" className={styles.apiKeyFormContainer}>
+		<div className={styles.apiKeyFormContainer} id="api-key-form">
 			<h1>Set OpenAI API Key</h1>
 			<p>Please enter your OpenAI API key to continue using the service.</p>
 
 			{error && <div className={styles.errorMessage}>{error}</div>}
 
-			<form onSubmit={handleSubmit} className={styles.apiKeyForm}>
+			<form className={styles.apiKeyForm} onSubmit={handleSubmit}>
 				<div className={styles.formGroup}>
 					<label htmlFor="apiKey">API Key:</label>
 					<input
-						type="password"
 						id="apiKey"
-						value={apiKey}
 						onChange={(e) => setApiKey(e.target.value)}
 						placeholder="sk-..."
 						required
+						type="password"
+						value={apiKey}
 					/>
 				</div>
-				<button type="submit" disabled={isSubmitting}>
+				<button disabled={isSubmitting} type="submit">
 					{isSubmitting ? "Submitting..." : "Save API Key"}
 				</button>
 			</form>

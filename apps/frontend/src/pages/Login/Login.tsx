@@ -63,7 +63,7 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 			setError(
 				err instanceof Error
 					? err.message
-					: "An error occurred while sending the magic link"
+					: "An error occurred while sending the magic link",
 			);
 		} finally {
 			controller.abort();
@@ -75,7 +75,7 @@ export const Login: React.FC<Props> = ({ isAuthenticated }) => {
 	}
 
 	return (
-		<div id="login" className={styles.loginContainer}>
+		<div className={styles.loginContainer} id="login">
 			<div className={styles.loginBox}>
 				<h1>Welcome to Phishing Mail AI</h1>
 				<p>Please log in to continue</p>
