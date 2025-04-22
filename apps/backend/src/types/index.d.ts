@@ -1,4 +1,5 @@
 import type { Analysis } from "@shared/types";
+import type { authTypes } from "../utils/authTypes";
 import type { ResponseCodes } from "../utils/response-codes";
 
 export type InputToken = {
@@ -27,3 +28,5 @@ export interface Mail {
 // Extract types from the object
 export type ResponseCodeKeys = keyof typeof ResponseCodes;
 export type ResponseCodeValues = (typeof ResponseCodes)[ResponseCodeKeys];
+
+export type AuthType = keyof typeof authTypes;

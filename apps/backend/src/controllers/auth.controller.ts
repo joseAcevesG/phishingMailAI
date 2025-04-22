@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { StytchError } from "stytch";
 import { stytchClient } from "../config/stytch";
 import User from "../models/user.model";
-import EmailSchema from "../schemas/auth.schema";
+import AuthSchema from "../schemas/auth.schema";
 import { encrypt } from "../utils/encrypt-string";
 import StatusCodes from "../utils/response-codes";
 import {
@@ -15,29 +15,32 @@ import {
 
 class AuthController {
 	login(req: Request, res: Response) {
-		const result = EmailSchema.safeParse(req.body);
+		const result = AuthSchema.safeParse(req.body);
 		if (!result.success) {
 			res
 				.status(StatusCodes.BAD_REQUEST.code)
 				.send(result.error.errors[0].message);
 			return;
 		}
-		const { email } = result.data;
-		stytchClient.magicLinks.email
-			.loginOrCreate({
-				email: email,
-			})
-			.then(() => {
-				res.json({
-					message: "Magic link sent successfully",
+		const { email, type } = result.data;
+		if (type === "magic_link") {
+			stytchClient.magicLinks.email
+				.loginOrCreate({
+					email: email,
+				})
+				.then(() => {
+					res.json({
+						message: "Magic link sent successfully",
+					});
+				})
+				.catch((err) => {
+					console.error(err);
+					res
+						.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
+						.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
 				});
-			})
-			.catch((err) => {
-				console.error(err);
-				res
-					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
-					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
-			});
+		} else if (type === "password_login") {
+		}
 	}
 
 	authenticate(req: Request, res: Response) {
