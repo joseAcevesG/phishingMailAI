@@ -3,7 +3,6 @@ import { z } from "zod";
 // Removed unused EnvConfig import
 import { stytchClient } from "../config/stytch";
 import User from "../models/user.model";
-import type { RequestUser } from "../types";
 import { encrypt } from "../utils/encrypt-string";
 import StatusCodes from "../utils/response-codes";
 import {
@@ -94,7 +93,7 @@ class AuthController {
 			});
 	}
 
-	logout(req: RequestUser, res: Response) {
+	logout(req: Request, res: Response) {
 		const refreshToken = req.tokenRotated
 			? req.newRefreshToken
 			: req.cookies.refresh_token;
@@ -125,7 +124,7 @@ class AuthController {
 			});
 	}
 
-	logoutAll(req: RequestUser, res: Response) {
+	logoutAll(req: Request, res: Response) {
 		const userId = req.user?._id;
 		if (!userId) {
 			res
@@ -147,7 +146,7 @@ class AuthController {
 			});
 	}
 
-	changeTrial(req: RequestUser, res: Response) {
+	changeTrial(req: Request, res: Response) {
 		const { api_key } = req.body;
 
 		if (!api_key) {

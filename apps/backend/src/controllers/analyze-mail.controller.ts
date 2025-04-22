@@ -1,12 +1,12 @@
 import { readFile } from "node:fs/promises";
 import type { Analysis } from "@shared/types";
-import type { Response } from "express";
+import type { Request, Response } from "express";
 import { simpleParser } from "mailparser";
 import { Types } from "mongoose";
 import { z } from "zod";
 import openaiConfig from "../config/openai";
 import userModel from "../models/user.model";
-import type { Mail, OpenAIResponse, RequestUser } from "../types";
+import type { Mail, OpenAIResponse } from "../types";
 import { BadRequestError } from "../utils/errors";
 import StatusCodes from "../utils/response-codes";
 
@@ -26,7 +26,7 @@ const IdSchema = z.object({
 });
 
 class AnalyzeMailController {
-	create(req: RequestUser, res: Response): void {
+	create(req: Request, res: Response): void {
 		if (!req.file) {
 			res
 				.status(StatusCodes.BAD_REQUEST.code)
@@ -140,7 +140,7 @@ class AnalyzeMailController {
 			});
 	}
 
-	read(req: RequestUser, res: Response): void {
+	read(req: Request, res: Response): void {
 		if (!req.user) {
 			res
 				.status(StatusCodes.UNAUTHORIZED.code)
@@ -157,7 +157,7 @@ class AnalyzeMailController {
 		);
 	}
 
-	getById(req: RequestUser, res: Response): void {
+	getById(req: Request, res: Response): void {
 		if (!req.user) {
 			res
 				.status(StatusCodes.UNAUTHORIZED.code)
@@ -180,7 +180,7 @@ class AnalyzeMailController {
 		res.json(analysis);
 	}
 
-	delete(req: RequestUser, res: Response): void {
+	delete(req: Request, res: Response): void {
 		if (!req.user) {
 			res
 				.status(StatusCodes.UNAUTHORIZED.code)

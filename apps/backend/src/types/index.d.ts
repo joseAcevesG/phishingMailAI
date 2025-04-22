@@ -1,5 +1,4 @@
 import type { Analysis } from "@shared/types";
-import type { Request } from "express";
 import type { ResponseCodes } from "../utils/response-codes";
 
 export type InputToken = {
@@ -13,12 +12,6 @@ export interface User {
 	freeTrial: boolean;
 	usageFreeTrial: number;
 	analysis: Analysis[];
-}
-
-export interface RequestUser extends Request {
-	user?: User;
-	tokenRotated?: boolean;
-	newRefreshToken?: string;
 }
 
 export type OpenAIResponse = Omit<Analysis, "_id">;

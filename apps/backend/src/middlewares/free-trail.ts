@@ -1,12 +1,11 @@
-import type { NextFunction, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { EnvConfig } from "../config/env.config";
 import openai from "../config/openai";
 import userModel from "../models/user.model";
-import type { RequestUser } from "../types";
 import { decrypt } from "../utils/encrypt-string";
 import ResponseStatus from "../utils/response-codes";
 
-export default (req: RequestUser, res: Response, next: NextFunction) => {
+export default (req: Request, res: Response, next: NextFunction) => {
 	if (req.user?.freeTrial) {
 		if (req.user.usageFreeTrial >= EnvConfig().freeTrialLimit) {
 			res

@@ -9,7 +9,8 @@
 		"paths": {
 			"@shared": ["../../packages/shared/src"],
 			"@shared/*": ["../../packages/shared/src/*"]
-		}
+		},
+		"typeRoots": ["./src/types", "./node_modules/@types"]
 	},
 	"references": [{ "path": "../../packages/shared" }],
 	"include": ["src"]

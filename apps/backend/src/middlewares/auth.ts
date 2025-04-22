@@ -1,10 +1,10 @@
-import type { NextFunction, Response } from "express";
-import type { RequestUser } from "../types";
+import type { NextFunction, Request, Response } from "express";
+
 import { UnauthorizedError } from "../utils/errors";
 import ResponseStatus from "../utils/response-codes";
 import { rotateAuthTokens, verifyAccessToken } from "../utils/token-service";
 
-export default (req: RequestUser, res: Response, next: NextFunction) => {
+export default (req: Request, res: Response, next: NextFunction) => {
 	const accessToken = req.cookies.session_token;
 	if (accessToken) {
 		verifyAccessToken(accessToken)
@@ -18,7 +18,7 @@ export default (req: RequestUser, res: Response, next: NextFunction) => {
 	}
 };
 
-function processRefresh(req: RequestUser, res: Response, next: NextFunction) {
+function processRefresh(req: Request, res: Response, next: NextFunction) {
 	const refreshToken = req.cookies.refresh_token;
 	if (!refreshToken) {
 		res
