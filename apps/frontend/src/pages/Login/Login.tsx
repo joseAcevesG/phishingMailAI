@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import styles from "./Login.module.css";
-import MagicLinkLogin from "../../components/Login/MagicLinkLogin";
-import PasswordLogin from "../../components/Login/PasswordLogin";
+import MagicLinkLogin from "../../components/auth/MagicLinkLogin";
+import PasswordLogin from "../../components/auth/PasswordLogin";
 
 interface Props {
 	isAuthenticated?: boolean;

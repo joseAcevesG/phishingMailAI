@@ -1,31 +1,18 @@
-import { useState } from "react";
+import { usePasswordSignUp } from "../../hooks/usePasswordSignUp";
 import styles from "./Password.module.css";
 
 const PasswordSignUp: React.FC = () => {
-	const [email, setEmail] = useState<string>("");
-	const [password, setPassword] = useState<string>("");
-	const [confirmPassword, setConfirmPassword] = useState<string>("");
-	const [error, setError] = useState<string | null>(null);
-	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
-	const handlePasswordSignUp = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setIsSubmitting(true);
-		setError(null);
-		if (password !== confirmPassword) {
-			setError("Las contraseñas no coinciden.");
-			setIsSubmitting(false);
-			return;
-		}
-		try {
-			// TODO: implement password sign up logic
-			console.log("Signing up with", email, password);
-		} catch (_err) {
-			setError("Sign up failed. Please try again.");
-		} finally {
-			setIsSubmitting(false);
-		}
-	};
+	const {
+		email,
+		setEmail,
+		password,
+		setPassword,
+		confirmPassword,
+		setConfirmPassword,
+		error,
+		isSubmitting,
+		handlePasswordSignUp,
+	} = usePasswordSignUp();
 
 	return (
 		<form className={styles.passwordForm} onSubmit={handlePasswordSignUp}>
@@ -51,7 +38,7 @@ const PasswordSignUp: React.FC = () => {
 				<input
 					className={styles.passwordInput}
 					type="password"
-					placeholder="Confirma tu contraseña"
+					placeholder="Confirm your password"
 					value={confirmPassword}
 					onChange={(e) => setConfirmPassword(e.target.value)}
 				/>
@@ -60,9 +47,11 @@ const PasswordSignUp: React.FC = () => {
 			<button
 				className={styles.loginButton}
 				type="submit"
-				disabled={isSubmitting || !email || !password || !confirmPassword}
+				disabled={
+					isSubmitting || !email || !password || !confirmPassword || !!error
+				}
 			>
-				{isSubmitting ? "Registrando..." : "Sign Up"}
+				{isSubmitting ? "Signing up..." : "Sign Up"}
 			</button>
 		</form>
 	);
