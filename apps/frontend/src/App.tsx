@@ -16,6 +16,7 @@ import Home from "./pages/Home/Home";
 import { Landing } from "./pages/Landing/Landing";
 import { Login } from "./pages/Login/Login";
 import ApiKeyForm from "./pages/settings/settings";
+import SignUp from "./pages/SignUp/SignUp";
 
 const AppContent: React.FC = () => {
 	const {
@@ -78,6 +79,10 @@ const AppContent: React.FC = () => {
 					<Route
 						element={isAuthenticated ? <Navigate replace to="/" /> : <Login />}
 						path="/login"
+					/>
+					<Route
+						element={isAuthenticated ? <Navigate replace to="/" /> : <SignUp />}
+						path="/signup"
 					/>
 					<Route
 						element={
