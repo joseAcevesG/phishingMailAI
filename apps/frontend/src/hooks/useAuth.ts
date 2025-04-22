@@ -27,7 +27,6 @@ export const useAuth = () => {
 				navigate("/login");
 				return;
 			}
-			console.error("Logout failed");
 		} catch (error) {
 			if (error instanceof DOMException && error.name === "AbortError") {
 				// Fetch was aborted, do nothing

@@ -2,6 +2,7 @@ import type { Analysis } from "@shared/types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ResultView } from "../../components/ResultView/ResultView";
+import ErrorMessages from "../../types/error-messages";
 
 const Analyze: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
@@ -18,8 +19,13 @@ const Analyze: React.FC = () => {
 					signal: controller.signal,
 				});
 				if (!response.ok) {
+					if (response.status >= 500) {
+						throw new Error(ErrorMessages.GENERIC_ERROR);
+					}
 					const errorData = await response.json();
-					throw new Error(errorData.message || "Failed to fetch analysis");
+					throw new Error(
+						errorData.message || ErrorMessages.FAILED_TO_FETCH_ANALYSIS
+					);
 				}
 				const data: Analysis = await response.json();
 				setAnalysis(data);
@@ -28,9 +34,11 @@ const Analyze: React.FC = () => {
 					// Fetch was aborted, do nothing
 					return;
 				}
-				if (err instanceof Error) {
-					setError(err.message);
-				}
+				setError(
+					err instanceof Error
+						? err.message
+						: "An error occurred while fetching analysis"
+				);
 			} finally {
 				setLoading(false);
 			}

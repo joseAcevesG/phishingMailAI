@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { History } from "../../types";
 import styles from "./History.module.css";
+import ErrorMessages from "../../types/error-messages";
 
 const HistoryPage: React.FC = () => {
 	const [history, setHistory] = useState<History[]>([]);
@@ -17,8 +18,13 @@ const HistoryPage: React.FC = () => {
 					signal: controller.signal,
 				});
 				if (!response.ok) {
+					if (response.status >= 500) {
+						throw new Error(ErrorMessages.GENERIC_ERROR);
+					}
 					const errorData = await response.json();
-					throw new Error(errorData.message || "Failed to fetch history");
+					throw new Error(
+						errorData.message || ErrorMessages.FAILED_TO_FETCH_HISTORY
+					);
 				}
 				const data: History[] = await response.json();
 				setHistory(data);
@@ -26,7 +32,11 @@ const HistoryPage: React.FC = () => {
 				if (err instanceof DOMException && err.name === "AbortError") {
 					return;
 				}
-				setError(err instanceof Error ? err.message : String(err));
+				setError(
+					err instanceof Error
+						? err.message
+						: "An error occurred while fetching history"
+				);
 			} finally {
 				setLoading(false);
 			}

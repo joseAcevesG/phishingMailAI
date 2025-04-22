@@ -24,21 +24,11 @@ export const useEmailAnalysis = () => {
 			});
 
 			if (!response.ok) {
-				if (response.status === 403) {
-					setError(ErrorMessages.FREE_TRIAL_EXPIRED);
+				if (response.status >= 500) {
+					setError(ErrorMessages.GENERIC_ERROR);
 					return;
 				}
-				// TODO: change errors messages to shared folder to avoid string comparison
-				if (response.status === 400) {
-					const errorData = await response.text();
-					if (errorData.includes("Invalid OpenAI API key")) {
-						setError(ErrorMessages.INVALID_API_KEY);
-						return;
-					}
-				}
-				const errorData = await response
-					.json()
-					.catch(() => ({ message: ErrorMessages.FAILED_ANALYSIS }));
+				const errorData = await response.json();
 				throw new Error(errorData.message || ErrorMessages.FAILED_ANALYSIS);
 			}
 

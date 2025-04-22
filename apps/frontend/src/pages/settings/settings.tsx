@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./settings.module.css";
+import ErrorMessages from "../../types/error-messages";
 
 const ApiKeyForm: React.FC = () => {
 	const [apiKey, setApiKey] = useState("");
@@ -26,8 +27,13 @@ const ApiKeyForm: React.FC = () => {
 			});
 
 			if (!response.ok) {
+				if (response.status >= 500) {
+					throw new Error(ErrorMessages.GENERIC_ERROR);
+				}
 				const errorData = await response.json();
-				throw new Error(errorData.message || "Failed to set API key");
+				throw new Error(
+					errorData.message || ErrorMessages.FAILED_TO_SET_API_KEY
+				);
 			}
 
 			// Success - redirect to home
@@ -37,7 +43,11 @@ const ApiKeyForm: React.FC = () => {
 				// Fetch was aborted, do nothing
 				return;
 			}
-			setError(err instanceof Error ? err.message : "An error occurred");
+			setError(
+				err instanceof Error
+					? err.message
+					: "An error occurred while setting API key"
+			);
 		} finally {
 			setIsSubmitting(false);
 			controller.abort();

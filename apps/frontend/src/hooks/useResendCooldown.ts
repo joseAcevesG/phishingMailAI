@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ErrorMessages from "../types/error-messages";
 
 /**
  * Custom hook to handle resend cooldown logic for buttons.
@@ -49,12 +50,15 @@ export function useResendCooldown(initialCountdown = 15) {
 			});
 
 			if (!response.ok) {
+				if (response.status >= 500) {
+					throw new Error(ErrorMessages.GENERIC_ERROR);
+				}
 				const errorData = await response.json();
-				throw new Error(errorData.message || "Failed to send magic link");
+				throw new Error(errorData.message || ErrorMessages.FAILED_TO_LOGIN);
 			}
 
 			setIsButtonDisabled(true);
-		} catch (err: unknown) {
+		} catch (err) {
 			if (err instanceof DOMException && err.name === "AbortError") {
 				// Fetch was aborted, do nothing
 				return;
@@ -62,7 +66,7 @@ export function useResendCooldown(initialCountdown = 15) {
 			setError(
 				err instanceof Error
 					? err.message
-					: "An error occurred while sending the magic link",
+					: "An error occurred while logging in",
 			);
 		} finally {
 			controller.abort();
