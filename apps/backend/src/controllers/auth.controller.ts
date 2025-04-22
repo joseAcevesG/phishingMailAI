@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { StytchError } from "stytch";
 import { stytchClient } from "../config/stytch";
 import User from "../models/user.model";
-import EmailSchema from "../schemas/email.schema";
+import EmailSchema from "../schemas/auth.schema";
 import { encrypt } from "../utils/encrypt-string";
 import StatusCodes from "../utils/response-codes";
 import {
