@@ -3,6 +3,7 @@ import { StytchError } from "stytch";
 import { stytchClient } from "../config/stytch";
 import User from "../models/user.model";
 import AuthSchema from "../schemas/auth.schema";
+import { authTypes } from "../utils/authTypes";
 import { encrypt } from "../utils/encrypt-string";
 import StatusCodes from "../utils/response-codes";
 import {
@@ -17,13 +18,13 @@ class AuthController {
 	login(req: Request, res: Response) {
 		const result = AuthSchema.safeParse(req.body);
 		if (!result.success) {
-			res
-				.status(StatusCodes.BAD_REQUEST.code)
-				.send(result.error.errors[0].message);
+			res.status(StatusCodes.BAD_REQUEST.code).json({
+				message: result.error.errors[0].message,
+			});
 			return;
 		}
 		const { email, type } = result.data;
-		if (type === "magic_link") {
+		if (type === authTypes.magicLink) {
 			stytchClient.magicLinks.email
 				.loginOrCreate({
 					email: email,
@@ -34,26 +35,84 @@ class AuthController {
 					});
 				})
 				.catch((err) => {
+					if (
+						err instanceof StytchError &&
+						err.status_code !== 429 &&
+						err.status_code < 500
+					) {
+						res.status(StatusCodes.UNAUTHORIZED.code).json({
+							message: err.error_message,
+						});
+						return;
+					}
 					console.error(err);
-					res
-						.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
-						.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
+					res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+						message: StatusCodes.INTERNAL_SERVER_ERROR.message,
+					});
 				});
-		} else if (type === "password_login") {
+		} else if (type === authTypes.passwordLogin) {
+			const { password } = result.data;
+			if (!password) {
+				res.status(StatusCodes.BAD_REQUEST.code).json({
+					message: "Password is required",
+				});
+				return;
+			}
+			stytchClient.passwords
+				.authenticate({
+					email: email,
+					password: password,
+				})
+				.then((response) => {
+					const email = response.user.emails[0].email;
+					return User.findOne({ email });
+				})
+				.then((user) => {
+					if (!user) {
+						return User.create({ email });
+					}
+					return user;
+				})
+				.then((user) => {
+					return issueAuthTokens(res, email, user._id);
+				})
+				.then(() => {
+					res.json({ authenticated: true, email });
+				})
+				.catch((err) => {
+					if (
+						err instanceof StytchError &&
+						err.status_code !== 429 &&
+						err.status_code < 500
+					) {
+						res.status(StatusCodes.UNAUTHORIZED.code).json({
+							message: err.error_message,
+						});
+						return;
+					}
+					console.error(err);
+					res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+						message: StatusCodes.INTERNAL_SERVER_ERROR.message,
+					});
+				});
 		}
 	}
 
 	authenticate(req: Request, res: Response) {
 		const token = req.query.token as string;
 		const tokenType = req.query.stytch_token_type as string;
-		if (tokenType !== "magic_links") {
+		if (tokenType !== authTypes.magicLink) {
 			console.error(`Unsupported token type: '${tokenType}'`);
-			res.status(StatusCodes.BAD_REQUEST.code).send("Unsupported token type");
+			res.status(StatusCodes.BAD_REQUEST.code).json({
+				message: "Unsupported token type",
+			});
 			return;
 		}
 
 		if (!token) {
-			res.status(StatusCodes.BAD_REQUEST.code).send("Token is required");
+			res.status(StatusCodes.BAD_REQUEST.code).json({
+				message: "Token is required",
+			});
 			return;
 		}
 
@@ -79,9 +138,9 @@ class AuthController {
 					})
 					.catch((err) => {
 						console.error(err);
-						res
-							.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
-							.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
+						res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+							message: StatusCodes.INTERNAL_SERVER_ERROR.message,
+						});
 					});
 			})
 			.catch((err) => {
@@ -90,15 +149,15 @@ class AuthController {
 					err.status_code !== 429 &&
 					err.status_code < 500
 				) {
-					res
-						.status(StatusCodes.UNAUTHORIZED.code)
-						.send(StatusCodes.UNAUTHORIZED.message);
+					res.status(StatusCodes.UNAUTHORIZED.code).json({
+						message: err.error_message,
+					});
 					return;
 				}
 				console.error(err);
-				res
-					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
-					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
+				res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+					message: StatusCodes.INTERNAL_SERVER_ERROR.message,
+				});
 			});
 	}
 
@@ -108,37 +167,37 @@ class AuthController {
 			: req.cookies.refresh_token;
 
 		if (!refreshToken) {
-			res
-				.status(StatusCodes.UNAUTHORIZED.code)
-				.send(StatusCodes.UNAUTHORIZED.message);
+			res.status(StatusCodes.UNAUTHORIZED.code).json({
+				message: StatusCodes.UNAUTHORIZED.message,
+			});
 			return;
 		}
 		if (!req.user?._id) {
-			res
-				.status(StatusCodes.UNAUTHORIZED.code)
-				.send(StatusCodes.UNAUTHORIZED.message);
+			res.status(StatusCodes.UNAUTHORIZED.code).json({
+				message: StatusCodes.UNAUTHORIZED.message,
+			});
 			return;
 		}
 		deleteAuthToken(req.user._id, refreshToken)
 			.then(() => {
-				res.clearCookie("session_token").clearCookie("refresh_token").send({
+				res.clearCookie("session_token").clearCookie("refresh_token").json({
 					message: "Logged out successfully",
 				});
 			})
 			.catch((err) => {
 				console.error(err);
-				res
-					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
-					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
+				res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+					message: StatusCodes.INTERNAL_SERVER_ERROR.message,
+				});
 			});
 	}
 
 	logoutAll(req: Request, res: Response) {
 		const userId = req.user?._id;
 		if (!userId) {
-			res
-				.status(StatusCodes.UNAUTHORIZED.code)
-				.send(StatusCodes.UNAUTHORIZED.message);
+			res.status(StatusCodes.UNAUTHORIZED.code).json({
+				message: StatusCodes.UNAUTHORIZED.message,
+			});
 			return;
 		}
 		deleteAllAuthTokens(userId)
@@ -149,9 +208,9 @@ class AuthController {
 			})
 			.catch((error) => {
 				console.error(error);
-				res
-					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
-					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
+				res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+					message: StatusCodes.INTERNAL_SERVER_ERROR.message,
+				});
 			});
 	}
 
@@ -159,7 +218,9 @@ class AuthController {
 		const { api_key } = req.body;
 
 		if (!api_key) {
-			res.status(StatusCodes.BAD_REQUEST.code).send("API key is required");
+			res.status(StatusCodes.BAD_REQUEST.code).json({
+				message: "API key is required",
+			});
 			return;
 		}
 
@@ -176,7 +237,9 @@ class AuthController {
 			})
 			.then((user) => {
 				if (!user) {
-					res.status(StatusCodes.NOT_FOUND.code).send("User not found");
+					res.status(StatusCodes.NOT_FOUND.code).json({
+						message: "User not found",
+					});
 					return;
 				}
 
@@ -186,9 +249,9 @@ class AuthController {
 			})
 			.catch((error: Error) => {
 				console.error(error);
-				res
-					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
-					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
+				res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+					message: StatusCodes.INTERNAL_SERVER_ERROR.message,
+				});
 			});
 	}
 

@@ -8,9 +8,9 @@ import ResponseStatus from "../utils/response-codes";
 export default (req: Request, res: Response, next: NextFunction) => {
 	if (req.user?.freeTrial) {
 		if (req.user.usageFreeTrial >= EnvConfig().freeTrialLimit) {
-			res
-				.status(ResponseStatus.FORBIDDEN.code)
-				.send("Free trial limit exceeded");
+			res.status(ResponseStatus.FORBIDDEN.code).json({
+				message: "Free trial limit exceeded",
+			});
 			return;
 		}
 		req.user.usageFreeTrial += 1;
@@ -25,15 +25,17 @@ export default (req: Request, res: Response, next: NextFunction) => {
 			})
 			.catch((error) => {
 				console.error(error);
-				res
-					.status(ResponseStatus.INTERNAL_SERVER_ERROR.code)
-					.send(ResponseStatus.INTERNAL_SERVER_ERROR.message);
+				res.status(ResponseStatus.INTERNAL_SERVER_ERROR.code).json({
+					message: ResponseStatus.INTERNAL_SERVER_ERROR.message,
+				});
 				return;
 			});
 		return;
 	}
 	if (!req.user?.api_key) {
-		res.status(ResponseStatus.FORBIDDEN.code).send("Free trial limit exceeded");
+		res.status(ResponseStatus.FORBIDDEN.code).json({
+			message: "Free trial limit exceeded",
+		});
 		return;
 	}
 	decrypt(req.user.api_key)
@@ -42,9 +44,9 @@ export default (req: Request, res: Response, next: NextFunction) => {
 			next();
 		})
 		.catch((error) => {
-			res
-				.status(ResponseStatus.INTERNAL_SERVER_ERROR.code)
-				.send(ResponseStatus.INTERNAL_SERVER_ERROR.message);
+			res.status(ResponseStatus.INTERNAL_SERVER_ERROR.code).json({
+				message: ResponseStatus.INTERNAL_SERVER_ERROR.message,
+			});
 			console.error(error);
 		});
 };

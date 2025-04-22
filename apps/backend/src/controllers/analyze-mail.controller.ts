@@ -16,7 +16,7 @@ class AnalyzeMailController {
 		if (!req.file) {
 			res
 				.status(StatusCodes.BAD_REQUEST.code)
-				.send(StatusCodes.BAD_REQUEST.message);
+				.json({ message: StatusCodes.BAD_REQUEST.message });
 			return;
 		}
 
@@ -103,7 +103,9 @@ class AnalyzeMailController {
 			})
 			.catch((error) => {
 				if (error instanceof BadRequestError) {
-					res.status(StatusCodes.BAD_REQUEST.code).send(error.message);
+					res.status(StatusCodes.BAD_REQUEST.code).json({
+						message: error.message,
+					});
 					return;
 				}
 
@@ -114,7 +116,7 @@ class AnalyzeMailController {
 				) {
 					res
 						.status(StatusCodes.BAD_REQUEST.code)
-						.send("Invalid OpenAI API key provided");
+						.json({ message: "Invalid OpenAI API key provided" });
 					return;
 				}
 
@@ -122,7 +124,7 @@ class AnalyzeMailController {
 
 				res
 					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
-					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
+					.json({ message: StatusCodes.INTERNAL_SERVER_ERROR.message });
 			});
 	}
 
@@ -130,7 +132,7 @@ class AnalyzeMailController {
 		if (!req.user) {
 			res
 				.status(StatusCodes.UNAUTHORIZED.code)
-				.send(StatusCodes.UNAUTHORIZED.message);
+				.json({ message: StatusCodes.UNAUTHORIZED.message });
 			return;
 		}
 		res.json(
@@ -147,20 +149,22 @@ class AnalyzeMailController {
 		if (!req.user) {
 			res
 				.status(StatusCodes.UNAUTHORIZED.code)
-				.send(StatusCodes.UNAUTHORIZED.message);
+				.json({ message: StatusCodes.UNAUTHORIZED.message });
 			return;
 		}
 		const parseResult = IdSchema.safeParse(req.params);
 		if (!parseResult.success) {
 			res
 				.status(StatusCodes.BAD_REQUEST.code)
-				.json({ error: parseResult.error.errors[0].message });
+				.json({ message: parseResult.error.errors[0].message });
 			return;
 		}
 		const { id } = parseResult.data;
 		const analysis = req.user.analysis.find((mail) => mail._id === id);
 		if (!analysis) {
-			res.status(StatusCodes.NOT_FOUND.code).send("Analysis not found");
+			res
+				.status(StatusCodes.NOT_FOUND.code)
+				.json({ message: "Analysis not found" });
 			return;
 		}
 		res.json(analysis);
@@ -170,20 +174,20 @@ class AnalyzeMailController {
 		if (!req.user) {
 			res
 				.status(StatusCodes.UNAUTHORIZED.code)
-				.send(StatusCodes.UNAUTHORIZED.message);
+				.json({ message: StatusCodes.UNAUTHORIZED.message });
 			return;
 		}
 		const parseResult = IdSchema.safeParse(req.params);
 		if (!parseResult.success) {
 			res
 				.status(StatusCodes.BAD_REQUEST.code)
-				.json({ error: parseResult.error.errors[0].message });
+				.json({ message: parseResult.error.errors[0].message });
 			return;
 		}
 		const { id } = parseResult.data;
 		const analysis = req.user.analysis.find((mail) => mail._id === id);
 		if (!analysis) {
-			res.send(
+			res.json(
 				req.user.analysis.map((mail) => ({
 					_id: mail._id,
 					subject: mail.subject,
@@ -204,7 +208,7 @@ class AnalyzeMailController {
 				if (!user) {
 					throw new BadRequestError("User not found");
 				}
-				res.send(
+				res.json(
 					user.analysis.map((mail) => ({
 						_id: mail._id,
 						subject: mail.subject,
@@ -215,13 +219,15 @@ class AnalyzeMailController {
 			})
 			.catch((error) => {
 				if (error instanceof BadRequestError) {
-					res.status(StatusCodes.BAD_REQUEST.code).send(error.message);
+					res.status(StatusCodes.BAD_REQUEST.code).json({
+						message: error.message,
+					});
 					return;
 				}
 				console.error("Error deleting analysis:", error);
 				res
 					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
-					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
+					.json({ message: StatusCodes.INTERNAL_SERVER_ERROR.message });
 			});
 	}
 }

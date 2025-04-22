@@ -1,5 +1,5 @@
 export const authTypes = {
-	magicLink: "magic_link",
+	magicLink: "magic_links",
 	passwordLogin: "password_login",
 } as const;
 

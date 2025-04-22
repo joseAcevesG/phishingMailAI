@@ -21,9 +21,9 @@ export default (req: Request, res: Response, next: NextFunction) => {
 function processRefresh(req: Request, res: Response, next: NextFunction) {
 	const refreshToken = req.cookies.refresh_token;
 	if (!refreshToken) {
-		res
-			.status(ResponseStatus.UNAUTHORIZED.code)
-			.send(ResponseStatus.UNAUTHORIZED.message);
+		res.status(ResponseStatus.UNAUTHORIZED.code).json({
+			message: ResponseStatus.UNAUTHORIZED.message,
+		});
 		return;
 	}
 	rotateAuthTokens(refreshToken, res)
@@ -36,14 +36,14 @@ function processRefresh(req: Request, res: Response, next: NextFunction) {
 		})
 		.catch((error) => {
 			if (error instanceof UnauthorizedError) {
-				res
-					.status(ResponseStatus.UNAUTHORIZED.code)
-					.send(ResponseStatus.UNAUTHORIZED.message);
+				res.status(ResponseStatus.UNAUTHORIZED.code).json({
+					message: ResponseStatus.UNAUTHORIZED.message,
+				});
 			} else {
 				console.error(error);
-				res
-					.status(ResponseStatus.INTERNAL_SERVER_ERROR.code)
-					.send(ResponseStatus.INTERNAL_SERVER_ERROR.message);
+				res.status(ResponseStatus.INTERNAL_SERVER_ERROR.code).json({
+					message: ResponseStatus.INTERNAL_SERVER_ERROR.message,
+				});
 			}
 		});
 }
