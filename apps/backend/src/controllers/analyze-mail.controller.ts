@@ -3,27 +3,13 @@ import type { Analysis } from "@shared/types";
 import type { Request, Response } from "express";
 import { simpleParser } from "mailparser";
 import { Types } from "mongoose";
-import { z } from "zod";
 import openaiConfig from "../config/openai";
 import userModel from "../models/user.model";
+import IdSchema from "../schemas/id.schema";
+import MailSchema from "../schemas/mail.schema";
 import type { Mail, OpenAIResponse } from "../types";
 import { BadRequestError } from "../utils/errors";
 import StatusCodes from "../utils/response-codes";
-
-const MailSchema = z.object({
-	subject: z.string(),
-	from: z.string(),
-	to: z.string(),
-	text: z.string(),
-	html: z.string(),
-});
-
-// Zod validation for id param
-const IdSchema = z.object({
-	id: z
-		.string()
-		.regex(/^[a-f\d]{24}$/i, { message: "Invalid ObjectId format" }),
-});
 
 class AnalyzeMailController {
 	create(req: Request, res: Response): void {

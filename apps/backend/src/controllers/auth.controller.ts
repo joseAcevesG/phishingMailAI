@@ -1,9 +1,8 @@
 import type { Request, Response } from "express";
 import { StytchError } from "stytch";
-import { z } from "zod";
-// Removed unused EnvConfig import
 import { stytchClient } from "../config/stytch";
 import User from "../models/user.model";
+import EmailSchema from "../schemas/email.schema";
 import { encrypt } from "../utils/encrypt-string";
 import StatusCodes from "../utils/response-codes";
 import {
@@ -14,13 +13,9 @@ import {
 	verifyAccessToken,
 } from "../utils/token-service";
 
-const emailSchema = z.object({
-	email: z.string().email("Invalid email format"),
-});
-
 class AuthController {
 	login(req: Request, res: Response) {
-		const result = emailSchema.safeParse(req.body);
+		const result = EmailSchema.safeParse(req.body);
 		if (!result.success) {
 			res
 				.status(StatusCodes.BAD_REQUEST.code)
