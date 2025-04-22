@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { StytchError } from "stytch";
 import { z } from "zod";
 // Removed unused EnvConfig import
 import { stytchClient } from "../config/stytch";
@@ -86,10 +87,20 @@ class AuthController {
 					});
 			})
 			.catch((err) => {
+				if (
+					err instanceof StytchError &&
+					err.status_code !== 429 &&
+					err.status_code < 500
+				) {
+					res
+						.status(StatusCodes.UNAUTHORIZED.code)
+						.send(StatusCodes.UNAUTHORIZED.message);
+					return;
+				}
 				console.error(err);
 				res
-					.status(StatusCodes.UNAUTHORIZED.code)
-					.send(StatusCodes.UNAUTHORIZED.message);
+					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
+					.send(StatusCodes.INTERNAL_SERVER_ERROR.message);
 			});
 	}
 
