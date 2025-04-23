@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AUTH_TYPE_VALUES } from "../utils/authTypes";
+import { AUTH_TYPE_VALUES } from "../utils/auth-types";
 
 const PasswordSchema = z
 	.string()

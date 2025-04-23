@@ -3,6 +3,7 @@ import AuthController from "../controllers/auth.controller";
 import auth from "../middlewares/auth";
 const router = Router();
 
+router.post("/signup", AuthController.signUp);
 router.post("/login", AuthController.login);
 router.get("/authenticate", AuthController.authenticate);
 router.post("/logout", auth, AuthController.logout);

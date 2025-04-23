@@ -1,18 +1,30 @@
 @base_url = http://localhost:3000/api
 @token = 
 @mail = 
+@password = 
 @api_key = 
 @mailId = 
 ### test api ###
 GET {{base_url}}
 
+### sign up ###
+POST {{base_url}}/auth/signup
+Content-Type: application/json
+
+{
+    "email": "{{mail}}",
+    "type": "password_login",
+    "password": "{{password}}"
+}
 
 ### login ###
 POST {{base_url}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "{{mail}}"
+    "email": "{{mail}}",
+    "type": "password_login",
+    "password": "{{password}}"
 }
 
 ### authenticate ###

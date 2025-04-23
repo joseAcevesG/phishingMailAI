@@ -3,7 +3,7 @@ import { StytchError } from "stytch";
 import { stytchClient } from "../config/stytch";
 import User from "../models/user.model";
 import AuthSchema from "../schemas/auth.schema";
-import { authTypes } from "../utils/authTypes";
+import { authTypes } from "../utils/auth-types";
 import { encrypt } from "../utils/encrypt-string";
 import StatusCodes from "../utils/response-codes";
 import {
@@ -15,6 +15,60 @@ import {
 } from "../utils/token-service";
 
 class AuthController {
+	signUp(req: Request, res: Response) {
+		const result = AuthSchema.safeParse(req.body);
+		if (!result.success) {
+			res.status(StatusCodes.BAD_REQUEST.code).json({
+				message: result.error.errors[0].message,
+			});
+			return;
+		}
+		const { email, type } = result.data;
+		if (type === authTypes.passwordLogin) {
+			const { password } = result.data;
+			if (!password) {
+				res.status(StatusCodes.BAD_REQUEST.code).json({
+					message: "Password is required",
+				});
+				return;
+			}
+			stytchClient.passwords
+				.create({
+					email: email,
+					password: password,
+				})
+				.then(() => {
+					res.json({
+						message: "User created successfully",
+					});
+				})
+				.catch((err) => {
+					if (
+						err instanceof StytchError &&
+						err.status_code !== 429 &&
+						err.status_code < 500
+					) {
+						if (err.error_type === "email_duplicate") {
+							res.status(StatusCodes.BAD_REQUEST.code).json({
+								message:
+									"Email already exists. Please use a different email or change your password.",
+							});
+							return;
+						}
+						return;
+					}
+					console.error(err);
+					res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+						message: StatusCodes.INTERNAL_SERVER_ERROR.message,
+					});
+				});
+			return;
+		}
+		res.status(StatusCodes.BAD_REQUEST.code).json({
+			message: "Unsupported auth type",
+		});
+	}
+
 	login(req: Request, res: Response) {
 		const result = AuthSchema.safeParse(req.body);
 		if (!result.success) {
@@ -50,7 +104,9 @@ class AuthController {
 						message: StatusCodes.INTERNAL_SERVER_ERROR.message,
 					});
 				});
-		} else if (type === authTypes.passwordLogin) {
+			return;
+		}
+		if (type === authTypes.passwordLogin) {
 			const { password } = result.data;
 			if (!password) {
 				res.status(StatusCodes.BAD_REQUEST.code).json({
@@ -58,11 +114,12 @@ class AuthController {
 				});
 				return;
 			}
+			const params = {
+				email: email,
+				password: password,
+			};
 			stytchClient.passwords
-				.authenticate({
-					email: email,
-					password: password,
-				})
+				.authenticate(params)
 				.then((response) => {
 					const email = response.user.emails[0].email;
 					return User.findOne({ email });
@@ -85,7 +142,7 @@ class AuthController {
 						err.status_code !== 429 &&
 						err.status_code < 500
 					) {
-						res.status(StatusCodes.UNAUTHORIZED.code).json({
+						res.status(err.status_code).json({
 							message: err.error_message,
 						});
 						return;
@@ -95,7 +152,11 @@ class AuthController {
 						message: StatusCodes.INTERNAL_SERVER_ERROR.message,
 					});
 				});
+			return;
 		}
+		res.status(StatusCodes.BAD_REQUEST.code).json({
+			message: "Unsupported auth type",
+		});
 	}
 
 	authenticate(req: Request, res: Response) {
@@ -116,32 +177,27 @@ class AuthController {
 			return;
 		}
 
+		let email: string;
 		stytchClient.magicLinks
 			.authenticate({
 				token: token,
 				session_duration_minutes: 60,
 			})
 			.then((response) => {
-				const email = response.user.emails[0].email;
-				User.findOne({ email })
-					.then((user) => {
-						if (!user) {
-							return User.create({ email });
-						}
-						return user;
-					})
-					.then((user) => {
-						return issueAuthTokens(res, email, user._id);
-					})
-					.then(() => {
-						res.json({ authenticated: true, email });
-					})
-					.catch((err) => {
-						console.error(err);
-						res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
-							message: StatusCodes.INTERNAL_SERVER_ERROR.message,
-						});
-					});
+				email = response.user.emails[0].email;
+				return User.findOne({ email });
+			})
+			.then((user) => {
+				if (!user) {
+					return User.create({ email });
+				}
+				return user;
+			})
+			.then((user) => {
+				return issueAuthTokens(res, email, user._id);
+			})
+			.then(() => {
+				res.json({ authenticated: true, email });
 			})
 			.catch((err) => {
 				if (
