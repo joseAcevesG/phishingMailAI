@@ -17,7 +17,16 @@ Content-Type: application/json
     "password": "{{password}}"
 }
 
-### login ###
+### login magic link ###
+POST {{base_url}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "{{mail}}",
+    "type": "magic_link"
+}
+
+### login password login ###
 POST {{base_url}}/auth/login
 Content-Type: application/json
 
@@ -27,8 +36,24 @@ Content-Type: application/json
     "password": "{{password}}"
 }
 
-### authenticate ###
-GET {{base_url}}/auth/authenticate?stytch_token_type=magic_links&token={{token}}
+### reset password ###
+POST {{base_url}}/auth/resetPassword
+Content-Type: application/json
+
+{
+    "email": "{{mail}}"
+}
+
+### authenticate magic link ###
+POST {{base_url}}/auth/authenticate?stytch_token_type=magic_links&token={{token}}
+
+### authenticate password reset ###
+POST {{base_url}}/auth/authenticate?stytch_token_type=reset_password&token={{token}}
+Content-Type: application/json
+
+{
+    "password": "{{password}}"
+}
 
 ### status ###
 GET {{base_url}}/auth/status

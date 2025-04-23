@@ -2,7 +2,10 @@ import type { Request, Response } from "express";
 import { StytchError } from "stytch";
 import { stytchClient } from "../config/stytch";
 import User from "../models/user.model";
-import AuthSchema from "../schemas/auth.schema";
+import AuthSchema, {
+	AuthCredentialsSchema,
+	MailSchema,
+} from "../schemas/auth.schema";
 import { authTypes } from "../utils/auth-types";
 import { encrypt } from "../utils/encrypt-string";
 import StatusCodes from "../utils/response-codes";
@@ -15,6 +18,28 @@ import {
 } from "../utils/token-service";
 
 class AuthController {
+	/**
+	 * Handles errors from Stytch API calls and sends appropriate HTTP responses.
+	 * @param err The error object thrown.
+	 * @param res The Express response object.
+	 */
+	private handleStytchError(err: unknown, res: Response) {
+		if (
+			err instanceof StytchError &&
+			err.status_code !== 429 &&
+			err.status_code < 500
+		) {
+			res.status(err.status_code).json({
+				message: err.error_message,
+			});
+			return;
+		}
+		console.error(err);
+		res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+			message: StatusCodes.INTERNAL_SERVER_ERROR.message,
+		});
+	}
+
 	signUp(req: Request, res: Response) {
 		const result = AuthSchema.safeParse(req.body);
 		if (!result.success) {
@@ -45,22 +70,15 @@ class AuthController {
 				.catch((err) => {
 					if (
 						err instanceof StytchError &&
-						err.status_code !== 429 &&
-						err.status_code < 500
+						err.error_type === "email_duplicate"
 					) {
-						if (err.error_type === "email_duplicate") {
-							res.status(StatusCodes.BAD_REQUEST.code).json({
-								message:
-									"Email already exists. Please use a different email or change your password.",
-							});
-							return;
-						}
+						res.status(StatusCodes.BAD_REQUEST.code).json({
+							message:
+								"Email already exists. Please use a different email or change your password.",
+						});
 						return;
 					}
-					console.error(err);
-					res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
-						message: StatusCodes.INTERNAL_SERVER_ERROR.message,
-					});
+					this.handleStytchError(err, res);
 				});
 			return;
 		}
@@ -89,20 +107,7 @@ class AuthController {
 					});
 				})
 				.catch((err) => {
-					if (
-						err instanceof StytchError &&
-						err.status_code !== 429 &&
-						err.status_code < 500
-					) {
-						res.status(StatusCodes.UNAUTHORIZED.code).json({
-							message: err.error_message,
-						});
-						return;
-					}
-					console.error(err);
-					res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
-						message: StatusCodes.INTERNAL_SERVER_ERROR.message,
-					});
+					this.handleStytchError(err, res);
 				});
 			return;
 		}
@@ -137,20 +142,7 @@ class AuthController {
 					res.json({ authenticated: true, email });
 				})
 				.catch((err) => {
-					if (
-						err instanceof StytchError &&
-						err.status_code !== 429 &&
-						err.status_code < 500
-					) {
-						res.status(err.status_code).json({
-							message: err.error_message,
-						});
-						return;
-					}
-					console.error(err);
-					res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
-						message: StatusCodes.INTERNAL_SERVER_ERROR.message,
-					});
+					this.handleStytchError(err, res);
 				});
 			return;
 		}
@@ -159,62 +151,96 @@ class AuthController {
 		});
 	}
 
+	resetPassword(req: Request, res: Response) {
+		const result = MailSchema.safeParse(req.body);
+		if (!result.success) {
+			res.status(StatusCodes.BAD_REQUEST.code).json({
+				message: result.error.errors[0].message,
+			});
+			return;
+		}
+		const { email } = result.data;
+		stytchClient.passwords.email
+			.resetStart({
+				email,
+			})
+			.then(() => {
+				res.json({
+					message: "Password reset link sent successfully",
+				});
+			})
+			.catch((err) => {
+				this.handleStytchError(err, res);
+			});
+	}
+
 	authenticate(req: Request, res: Response) {
 		const token = req.query.token as string;
 		const tokenType = req.query.stytch_token_type as string;
-		if (tokenType !== authTypes.magicLink) {
-			console.error(`Unsupported token type: '${tokenType}'`);
-			res.status(StatusCodes.BAD_REQUEST.code).json({
-				message: "Unsupported token type",
-			});
-			return;
-		}
-
-		if (!token) {
-			res.status(StatusCodes.BAD_REQUEST.code).json({
-				message: "Token is required",
-			});
-			return;
-		}
-
-		let email: string;
-		stytchClient.magicLinks
-			.authenticate({
-				token: token,
-				session_duration_minutes: 60,
-			})
-			.then((response) => {
-				email = response.user.emails[0].email;
-				return User.findOne({ email });
-			})
-			.then((user) => {
-				if (!user) {
-					return User.create({ email });
-				}
-				return user;
-			})
-			.then((user) => {
-				return issueAuthTokens(res, email, user._id);
-			})
-			.then(() => {
-				res.json({ authenticated: true, email });
-			})
-			.catch((err) => {
-				if (
-					err instanceof StytchError &&
-					err.status_code !== 429 &&
-					err.status_code < 500
-				) {
-					res.status(StatusCodes.UNAUTHORIZED.code).json({
-						message: err.error_message,
-					});
-					return;
-				}
-				console.error(err);
-				res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
-					message: StatusCodes.INTERNAL_SERVER_ERROR.message,
+		if (tokenType === authTypes.magicLink) {
+			if (!token) {
+				res.status(StatusCodes.BAD_REQUEST.code).json({
+					message: "Token is required",
 				});
-			});
+				return;
+			}
+
+			let email: string;
+			stytchClient.magicLinks
+				.authenticate({
+					token: token,
+					session_duration_minutes: 60,
+				})
+				.then((response) => {
+					email = response.user.emails[0].email;
+					return User.findOne({ email });
+				})
+				.then((user) => {
+					if (!user) {
+						return User.create({ email });
+					}
+					return user;
+				})
+				.then((user) => {
+					return issueAuthTokens(res, email, user._id);
+				})
+				.then(() => {
+					res.json({ authenticated: true, email });
+				})
+				.catch((err) => {
+					this.handleStytchError(err, res);
+				});
+
+			return;
+		}
+		if (tokenType === authTypes.passwordReset) {
+			const result = AuthCredentialsSchema.safeParse(req.body);
+			if (!result.success) {
+				res.status(StatusCodes.BAD_REQUEST.code).json({
+					message: result.error.errors[0].message,
+				});
+				return;
+			}
+			const { password } = result.data;
+			const params = {
+				token: token,
+				password: password,
+			};
+			stytchClient.passwords.email
+				.reset(params)
+				.then(() => {
+					res.json({
+						message: "Password reset successfully",
+					});
+				})
+				.catch((err) => {
+					this.handleStytchError(err, res);
+				});
+			return;
+		}
+		res.status(StatusCodes.BAD_REQUEST.code).json({
+			message: "Unsupported token type",
+		});
 	}
 
 	logout(req: Request, res: Response) {

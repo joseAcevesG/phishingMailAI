@@ -3,9 +3,13 @@ import AuthController from "../controllers/auth.controller";
 import auth from "../middlewares/auth";
 const router = Router();
 
-router.post("/signup", AuthController.signUp);
-router.post("/login", AuthController.login);
-router.get("/authenticate", AuthController.authenticate);
+router.post("/signup", AuthController.signUp.bind(AuthController));
+router.post("/login", AuthController.login.bind(AuthController));
+router.post(
+	"/resetPassword",
+	AuthController.resetPassword.bind(AuthController),
+);
+router.post("/authenticate", AuthController.authenticate.bind(AuthController));
 router.post("/logout", auth, AuthController.logout);
 router.post("/logoutAll", auth, AuthController.logoutAll);
 router.post("/changeTrial", auth, AuthController.changeTrial);

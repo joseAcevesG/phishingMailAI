@@ -22,11 +22,17 @@ const PasswordSchema = z
 	// 5. At least one symbol
 	.refine((pwd) => /[^A-Za-z0-9]/.test(pwd), {
 		message: "The password must contain at least one symbol.",
-	})
-	.optional();
+	});
 
+export const MailSchema = z.object({
+	email: z.string().email("Invalid email format"),
+});
+
+export const AuthCredentialsSchema = z.object({
+	password: PasswordSchema,
+});
 export default z.object({
 	type: z.enum(AUTH_TYPE_VALUES as [string, ...string[]]),
 	email: z.string().email("Invalid email format"),
-	password: PasswordSchema,
+	password: PasswordSchema.optional(),
 });
