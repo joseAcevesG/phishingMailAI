@@ -22,6 +22,7 @@ export const Authenticate: React.FC<Props> = ({ onAuthenticate }) => {
 
 			try {
 				const response = await fetch(`/api/auth/authenticate?${queryString}`, {
+					method: "POST",
 					signal: controller.signal,
 				});
 				if (response.ok) {

@@ -23,7 +23,7 @@ Content-Type: application/json
 
 {
     "email": "{{mail}}",
-    "type": "magic_link"
+    "type": "magic_links"
 }
 
 ### login password login ###

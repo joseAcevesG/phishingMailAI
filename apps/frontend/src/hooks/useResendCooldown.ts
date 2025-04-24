@@ -45,7 +45,7 @@ export function useResendCooldown(initialCountdown = 15) {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ email }),
+				body: JSON.stringify({ type: "magic_links", email }),
 				credentials: "include",
 			});
 
