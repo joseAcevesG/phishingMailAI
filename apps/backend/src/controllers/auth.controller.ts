@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { StytchError } from "stytch";
+import type { ZodIssue } from "zod";
 import { stytchClient } from "../config/stytch";
 import User from "../models/user.model";
 import AuthSchema, {
@@ -90,9 +91,13 @@ class AuthController {
 	login(req: Request, res: Response) {
 		const result = AuthSchema.safeParse(req.body);
 		if (!result.success) {
-			res.status(StatusCodes.BAD_REQUEST.code).json({
-				message: result.error.errors[0].message,
-			});
+			const errors = result.error.errors as ZodIssue[];
+			const firstError = errors[0];
+			let message = firstError.message;
+			if (firstError.code === "invalid_type") {
+				message = `Missing required parameter: ${firstError.path[0]}`;
+			}
+			res.status(StatusCodes.BAD_REQUEST.code).json({ message });
 			return;
 		}
 		const { email, type } = result.data;

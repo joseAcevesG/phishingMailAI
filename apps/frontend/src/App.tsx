@@ -77,7 +77,13 @@ const AppContent: React.FC = () => {
 						path="/history"
 					/>
 					<Route
-						element={isAuthenticated ? <Navigate replace to="/" /> : <Login />}
+						element={
+							isAuthenticated ? (
+								<Navigate replace to="/" />
+							) : (
+								<Login onAuthenticate={handleAuthenticate} />
+							)
+						}
 						path="/login"
 					/>
 					<Route
