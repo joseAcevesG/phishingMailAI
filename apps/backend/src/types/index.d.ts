@@ -7,7 +7,7 @@ export type InputToken = {
 };
 
 export interface User {
-	_id?: string;
+	readonly _id: string;
 	email: string;
 	api_key?: string | null;
 	freeTrial: boolean;
