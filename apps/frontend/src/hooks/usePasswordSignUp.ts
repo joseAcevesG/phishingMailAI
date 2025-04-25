@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import ErrorMessages from "../types/error-messages";
 
 const LUDS_MIN_LENGTH = 8;
 const LUDS_REQUIRED_TYPES = 4;
+
+interface Props {
+	onAuthenticate: (data: { authenticated: boolean; email: string }) => void;
+}
 
 const validatePassword = (password: string) => {
 	const errors: string[] = [];
@@ -25,12 +31,13 @@ const validatePassword = (password: string) => {
 	return errors;
 };
 
-export function usePasswordSignUp() {
+export function usePasswordSignUp({ onAuthenticate }: Props) {
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [confirmPassword, setConfirmPassword] = useState<string>("");
 	const [error, setError] = useState<string | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+	const navigate = useNavigate();
 
 	const validateAll = useCallback(() => {
 		console.log("Validating password...");
@@ -53,13 +60,43 @@ export function usePasswordSignUp() {
 		e.preventDefault();
 		setIsSubmitting(true);
 		setError(null);
+		const controller = new AbortController();
 		try {
-			// TODO: implement password sign up logic
-			console.log("Signing up with", email, password);
-		} catch (_err) {
-			setError("Sign up failed. Please try again.");
+			const response = await fetch("/api/auth/signup", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					email,
+					password,
+					type: "password_login",
+				}),
+				signal: controller.signal,
+			});
+			if (!response.ok) {
+				if (response.status >= 500) {
+					throw new Error(ErrorMessages.GENERIC_ERROR);
+				}
+				const errorData = await response.json();
+				throw new Error(errorData.message || ErrorMessages.FAILED_TO_SIGNUP);
+			}
+			const data = await response.json();
+			onAuthenticate(data);
+			navigate("/");
+		} catch (error) {
+			if (error instanceof DOMException && error.name === "AbortError") {
+				// Fetch was aborted, do nothing
+				return;
+			}
+			setError(
+				error instanceof Error
+					? error.message
+					: "Signup failed. Please try again.",
+			);
 		} finally {
 			setIsSubmitting(false);
+			controller.abort();
 		}
 	};
 

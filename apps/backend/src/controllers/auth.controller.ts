@@ -63,10 +63,21 @@ class AuthController {
 					email: email,
 					password: password,
 				})
+				.then((response) => {
+					const email = response.user.emails[0].email;
+					return User.findOne({ email });
+				})
+				.then((user) => {
+					if (!user) {
+						return User.create({ email });
+					}
+					return user;
+				})
+				.then((user) => {
+					return issueAuthTokens(res, email, user._id);
+				})
 				.then(() => {
-					res.json({
-						message: "User created successfully",
-					});
+					res.json({ authenticated: true, email });
 				})
 				.catch((err) => {
 					if (

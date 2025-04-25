@@ -1,7 +1,11 @@
 import { usePasswordSignUp } from "../../hooks/usePasswordSignUp";
 import styles from "./Password.module.css";
 
-const PasswordSignUp: React.FC = () => {
+interface Props {
+	onAuthenticate: (data: { authenticated: boolean; email: string }) => void;
+}
+
+const PasswordSignUp: React.FC<Props> = ({ onAuthenticate }) => {
 	const {
 		email,
 		setEmail,
@@ -12,7 +16,7 @@ const PasswordSignUp: React.FC = () => {
 		error,
 		isSubmitting,
 		handlePasswordSignUp,
-	} = usePasswordSignUp();
+	} = usePasswordSignUp({ onAuthenticate });
 
 	return (
 		<form className={styles.passwordForm} onSubmit={handlePasswordSignUp}>

@@ -6,9 +6,13 @@ import PasswordSignUp from "../../components/auth/PasswordSignUp";
 
 interface Props {
 	isAuthenticated?: boolean;
+	onAuthenticate: (data: { authenticated: boolean; email: string }) => void;
 }
 
-export const SignUp: React.FC<Props> = ({ isAuthenticated }) => {
+export const SignUp: React.FC<Props> = ({
+	isAuthenticated,
+	onAuthenticate,
+}) => {
 	const [selectedMethod, setSelectedMethod] = useState<"magic" | "password">(
 		"magic"
 	);
@@ -41,7 +45,11 @@ export const SignUp: React.FC<Props> = ({ isAuthenticated }) => {
 						Password
 					</button>
 				</div>
-				{selectedMethod === "magic" ? <MagicLinkLogin /> : <PasswordSignUp />}
+				{selectedMethod === "magic" ? (
+					<MagicLinkLogin />
+				) : (
+					<PasswordSignUp onAuthenticate={onAuthenticate} />
+				)}
 			</div>
 		</div>
 	);

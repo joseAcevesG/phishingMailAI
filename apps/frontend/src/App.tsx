@@ -87,7 +87,13 @@ const AppContent: React.FC = () => {
 						path="/login"
 					/>
 					<Route
-						element={isAuthenticated ? <Navigate replace to="/" /> : <SignUp />}
+						element={
+							isAuthenticated ? (
+								<Navigate replace to="/" />
+							) : (
+								<SignUp onAuthenticate={handleAuthenticate} />
+							)
+						}
 						path="/signup"
 					/>
 					<Route
