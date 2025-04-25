@@ -58,7 +58,9 @@ describe("AnalyzeMailController", () => {
 		it("should return 400 if no file", () => {
 			AnalyzeMailController.create(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
-			expect(res.send).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.message);
+			expect(res.json).toHaveBeenCalledWith({
+				message: StatusCodes.BAD_REQUEST.message,
+			});
 		});
 
 		it("should return 400 if email content is empty", async () => {
@@ -68,7 +70,9 @@ describe("AnalyzeMailController", () => {
 			await new Promise((r) => setImmediate(r));
 			expect(readFile).toHaveBeenCalledWith("path", "utf-8");
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
-			expect(res.send).toHaveBeenCalledWith("Email content cannot be empty");
+			expect(res.json).toHaveBeenCalledWith({
+				message: "Email content cannot be empty",
+			});
 		});
 
 		it("should return analysis on success", async () => {
@@ -127,7 +131,9 @@ describe("AnalyzeMailController", () => {
 			AnalyzeMailController.create(req, res);
 			await new Promise((r) => setImmediate(r));
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
-			expect(res.send).toHaveBeenCalledWith("Invalid OpenAI API key provided");
+			expect(res.json).toHaveBeenCalledWith({
+				message: "Invalid OpenAI API key provided",
+			});
 		});
 
 		it("should return 500 for other errors", async () => {
@@ -138,9 +144,9 @@ describe("AnalyzeMailController", () => {
 			expect(res.status).toHaveBeenCalledWith(
 				StatusCodes.INTERNAL_SERVER_ERROR.code,
 			);
-			expect(res.send).toHaveBeenCalledWith(
-				StatusCodes.INTERNAL_SERVER_ERROR.message,
-			);
+			expect(res.json).toHaveBeenCalledWith({
+				message: StatusCodes.INTERNAL_SERVER_ERROR.message,
+			});
 		});
 	});
 
@@ -148,7 +154,9 @@ describe("AnalyzeMailController", () => {
 		it("should return 401 if no user", () => {
 			AnalyzeMailController.read(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.code);
-			expect(res.send).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.message);
+			expect(res.json).toHaveBeenCalledWith({
+				message: StatusCodes.UNAUTHORIZED.message,
+			});
 		});
 
 		it("should return analysis list", () => {
@@ -176,7 +184,9 @@ describe("AnalyzeMailController", () => {
 		it("should return 401 if no user", () => {
 			AnalyzeMailController.getById(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.code);
-			expect(res.send).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.message);
+			expect(res.json).toHaveBeenCalledWith({
+				message: StatusCodes.UNAUTHORIZED.message,
+			});
 		});
 
 		it("should return 400 if invalid id", () => {
@@ -184,7 +194,7 @@ describe("AnalyzeMailController", () => {
 			req.params = { id: "bad" };
 			AnalyzeMailController.getById(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
-			expect(res.json).toHaveBeenCalledWith({ error: expect.any(String) });
+			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
 		});
 
 		it("should return 404 if analysis not found", () => {
@@ -204,7 +214,7 @@ describe("AnalyzeMailController", () => {
 			req.params = { id: "bbbbbbbbbbbbbbbbbbbbbbbb" };
 			AnalyzeMailController.getById(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND.code);
-			expect(res.send).toHaveBeenCalledWith("Analysis not found");
+			expect(res.json).toHaveBeenCalledWith({ message: "Analysis not found" });
 		});
 
 		it("should return analysis if found", () => {
@@ -228,7 +238,9 @@ describe("AnalyzeMailController", () => {
 		it("should return 401 if no user", () => {
 			AnalyzeMailController.delete(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.code);
-			expect(res.send).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.message);
+			expect(res.json).toHaveBeenCalledWith({
+				message: StatusCodes.UNAUTHORIZED.message,
+			});
 		});
 
 		it("should return 400 if invalid id", () => {
@@ -236,7 +248,7 @@ describe("AnalyzeMailController", () => {
 			req.params = { id: "bad" };
 			AnalyzeMailController.delete(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
-			expect(res.json).toHaveBeenCalledWith({ error: expect.any(String) });
+			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
 		});
 
 		it("should return list if analysis not found", () => {
@@ -256,7 +268,7 @@ describe("AnalyzeMailController", () => {
 			};
 			req.params = { id: "bbbbbbbbbbbbbbbbbbbbbbbb" };
 			AnalyzeMailController.delete(req, res);
-			expect(res.send).toHaveBeenCalledWith([
+			expect(res.json).toHaveBeenCalledWith([
 				{ _id: id1, subject: "s", from: "f", to: "t" },
 			]);
 		});
@@ -285,7 +297,7 @@ describe("AnalyzeMailController", () => {
 				{ $set: { analysis: [] } },
 				{ new: true },
 			);
-			expect(res.send).toHaveBeenCalledWith([]);
+			expect(res.json).toHaveBeenCalledWith([]);
 		});
 
 		it("should return 500 on db error", async () => {
@@ -312,9 +324,9 @@ describe("AnalyzeMailController", () => {
 			expect(res.status).toHaveBeenCalledWith(
 				StatusCodes.INTERNAL_SERVER_ERROR.code,
 			);
-			expect(res.send).toHaveBeenCalledWith(
-				StatusCodes.INTERNAL_SERVER_ERROR.message,
-			);
+			expect(res.json).toHaveBeenCalledWith({
+				message: StatusCodes.INTERNAL_SERVER_ERROR.message,
+			});
 		});
 	});
 });
