@@ -1,4 +1,4 @@
-import type { Analysis } from "@shared/types";
+import type { Analysis } from "shared";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ResultView } from "../../components/ResultView/ResultView";

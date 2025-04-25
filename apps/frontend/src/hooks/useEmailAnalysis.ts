@@ -1,6 +1,6 @@
-import type { Analysis } from "@shared/types";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { Analysis } from "shared";
 import ErrorMessages from "../types/error-messages";
 
 export const useEmailAnalysis = () => {

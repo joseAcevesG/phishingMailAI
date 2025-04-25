@@ -1,8 +1,8 @@
 import { readFile } from "node:fs/promises";
-import type { Analysis } from "@shared/types";
 import type { Request, Response } from "express";
 import { simpleParser } from "mailparser";
 import { Types } from "mongoose";
+import type { Analysis } from "shared";
 import openaiConfig from "../config/openai";
 import userModel from "../models/user.model";
 import IdSchema from "../schemas/id.schema";

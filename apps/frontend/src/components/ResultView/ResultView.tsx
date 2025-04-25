@@ -1,4 +1,4 @@
-import type { Analysis } from "@shared/types";
+import type { Analysis } from "shared";
 import styles from "./ResultView.module.css";
 
 interface Props {

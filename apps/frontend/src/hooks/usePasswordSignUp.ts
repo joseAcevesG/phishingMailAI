@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { authTypes } from "shared/auth-types";
 import ErrorMessages from "../types/error-messages";
 
 const LUDS_MIN_LENGTH = 8;
@@ -70,7 +71,7 @@ export function usePasswordSignUp({ onAuthenticate }: Props) {
 				body: JSON.stringify({
 					email,
 					password,
-					type: "password_login",
+					type: authTypes.passwordLogin,
 				}),
 				signal: controller.signal,
 			});

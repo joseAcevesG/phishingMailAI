@@ -4,10 +4,6 @@
 		"jsx": "react-jsx",
 		"moduleResolution": "bundler",
 		"baseUrl": ".",
-		"paths": {
-			"@shared": ["../../packages/shared/src"],
-			"@shared/*": ["../../packages/shared/src/*"]
-		},
 		"noEmit": true
 	},
 	"references": [{ "path": "../../packages/shared" }],

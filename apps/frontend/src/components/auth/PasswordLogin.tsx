@@ -2,6 +2,7 @@ import { useState } from "react";
 import styles from "./Password.module.css";
 import { useNavigate } from "react-router-dom";
 import ErrorMessages from "../../types/error-messages";
+import { authTypes } from "shared/auth-types";
 
 interface Props {
 	onAuthenticate: (data: { authenticated: boolean; email: string }) => void;
@@ -28,7 +29,7 @@ const PasswordLogin: React.FC<Props> = ({ onAuthenticate }) => {
 				body: JSON.stringify({
 					email,
 					password,
-					type: "password_login",
+					type: authTypes.passwordLogin,
 				}),
 				signal: controller.signal,
 			});

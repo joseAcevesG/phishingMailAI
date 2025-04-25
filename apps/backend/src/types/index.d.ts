@@ -1,5 +1,5 @@
-import type { Analysis } from "@shared/types";
-import type { authTypes } from "../utils/auth-types";
+import type { authTypes } from "shared/auth-types";
+import type { Analysis } from "shared/types";
 import type { ResponseCodes } from "../utils/response-codes";
 
 export type InputToken = {

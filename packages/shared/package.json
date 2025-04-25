@@ -1,0 +1,35 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./auth-types": {
+      "import": "./dist/auth-types.js",
+      "require": "./dist/auth-types.js",
+      "types": "./dist/auth-types.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "rimraf dist *.tsbuildinfo && tsc -b",
+    "format": "biome format --write src",
+    "format:detailed": "biome format src",
+    "lint": "biome lint --write src",
+    "lint:detailed": "biome lint src",
+    "check": "biome check --write src",
+    "check:detailed": "biome check src"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.5.0",
+  "devDependencies": {
+    "rimraf": "^6.0.1"
+  }
+}

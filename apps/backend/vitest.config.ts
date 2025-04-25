@@ -1,4 +1,3 @@
-import path from "node:path";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -10,11 +9,6 @@ export default defineConfig({
 			provider: "istanbul",
 			reporter: ["text", "html", "lcov"],
 			exclude: ["node_modules/", "dist/"],
-		},
-	},
-	resolve: {
-		alias: {
-			"@shared": path.resolve(__dirname, "../../packages/shared/src"),
 		},
 	},
 });

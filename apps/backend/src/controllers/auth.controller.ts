@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { authTypes } from "shared/auth-types";
 import { StytchError } from "stytch";
 import type { ZodIssue } from "zod";
 import { stytchClient } from "../config/stytch";
@@ -7,7 +8,6 @@ import AuthSchema, {
 	AuthCredentialsSchema,
 	MailSchema,
 } from "../schemas/auth.schema";
-import { authTypes } from "../utils/auth-types";
 import { encrypt } from "../utils/encrypt-string";
 import StatusCodes from "../utils/response-codes";
 import {
