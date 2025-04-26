@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import type { Request, Response } from "express";
 import { simpleParser } from "mailparser";
 import { Types } from "mongoose";
 import {
@@ -13,8 +14,8 @@ import {
 import openaiConfig from "../../../src/config/openai";
 import AnalyzeMailController from "../../../src/controllers/analyze-mail.controller";
 import userModel from "../../../src/models/user.model";
+import type { User } from "../../../src/types";
 import StatusCodes from "../../../src/utils/response-codes";
-
 vi.mock("node:fs/promises", () => ({ readFile: vi.fn() }));
 vi.mock("mailparser", () => ({ simpleParser: vi.fn() }));
 vi.mock("../../../src/config/openai", () => ({
@@ -29,28 +30,56 @@ vi.mock("../../../src/models/user.model", () => ({
 
 const testId = "test-id";
 vi.spyOn(Types, "ObjectId").mockImplementation(
-	// biome-ignore lint/suspicious/noExplicitAny: ignore for tests
-	() => ({ toString: () => testId }) as any,
+	() => ({ toString: () => testId }) as Types.ObjectId,
 );
 
+/** Test-specific request & response types */
+type TestRequest = Request & {
+	file?: { path: string };
+	user?: User;
+	params?: { id: string };
+};
+// Response mock stub with vitest Mock
+type TestResponse = Response & {
+	status: Mock;
+	json: Mock;
+};
+
 describe("AnalyzeMailController", () => {
-	// biome-ignore lint/suspicious/noExplicitAny: ignore for tests
-	let req: any;
-	// biome-ignore lint/suspicious/noExplicitAny: ignore for tests
-	let res: any;
+	let req: TestRequest;
+	let res: TestResponse;
+	let userMock: User;
 	let id1: string;
+	let runUser: User;
 
 	beforeAll(() => {
 		id1 = "aaaaaaaaaaaaaaaaaaaaaaaa";
+		userMock = {
+			_id: "u1",
+			email: "user@example.com",
+			freeTrial: true,
+			usageFreeTrial: 0,
+			analysis: [
+				{
+					_id: id1,
+					subject: "s",
+					from: "f",
+					to: "t",
+					phishingProbability: 0,
+					reasons: [],
+					redFlags: [],
+				},
+			],
+		};
 	});
 
 	beforeEach(() => {
-		req = {};
+		req = {} as TestRequest;
+		runUser = structuredClone(userMock);
 		res = {
 			status: vi.fn().mockReturnThis(),
-			send: vi.fn(),
 			json: vi.fn(),
-		};
+		} as TestResponse;
 		vi.clearAllMocks();
 	});
 
@@ -77,7 +106,7 @@ describe("AnalyzeMailController", () => {
 
 		it("should return analysis on success", async () => {
 			req.file = { path: "path" };
-			req.user = { _id: "u1", analysis: [] };
+			req.user = runUser;
 			(readFile as Mock).mockResolvedValue("raw email");
 			(simpleParser as Mock).mockResolvedValue({
 				html: "<p>hi</p>",
@@ -160,22 +189,10 @@ describe("AnalyzeMailController", () => {
 		});
 
 		it("should return analysis list", () => {
-			req.user = {
-				analysis: [
-					{
-						_id: "i1",
-						subject: "s",
-						from: "f",
-						to: "t",
-						phishingProbability: 0,
-						reasons: [],
-						redFlags: [],
-					},
-				],
-			};
+			req.user = runUser;
 			AnalyzeMailController.read(req, res);
 			expect(res.json).toHaveBeenCalledWith([
-				{ _id: "i1", subject: "s", from: "f", to: "t" },
+				{ _id: id1, subject: "s", from: "f", to: "t" },
 			]);
 		});
 	});
@@ -190,7 +207,7 @@ describe("AnalyzeMailController", () => {
 		});
 
 		it("should return 400 if invalid id", () => {
-			req.user = { analysis: [] };
+			req.user = runUser;
 			req.params = { id: "bad" };
 			AnalyzeMailController.getById(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
@@ -198,19 +215,7 @@ describe("AnalyzeMailController", () => {
 		});
 
 		it("should return 404 if analysis not found", () => {
-			req.user = {
-				analysis: [
-					{
-						_id: id1,
-						subject: "s",
-						from: "f",
-						to: "t",
-						phishingProbability: 0,
-						reasons: [],
-						redFlags: [],
-					},
-				],
-			};
+			req.user = runUser;
 			req.params = { id: "bbbbbbbbbbbbbbbbbbbbbbbb" };
 			AnalyzeMailController.getById(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND.code);
@@ -227,7 +232,7 @@ describe("AnalyzeMailController", () => {
 				reasons: [],
 				redFlags: [],
 			};
-			req.user = { analysis: [analysis] };
+			req.user = runUser;
 			req.params = { id: id1 };
 			AnalyzeMailController.getById(req, res);
 			expect(res.json).toHaveBeenCalledWith(analysis);
@@ -244,7 +249,7 @@ describe("AnalyzeMailController", () => {
 		});
 
 		it("should return 400 if invalid id", () => {
-			req.user = { _id: "u1", analysis: [] };
+			req.user = runUser;
 			req.params = { id: "bad" };
 			AnalyzeMailController.delete(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
@@ -252,20 +257,7 @@ describe("AnalyzeMailController", () => {
 		});
 
 		it("should return list if analysis not found", () => {
-			req.user = {
-				_id: "u1",
-				analysis: [
-					{
-						_id: id1,
-						subject: "s",
-						from: "f",
-						to: "t",
-						phishingProbability: 0,
-						reasons: [],
-						redFlags: [],
-					},
-				],
-			};
+			req.user = runUser;
 			req.params = { id: "bbbbbbbbbbbbbbbbbbbbbbbb" };
 			AnalyzeMailController.delete(req, res);
 			expect(res.json).toHaveBeenCalledWith([
@@ -274,20 +266,7 @@ describe("AnalyzeMailController", () => {
 		});
 
 		it("should delete and return list on success", async () => {
-			req.user = {
-				_id: "u1",
-				analysis: [
-					{
-						_id: id1,
-						subject: "s",
-						from: "f",
-						to: "t",
-						phishingProbability: 0,
-						reasons: [],
-						redFlags: [],
-					},
-				],
-			};
+			req.user = runUser;
 			req.params = { id: id1 };
 			(userModel.findOneAndUpdate as Mock).mockResolvedValue({ analysis: [] });
 			AnalyzeMailController.delete(req, res);
@@ -301,20 +280,7 @@ describe("AnalyzeMailController", () => {
 		});
 
 		it("should return 500 on db error", async () => {
-			req.user = {
-				_id: "u1",
-				analysis: [
-					{
-						_id: id1,
-						subject: "s",
-						from: "f",
-						to: "t",
-						phishingProbability: 0,
-						reasons: [],
-						redFlags: [],
-					},
-				],
-			};
+			req.user = runUser;
 			req.params = { id: id1 };
 			(userModel.findOneAndUpdate as Mock).mockRejectedValue(
 				new Error("db error"),
