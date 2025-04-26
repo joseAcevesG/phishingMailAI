@@ -1,4 +1,4 @@
-import styles from './MagicLinkLogin.module.css';
+import styles from "./MagicLinkLogin.module.css";
 import { useResendCooldown } from "../../hooks/useResendCooldown";
 
 export const MagicLinkLogin: React.FC = () => {

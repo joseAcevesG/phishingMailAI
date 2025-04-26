@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import styles from "./Login.module.css";
 import MagicLinkLogin from "../../components/auth/MagicLinkLogin";
 import PasswordLogin from "../../components/auth/PasswordLogin";
@@ -47,6 +47,9 @@ export const Login: React.FC<Props> = ({ isAuthenticated, onAuthenticate }) => {
 				) : (
 					<PasswordLogin onAuthenticate={onAuthenticate} />
 				)}
+				<Link className={styles.link} to="/signup">
+					Don't have an account?
+				</Link>
 			</div>
 		</div>
 	);

@@ -1,20 +1,27 @@
 .signupContainer {
-	display: flex;
-	align-items: center;
-	justify-content: center;
 	background: var(--bg-primary);
-	transition: all 0.3s ease;
+	min-height: 39rem;
+	margin: 1.5rem 0;
 }
 
 .signupBox {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	flex-direction: column;
 	background: var(--bg-secondary);
-	padding: 1rem 3rem;
+	padding: 0 3rem;
 	border-radius: 8px;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 	width: 100%;
 	max-width: 400px;
 	text-align: center;
-	min-height: 35rem;
+	height: 100%;
+	transition: all 0.3s ease;
+}
+
+.signupBox h1 {
+	margin-top: 1rem;
 }
 
 .toggleContainer {
@@ -45,4 +52,14 @@
 .toggleActive {
 	background: var(--accent);
 	color: #fff;
+}
+
+.link {
+	margin: 1rem 0;
+	text-decoration: none;
+	color: var(--text-primary);
+}
+
+.link:hover {
+	text-decoration: underline;
 }
