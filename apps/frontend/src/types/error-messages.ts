@@ -7,6 +7,7 @@ export const ErrorMessages = {
 	FAILED_TO_LOGIN: "Failed to login",
 	FAILED_TO_SIGNUP: "Failed to signup",
 	FAILED_TO_FETCH_HISTORY: "Failed to fetch history",
+	FAILED_TO_RESET_PASSWORD: "Failed to reset password",
 	FAILED_TO_SET_API_KEY: "Failed to set API key",
 } as const;
 

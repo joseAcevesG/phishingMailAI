@@ -1,0 +1,72 @@
+.loginContainer {
+	background: var(--bg-primary);
+	min-height: 34rem;
+	margin: 1.5rem 0;
+}
+
+.loginBox {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	flex-direction: column;
+	background: var(--bg-secondary);
+	padding: 0 3rem;
+	border-radius: 8px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+	width: 100%;
+	max-width: 400px;
+	text-align: center;
+	transition: all 0.3s ease;
+	height: 100%;
+}
+
+.loginBox h1 {
+	margin-top: 1rem;
+}
+
+.toggleContainer {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+	margin: 2rem 0 2.5rem 0;
+}
+
+.toggleButton {
+	background: var(--bg-primary);
+	color: var(--text-primary);
+	border: none;
+	border-radius: 6px;
+	padding: 0.7rem 1.5rem;
+	font-size: 1.1rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.07);
+}
+
+.toggleButton:hover {
+	background: var(--bg-secondary);
+	color: var(--accent);
+}
+
+.toggleActive {
+	background: var(--accent);
+	color: #fff;
+}
+
+.linkContainer {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+	margin: 2rem 0 2.5rem 0;
+}
+
+.link {
+	margin: 1rem 0;
+	text-decoration: none;
+	color: var(--text-primary);
+}
+
+.link:hover {
+	text-decoration: underline;
+}
