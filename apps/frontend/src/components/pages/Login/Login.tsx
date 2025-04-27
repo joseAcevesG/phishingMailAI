@@ -1,18 +1,15 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import styles from "./SignUp.module.css";
-import MagicLinkLogin from "../../components/auth/MagicLinkLogin";
-import PasswordSignUp from "../../components/auth/PasswordSignUp";
+import styles from "./Login.module.css";
+import MagicLinkLogin from "../../auth/MagicLinkLogin";
+import PasswordLogin from "../../auth/PasswordLogin";
 
 interface Props {
 	isAuthenticated?: boolean;
 	onAuthenticate: (data: { authenticated: boolean; email: string }) => void;
 }
 
-export const SignUp: React.FC<Props> = ({
-	isAuthenticated,
-	onAuthenticate,
-}) => {
+export const Login: React.FC<Props> = ({ isAuthenticated, onAuthenticate }) => {
 	const [selectedMethod, setSelectedMethod] = useState<"magic" | "password">(
 		"magic"
 	);
@@ -21,10 +18,10 @@ export const SignUp: React.FC<Props> = ({
 	}
 
 	return (
-		<div className={styles.signupContainer} id="signup">
-			<div className={styles.signupBox}>
+		<div className={styles.loginContainer} id="login">
+			<div className={styles.loginBox}>
 				<h1>Welcome to Phishing Mail AI</h1>
-				<p>Please sign up to continue</p>
+				<p>Please log in to continue</p>
 				<div className={styles.toggleContainer}>
 					<button
 						className={`${styles.toggleButton} ${
@@ -48,14 +45,19 @@ export const SignUp: React.FC<Props> = ({
 				{selectedMethod === "magic" ? (
 					<MagicLinkLogin />
 				) : (
-					<PasswordSignUp onAuthenticate={onAuthenticate} />
+					<PasswordLogin onAuthenticate={onAuthenticate} />
 				)}
-				<Link className={styles.link} to="/login">
-					Already have an account?
-				</Link>
+				<div className={styles.linkContainer}>
+					{selectedMethod === "password" && (
+						<Link className={styles.link} to="/reset-password-link">
+							Forgot your password?
+						</Link>
+					)}
+					<Link className={styles.link} to="/signup">
+						Don't have an account?
+					</Link>
+				</div>
 			</div>
 		</div>
 	);
 };
-
-export default SignUp;

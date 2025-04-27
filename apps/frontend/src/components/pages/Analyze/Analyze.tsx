@@ -1,8 +1,8 @@
 import type { Analysis } from "shared";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ResultView } from "../../components/ResultView/ResultView";
-import ErrorMessages from "../../types/error-messages";
+import { ResultView } from "../../ResultView/ResultView";
+import ErrorMessages from "../../../types/error-messages";
 
 const Analyze: React.FC = () => {
 	const { id } = useParams<{ id: string }>();

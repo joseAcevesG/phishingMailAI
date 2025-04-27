@@ -1,6 +1,6 @@
 .footer {
 	grid-area: footer;
-	padding: 1rem;
+	padding: 1rem 0;
 	background-color: var(--bg-primary);
 	position: sticky;
 	bottom: 0;

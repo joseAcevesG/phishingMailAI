@@ -1,7 +1,7 @@
 "use client";
 
 import { Link } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 import styles from "./Landing.module.css";
 
 export const Landing: React.FC = () => {

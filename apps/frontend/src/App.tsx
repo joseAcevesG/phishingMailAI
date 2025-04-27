@@ -9,14 +9,16 @@ import Footer from "./components/Footer/Footer";
 import { Header } from "./components/Header/Header";
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
 import { useAuth } from "./hooks/useAuth";
-import Analyze from "./pages/Analyze/Analyze";
-import { Authenticate } from "./pages/Authenticate/Authenticate";
-import HistoryPage from "./pages/History/History";
-import Home from "./pages/Home/Home";
-import { Landing } from "./pages/Landing/Landing";
-import { Login } from "./pages/Login/Login";
-import ApiKeyForm from "./pages/settings/settings";
-import SignUp from "./pages/SignUp/SignUp";
+import Analyze from "./components/pages/Analyze/Analyze";
+import { Authenticate } from "./components/pages/Authenticate/Authenticate";
+import HistoryPage from "./components/pages/History/History";
+import Home from "./components/pages/Home/Home";
+import { Landing } from "./components/pages/Landing/Landing";
+import { Login } from "./components/pages/Login/Login";
+import ApiKeyForm from "./components/pages/settings/settings";
+import SignUp from "./components/pages/SignUp/SignUp";
+import { ResetLink } from "./components/pages/ResetLink/ResetLink";
+import { ResetPassword } from "./components/pages/ResetPassword/ResetPassword";
 
 const AppContent: React.FC = () => {
 	const {
@@ -52,6 +54,7 @@ const AppContent: React.FC = () => {
 						}
 						path="/"
 					/>
+					<Route element={<ResetLink />} path="/reset-password-link" />
 					<Route
 						element={
 							<ProtectedRoute isAuthenticated={isAuthenticated}>
@@ -106,6 +109,7 @@ const AppContent: React.FC = () => {
 						}
 						path="/authenticate"
 					/>
+					<Route element={<ResetPassword />} path="/reset-password" />
 				</Routes>
 			</main>
 			<Footer />

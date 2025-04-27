@@ -1,5 +1,5 @@
-import styles from "./MagicLinkLogin.module.css";
-import { useResendCooldown } from "../../hooks/useResendCooldown";
+import styles from "./MagicLink.module.css";
+import { useMagicLogin } from "../../hooks/useMagicLogin";
 
 export const MagicLinkLogin: React.FC = () => {
 	const {
@@ -10,7 +10,7 @@ export const MagicLinkLogin: React.FC = () => {
 		error,
 		setError,
 		handleMagicLinkRequest,
-	} = useResendCooldown(15);
+	} = useMagicLogin(15);
 
 	return (
 		<form
@@ -35,7 +35,7 @@ export const MagicLinkLogin: React.FC = () => {
 			{error && <p className={styles.errorMessage}>{error}</p>}
 			<button
 				className={styles.loginButton}
-				disabled={isButtonDisabled}
+				disabled={isButtonDisabled || email.length === 0}
 				type="submit"
 			>
 				{isButtonDisabled

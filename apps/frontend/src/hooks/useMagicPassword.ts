@@ -6,7 +6,7 @@ import ErrorMessages from "../types/error-messages";
  * @param initialCountdown The initial countdown value in seconds (default: 15)
  * @returns Object with email, setEmail, isButtonDisabled, setIsButtonDisabled, countdown, error, setError
  */
-export function useResendCooldown(initialCountdown = 15) {
+export function useMagicPassword(initialCountdown = 15) {
 	const [email, setEmail] = useState("");
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const [countdown, setCountdown] = useState(initialCountdown);
@@ -40,7 +40,7 @@ export function useResendCooldown(initialCountdown = 15) {
 
 		try {
 			setError(null);
-			const response = await fetch("/api/auth/login", {
+			const response = await fetch("/api/auth/reset-password", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

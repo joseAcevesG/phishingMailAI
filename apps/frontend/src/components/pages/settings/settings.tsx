@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./settings.module.css";
-import ErrorMessages from "../../types/error-messages";
+import ErrorMessages from "../../../types/error-messages";
 
 const ApiKeyForm: React.FC = () => {
 	const [apiKey, setApiKey] = useState("");
@@ -17,7 +17,7 @@ const ApiKeyForm: React.FC = () => {
 		const controller = new AbortController();
 
 		try {
-			const response = await fetch("/api/auth/changeTrial", {
+			const response = await fetch("/api/auth/change-trial", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -77,6 +77,9 @@ const ApiKeyForm: React.FC = () => {
 					{isSubmitting ? "Submitting..." : "Save API Key"}
 				</button>
 			</form>
+			<Link className={styles.link} to="/reset-password-link">
+				Reset Password
+			</Link>
 		</div>
 	);
 };

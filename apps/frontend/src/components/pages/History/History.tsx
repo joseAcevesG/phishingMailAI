@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { History } from "../../types";
+import type { History } from "../../../types";
 import styles from "./History.module.css";
-import ErrorMessages from "../../types/error-messages";
+import ErrorMessages from "../../../types/error-messages";
 
 const HistoryPage: React.FC = () => {
 	const [history, setHistory] = useState<History[]>([]);
