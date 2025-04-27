@@ -6,7 +6,6 @@
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"baseUrl": ".",
-		"paths": {},
 		"typeRoots": ["./src/types", "./node_modules/@types"]
 	},
 	"references": [{ "path": "../../packages/shared" }],

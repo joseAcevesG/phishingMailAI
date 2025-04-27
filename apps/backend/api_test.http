@@ -37,7 +37,7 @@ Content-Type: application/json
 }
 
 ### reset password ###
-POST {{base_url}}/auth/resetPassword
+POST {{base_url}}/auth/reset-password
 Content-Type: application/json
 
 {
@@ -46,6 +46,9 @@ Content-Type: application/json
 
 ### authenticate magic link ###
 POST {{base_url}}/auth/authenticate?stytch_token_type=magic_links&token={{token}}
+
+### authenticate login ###
+POST {{base_url}}/auth/authenticate?stytch_token_type=login&token={{token}}
 
 ### authenticate password reset ###
 POST {{base_url}}/auth/authenticate?stytch_token_type=reset_password&token={{token}}
@@ -63,10 +66,10 @@ GET {{base_url}}/auth/status
 POST {{base_url}}/auth/logout
 
 ### logout all ###
-POST {{base_url}}/auth/logoutAll
+POST {{base_url}}/auth/logout-all
 
 ### change trial ###
-POST {{base_url}}/auth/changeTrial
+POST {{base_url}}/auth/change-trial
 Content-Type: application/json
 
 {

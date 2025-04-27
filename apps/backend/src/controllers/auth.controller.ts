@@ -193,7 +193,7 @@ class AuthController {
 	authenticate(req: Request, res: Response) {
 		const token = req.query.token as string;
 		const tokenType = req.query.stytch_token_type as string;
-		if (tokenType === authTypes.magicLink) {
+		if (tokenType === authTypes.magicLink || tokenType === authTypes.login) {
 			if (!token) {
 				res.status(StatusCodes.BAD_REQUEST.code).json({
 					message: "Token is required",
