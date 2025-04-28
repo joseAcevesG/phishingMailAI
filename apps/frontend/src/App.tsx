@@ -49,7 +49,7 @@ const AppContent: React.FC = () => {
 									<Home />
 								</ProtectedRoute>
 							) : (
-								<Landing />
+								<Landing isAuthenticated={isAuthenticated} />
 							)
 						}
 						path="/"

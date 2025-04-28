@@ -37,7 +37,6 @@ export function useMagicLogin(initialCountdown = 15) {
 		}
 
 		const controller = new AbortController();
-
 		try {
 			setError(null);
 			const response = await fetch("/api/auth/login", {

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { AuthState } from "../types";
+import type { APIMessage, AuthState } from "../types";
+import { useFetch } from "./useFetch";
 
 export const useAuth = () => {
 	const [state, setState] = useState<AuthState>({
@@ -10,33 +11,28 @@ export const useAuth = () => {
 	});
 	const navigate = useNavigate();
 
+	const { execute: executeLogout, error: logoutError } = useFetch<APIMessage>(
+		{
+			url: "/api/auth/logout",
+			method: "POST",
+			credentials: "include",
+		},
+		false,
+	);
+
 	const handleLogout = useCallback(async () => {
-		const controller = new AbortController();
-		try {
-			const response = await fetch("/api/auth/logout", {
-				method: "POST",
-				credentials: "include",
-				signal: controller.signal,
-			});
-			if (response.ok) {
-				setState((prev) => ({
-					...prev,
-					isAuthenticated: false,
-					userEmail: null,
-				}));
-				navigate("/login");
-				return;
-			}
-		} catch (error) {
-			if (error instanceof DOMException && error.name === "AbortError") {
-				// Fetch was aborted, do nothing
-				return;
-			}
-			console.error("Logout failed:", error);
+		const result = await executeLogout();
+		if (result !== null) {
+			setState((prev) => ({
+				...prev,
+				isAuthenticated: false,
+				userEmail: null,
+			}));
+			navigate("/login", { replace: true });
+		} else if (logoutError) {
+			console.error("Logout failed:", logoutError);
 		}
-		// Optionally return abort method for manual cancellation
-		return () => controller.abort();
-	}, [navigate]);
+	}, [executeLogout, navigate, logoutError]);
 
 	const handleAuthenticate = useCallback(
 		(data: { authenticated: boolean; email: string }) => {
@@ -49,50 +45,32 @@ export const useAuth = () => {
 		[],
 	);
 
+	const { execute: fetchStatus } = useFetch<{
+		authenticated: boolean;
+		email: string;
+	}>(
+		{
+			url: "/api/auth/status",
+			credentials: "include",
+		},
+		false,
+	);
+
 	useEffect(() => {
-		const controller = new AbortController();
-		const checkAuth = async () => {
-			try {
-				const response = await fetch("/api/auth/status", {
-					credentials: "include",
-					signal: controller.signal,
-				});
-				if (response.ok) {
-					const data = await response.json();
-					setState((prev) => ({
-						...prev,
-						isAuthenticated: data.authenticated,
-						userEmail: data.email,
-						loading: false,
-					}));
-				} else {
-					setState((prev) => ({
-						...prev,
-						isAuthenticated: false,
-						userEmail: null,
-						loading: false,
-					}));
-				}
-			} catch (error) {
-				if (error instanceof DOMException && error.name === "AbortError") {
-					// Fetch was aborted, do nothing
-					return;
-				}
-				console.error("Auth check failed:", error);
+		setState((prev) => ({ ...prev, loading: true }));
+		fetchStatus().then((result) => {
+			if (result) {
+				handleAuthenticate(result);
+			} else {
 				setState((prev) => ({
 					...prev,
 					isAuthenticated: false,
 					userEmail: null,
-					loading: false,
 				}));
 			}
-		};
-
-		checkAuth();
-		return () => {
-			controller.abort();
-		};
-	}, []);
+			setState((prev) => ({ ...prev, loading: false }));
+		});
+	}, [fetchStatus, handleAuthenticate]);
 
 	return {
 		...state,

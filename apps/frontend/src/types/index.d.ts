@@ -10,3 +10,22 @@ export interface History {
 	from: string;
 	to: string;
 }
+
+export interface APIMessage {
+	message: string;
+}
+
+export interface FetchConfig {
+	url: string;
+	method?: string;
+	headers?: HeadersInit;
+	body?: unknown;
+	credentials?: RequestCredentials;
+}
+
+export interface UseFetchReturn<T> {
+	data: T | null;
+	error: string | null;
+	loading: boolean;
+	execute: (configOverride?: Partial<FetchConfig>) => Promise<T | null>;
+}
