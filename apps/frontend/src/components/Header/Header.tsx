@@ -42,7 +42,7 @@ export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
 					)}
 				</ul>
 			</nav>
-			{userEmail && (
+			{userEmail ? (
 				<div className={styles.userInfo}>
 					<span>Logged in as {userEmail}</span>
 					<button
@@ -53,6 +53,8 @@ export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
 						Logout
 					</button>
 				</div>
+			) : (
+				<div className={styles.userInfoPlaceholder} aria-hidden="true" />
 			)}
 		</header>
 	);

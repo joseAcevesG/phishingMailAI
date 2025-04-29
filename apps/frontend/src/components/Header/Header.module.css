@@ -1,8 +1,9 @@
 .header {
 	grid-area: header;
-	display: flex;
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	gap: 1rem;
 	align-items: center;
-	justify-content: space-between;
 	padding: 1rem 2rem;
 	background-color: #1e1e1e;
 	position: sticky;
@@ -25,9 +26,7 @@
 }
 
 .mainNav {
-	position: absolute;
-	left: 50%;
-	transform: translateX(-50%);
+	justify-self: center;
 }
 
 .mainNav ul {
@@ -66,4 +65,12 @@
 	display: flex;
 	align-items: center;
 	gap: 1rem;
+	justify-self: end;
+}
+
+.userInfoPlaceholder {
+	visibility: hidden;
+	height: 40px;
+	width: 180px; /* Adjust to match userInfo min width */
+	justify-self: end;
 }
