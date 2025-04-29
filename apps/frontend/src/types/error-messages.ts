@@ -1,6 +1,6 @@
 export const ErrorMessages = {
-	FREE_TRIAL_EXPIRED: "You are out of free tries",
-	INVALID_API_KEY: "Your OpenAI API key is invalid",
+	FREE_TRIAL_EXPIRED: "Free trial limit exceeded",
+	INVALID_API_KEY: "Invalid OpenAI API key provided",
 	FAILED_ANALYSIS: "Failed to analyze email",
 	GENERIC_ERROR: "An error occurred",
 	FAILED_TO_FETCH_ANALYSIS: "Failed to fetch analysis",

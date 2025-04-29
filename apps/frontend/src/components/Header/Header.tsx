@@ -21,10 +21,10 @@ export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
 								<Link to="/">Home</Link>
 							</li>
 							<li>
-								<Link to="/settings">Settings</Link>
+								<Link to="/history">History</Link>
 							</li>
 							<li>
-								<Link to="/history">History</Link>
+								<Link to="/settings">Settings</Link>
 							</li>
 						</>
 					) : (

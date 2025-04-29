@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Analysis } from "shared";
 import { useFetch } from "./useFetch";
@@ -15,14 +15,16 @@ export const useEmailAnalysis = () => {
 		false,
 	);
 
+	useEffect(() => {
+		if (errorFetch) setError(errorFetch);
+	}, [errorFetch]);
+
 	const analyzeEmail = async (file: File) => {
 		const formData = new FormData();
 		formData.append("emlFile", file);
 		const result = await execute({ body: formData });
 		if (result) {
 			navigate(`/analyze/${result._id}`);
-		} else {
-			setError(errorFetch || "Failed to analyze email");
 		}
 	};
 

@@ -4,51 +4,100 @@ import { useFetch } from "../../../hooks/useFetch";
 import styles from "./settings.module.css";
 import type { APIMessage } from "../../../types";
 
-const ApiKeyForm: React.FC = () => {
+const SettingsPage: React.FC = () => {
 	const [apiKey, setApiKey] = useState("");
 	const navigate = useNavigate();
-	const { execute, error, loading } = useFetch<APIMessage>(
-		{
-			url: "/api/auth/change-trial",
-			method: "POST",
-		},
+
+	// change trial / save key
+	const {
+		execute: saveKey,
+		error: keyError,
+		loading: keyLoading,
+	} = useFetch<APIMessage>(
+		{ url: "/api/auth/change-trial", method: "POST" },
 		false
 	);
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	// logout everywhere
+	const {
+		execute: logoutAll,
+		error: logoutError,
+		loading: logoutLoading,
+	} = useFetch<APIMessage>(
+		{ url: "/api/auth/logout-all", method: "POST" },
+		false
+	);
+
+	const handleKeySubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const result = await execute({ body: { api_key: apiKey } });
-		if (result) navigate("/");
+		const res = await saveKey({ body: { api_key: apiKey } });
+		if (res) navigate("/");
+	};
+
+	const handleLogoutAll = async () => {
+		const res = await logoutAll();
+		if (res) navigate("/login");
 	};
 
 	return (
-		<div className={styles.apiKeyFormContainer} id="api-key-form">
-			<h1>Set OpenAI API Key</h1>
-			<p>Please enter your OpenAI API key to continue using the service.</p>
-
-			{error && <div className={styles.errorMessage}>{error}</div>}
-
-			<form className={styles.apiKeyForm} onSubmit={handleSubmit}>
-				<div className={styles.formGroup}>
-					<label htmlFor="apiKey">API Key:</label>
-					<input
-						id="apiKey"
-						onChange={(e) => setApiKey(e.target.value)}
-						placeholder="sk-..."
-						required
-						type="password"
-						value={apiKey}
-					/>
+		<div className={styles.container}>
+			{/* Password Section */}
+			<section className={styles.section}>
+				<div className={styles.header}>
+					<h2>Password</h2>
 				</div>
-				<button disabled={loading} type="submit">
-					{loading ? "Submitting..." : "Save API Key"}
-				</button>
-			</form>
-			<Link className={styles.link} to="/reset-password-link">
-				Reset Password
-			</Link>
+				<div className={styles.body}>
+					<p>If you've forgotten your password, you can reset it here:</p>
+					<Link type="button" className={styles.link} to="/reset-password-link">
+						Reset password
+					</Link>
+				</div>
+			</section>
+
+			{/* API Key Section */}
+			<section className={styles.section}>
+				<div className={styles.header}>
+					<h2>OpenAI API Key</h2>
+				</div>
+				<div className={styles.body}>
+					<p>Enter your OpenAI API key to continue using the service.</p>
+					{keyError && <div className={styles.errorMessage}>{keyError}</div>}
+					<form className={styles.form} onSubmit={handleKeySubmit}>
+						<input
+							type="password"
+							placeholder="sk-..."
+							value={apiKey}
+							required
+							onChange={(e) => setApiKey(e.target.value)}
+						/>
+						<button disabled={keyLoading || !apiKey} type="submit">
+							{keyLoading ? "Saving…" : "Save API Key"}
+						</button>
+					</form>
+				</div>
+			</section>
+
+			{/* Danger Zone */}
+			<section className={styles.dangerZone}>
+				<div className={styles.header}>
+					<h2>Danger Zone</h2>
+				</div>
+				<div className={styles.body}>
+					{logoutError && (
+						<div className={styles.errorMessage}>{logoutError}</div>
+					)}
+					<button
+						type="button"
+						className={styles.dangerButton}
+						onClick={handleLogoutAll}
+						disabled={logoutLoading}
+					>
+						{logoutLoading ? "Logging out…" : "Log out on all devices"}
+					</button>
+				</div>
+			</section>
 		</div>
 	);
 };
 
-export default ApiKeyForm;
+export default SettingsPage;

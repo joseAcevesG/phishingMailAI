@@ -15,7 +15,7 @@ import HistoryPage from "./components/pages/History/History";
 import Home from "./components/pages/Home/Home";
 import { Landing } from "./components/pages/Landing/Landing";
 import { Login } from "./components/pages/Login/Login";
-import ApiKeyForm from "./components/pages/settings/settings";
+import SettingsPage from "./components/pages/settings/settings";
 import SignUp from "./components/pages/SignUp/SignUp";
 import { ResetLink } from "./components/pages/ResetLink/ResetLink";
 import { ResetPassword } from "./components/pages/ResetPassword/ResetPassword";
@@ -66,7 +66,7 @@ const AppContent: React.FC = () => {
 					<Route
 						element={
 							<ProtectedRoute isAuthenticated={isAuthenticated}>
-								<ApiKeyForm />
+								<SettingsPage />
 							</ProtectedRoute>
 						}
 						path="/settings"

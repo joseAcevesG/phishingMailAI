@@ -1,14 +1,10 @@
-.home-container {
-	flex: 1;
+.homeContainer {
 	display: flex;
-	justify-content: center;
 	align-items: center;
 	min-height: 100%;
-	padding: 2rem;
-	background-color: var(--bg-primary);
 }
 
-.error-box {
+.errorBox {
 	background: var(--bg-secondary);
 	padding: 3rem;
 	border-radius: 8px;
@@ -18,19 +14,19 @@
 	text-align: center;
 }
 
-.error-box h2 {
+.errorBox h2 {
 	margin-bottom: 2rem;
 	color: var(--error);
 	font-size: 2.5rem;
 }
 
-.error-box p {
+.errorBox p {
 	color: var(--text-secondary);
 	margin-bottom: 2rem;
 	font-size: 1.1rem;
 }
 
-.api-key-button {
+.apiKeyButton {
 	background-color: #28a745;
 	color: white;
 	border: none;
@@ -41,6 +37,6 @@
 	transition: background-color 0.2s;
 }
 
-.api-key-button:hover {
+.apiKeyButton:hover {
 	background-color: #218838;
 }

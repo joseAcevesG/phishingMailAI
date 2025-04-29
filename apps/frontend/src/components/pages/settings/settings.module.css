@@ -1,63 +1,125 @@
-.apiKeyFormContainer {
-	background: var(--bg-secondary);
-	padding: 3rem;
-	border-radius: 8px;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-	width: 100%;
+/* settings.module.css */
+.container {
 	max-width: 600px;
-	text-align: center;
 	margin: 2rem auto;
-}
-
-.apiKeyFormContainer h1 {
-	margin-bottom: 2rem;
-	color: var(--text-primary);
-	font-size: 2.5rem;
-}
-
-.apiKeyForm {
 	display: flex;
 	flex-direction: column;
 	gap: 2rem;
 }
 
-.formGroup {
-	position: relative;
-	margin: 0 auto;
-	width: 100%;
+.section,
+.dangerZone {
+	background: var(--bg-secondary);
+	border: 1px solid var(--border);
+	border-radius: 6px;
+	overflow: hidden;
 }
 
-.formGroup label {
-	display: block;
-	margin-bottom: 1rem;
-	color: var(--text-secondary);
-	font-size: 1.1rem;
-	text-align: left;
+.header {
+	background: var(--bg-primary);
+	padding: 1rem 1.5rem;
+	border-bottom: 1px solid var(--border);
 }
 
-.formGroup input {
-	box-sizing: border-box;
-	width: 100%;
-	padding: 1rem;
-	background-color: var(--bg-primary);
-	border: 2px solid var(--border);
-	border-radius: 8px;
-	font-size: 1.1rem;
+.header h2 {
+	margin: 0;
+	font-size: 1.5rem;
 	color: var(--text-primary);
-	transition: all 0.2s;
 }
 
-.formGroup input:focus {
-	border-color: var(--accent-primary);
+.body {
+	padding: 1.5rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	color: var(--text-secondary);
+}
+
+.body p {
+	margin: 0;
+}
+
+.link {
+	padding: 0.75rem 1.25rem;
+	background: var(--accent-primary);
+	color: var(--text-primary);
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	align-self: flex-start;
+	text-decoration: none;
+}
+
+.link:hover {
+	background: var(--accent-secondary);
+}
+
+.form {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+.form input {
+	flex: 1;
+	padding: 0.75rem;
+	background: var(--bg-primary);
+	border: 1px solid var(--border);
+	border-radius: 4px;
+	color: var(--text-primary);
+	font-size: 1rem;
+}
+.form input:focus {
 	outline: none;
-	background-color: rgba(74, 158, 255, 0.1);
+	border-color: var(--accent-primary);
+	background-color: rgba(74, 158, 255, 0.1); /* optional highlight */
+}
+
+.form button {
+	padding: 0.75rem 1.25rem;
+	background: var(--accent-primary);
+	color: var(--text-primary);
+	font-size: 1rem;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+.form button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
 }
 
 .errorMessage {
+	background: rgba(255, 68, 68, 0.1);
 	color: var(--error);
-	background-color: rgba(255, 0, 0, 0.1);
-	padding: 1rem;
+	padding: 0.75rem;
 	border-radius: 4px;
-	margin: 1rem 0;
-	font-size: 0.875rem;
+	font-size: 0.9rem;
+}
+
+.dangerZone .header {
+	/* you can tint the header a shade darker if you like */
+	background: var(--bg-secondary);
+}
+.dangerZone .header h2 {
+	color: var(--error);
+}
+
+.dangerButton {
+	padding: 0.75rem 1.25rem;
+	background: var(--error);
+	color: var(--text-primary);
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	align-self: flex-start;
+}
+
+.dangerButton:hover {
+	background-color: var(--error-dark);
+}
+
+.dangerButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
 }
