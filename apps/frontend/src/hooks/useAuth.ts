@@ -12,11 +12,10 @@ export const useAuth = () => {
 	});
 	const navigate = useNavigate();
 
-	const { execute: executeLogout, error: logoutError } = useFetch<APIMessage>(
+	const { execute: executeLogout } = useFetch<APIMessage>(
 		{
 			url: "/api/auth/logout",
 			method: "POST",
-			credentials: "include",
 		},
 		false,
 	);
@@ -30,10 +29,8 @@ export const useAuth = () => {
 				userEmail: null,
 			}));
 			navigate("/login", { replace: true });
-		} else if (logoutError) {
-			console.error("Logout failed:", logoutError);
 		}
-	}, [executeLogout, navigate, logoutError]);
+	}, [executeLogout, navigate]);
 
 	const handleAuthenticate = useCallback((data: APIAuth) => {
 		setState((prev) => ({
@@ -46,14 +43,14 @@ export const useAuth = () => {
 	const { execute: fetchStatus } = useFetch<APIAuth>(
 		{
 			url: "/api/auth/status",
-			credentials: "include",
 		},
 		false,
 	);
 
 	useEffect(() => {
-		setState((prev) => ({ ...prev, loading: true }));
-		fetchStatus().then((result) => {
+		const handleStatus = async () => {
+			setState((prev) => ({ ...prev, loading: true }));
+			const result = await fetchStatus();
 			if (result) {
 				handleAuthenticate(result);
 			} else {
@@ -64,7 +61,8 @@ export const useAuth = () => {
 				}));
 			}
 			setState((prev) => ({ ...prev, loading: false }));
-		});
+		};
+		handleStatus();
 	}, [fetchStatus, handleAuthenticate]);
 
 	return {

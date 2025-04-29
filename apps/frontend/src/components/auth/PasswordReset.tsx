@@ -18,7 +18,6 @@ const PasswordReset: React.FC = () => {
 		{
 			url: `/api/auth/authenticate?${searchParams.toString()}`,
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
 		},
 		false
 	);

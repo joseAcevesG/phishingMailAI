@@ -26,7 +26,6 @@ export function usePasswordSignUp({ onAuthenticate }: Props) {
 		{
 			url: "/api/auth/signup",
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
 		},
 		false,
 	);

@@ -18,19 +18,25 @@ export const Authenticate: React.FC<Props> = ({ onAuthenticate }) => {
 
 	useEffect(() => {
 		const queryString = searchParams.toString();
+		const handleAuthenticate = () => {
+			execute({
+				url: `/api/auth/authenticate?${queryString}`,
+			})
+				.then((result) => {
+					if (result) onAuthenticate(result);
+					else navigate("/login");
+				})
+				.catch(() => {
+					navigate("/login");
+				});
+		};
 
 		if (!queryString) {
 			navigate("/login");
 			return;
 		}
 
-		execute({ url: `/api/auth/authenticate?${queryString}` }).then((result) => {
-			if (result) {
-				onAuthenticate(result);
-			} else {
-				navigate("/login");
-			}
-		});
+		handleAuthenticate();
 	}, [execute, navigate, onAuthenticate, searchParams]);
 
 	return (

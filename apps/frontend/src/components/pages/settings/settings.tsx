@@ -11,16 +11,14 @@ const ApiKeyForm: React.FC = () => {
 		{
 			url: "/api/auth/change-trial",
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
 		},
 		false
 	);
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		execute({ body: { api_key: apiKey } }).then((res) => {
-			if (res) navigate("/");
-		});
+		const result = await execute({ body: { api_key: apiKey } });
+		if (result) navigate("/");
 	};
 
 	return (

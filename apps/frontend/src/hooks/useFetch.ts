@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { FetchConfig, UseFetchReturn } from "../types";
 
+const DEFAULT_HEADERS = {
+	"Content-Type": "application/json",
+};
+
 export function useFetch<T = unknown>(
 	initialConfig: FetchConfig,
 	auto = true,
@@ -14,7 +18,11 @@ export function useFetch<T = unknown>(
 	const execute = useCallback(async (overrideConfig?: Partial<FetchConfig>) => {
 		// Abort previous request if any
 		controllerRef.current?.abort();
-		const config = { ...configRef.current, ...overrideConfig };
+		const config = {
+			...configRef.current,
+			...overrideConfig,
+			headers: { ...DEFAULT_HEADERS, ...overrideConfig?.headers },
+		};
 		configRef.current = config;
 		const { url, method = "GET", headers, body, credentials } = config;
 		controllerRef.current = new AbortController();

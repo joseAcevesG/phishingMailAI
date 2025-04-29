@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { APIAuth } from "../types";
+import type { APIMessage } from "../types";
 import { useFetch } from "./useFetch";
 
 /**
@@ -13,12 +13,10 @@ export function useMagicPassword(initialCountdown = 15) {
 	const [countdown, setCountdown] = useState(initialCountdown);
 	const [error, setError] = useState<string | null>(null);
 
-	const { execute, error: fetchError } = useFetch<APIAuth>(
+	const { execute, error: fetchError } = useFetch<APIMessage>(
 		{
 			url: "/api/auth/reset-password",
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			credentials: "include",
 		},
 		false,
 	);

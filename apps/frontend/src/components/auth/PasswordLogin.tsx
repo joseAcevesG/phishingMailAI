@@ -20,7 +20,6 @@ const PasswordLogin: React.FC<Props> = ({ onAuthenticate }) => {
 		{
 			url: "/api/auth/login",
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
 		},
 		false
 	);

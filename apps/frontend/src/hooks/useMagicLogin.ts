@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { APIAuth } from "../types";
+import type { APIMessage } from "../types";
 // removed unused useNavigate import
 import { useFetch } from "./useFetch";
 
@@ -32,26 +32,23 @@ export function useMagicLogin(initialCountdown = 15) {
 		};
 	}, [isButtonDisabled, countdown, initialCountdown]);
 
-	const { execute, error: fetchError } = useFetch<APIAuth>(
+	const { execute, error: fetchError } = useFetch<APIMessage>(
 		{
 			url: "/api/auth/login",
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			credentials: "include",
 		},
 		false,
 	);
 
-	const handleMagicLinkRequest = () => {
+	const handleMagicLinkRequest = async () => {
 		if (!email) {
 			setInputError("Please enter your email address");
 			return;
 		}
 
 		setInputError(null);
-		execute({ body: { type: "magic_links", email } }).then((res) => {
-			if (res) setIsButtonDisabled(true);
-		});
+		const result = await execute({ body: { type: "magic_links", email } });
+		if (result) setIsButtonDisabled(true);
 	};
 
 	return {
