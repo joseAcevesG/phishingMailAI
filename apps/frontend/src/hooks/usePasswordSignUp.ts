@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authTypes } from "shared/auth-types";
 import { validateAll } from "../services/validatePassword";
-import ErrorMessages from "../types/error-messages";
+import type { APIAuth } from "../types";
+import { useFetch } from "./useFetch";
 
 interface Props {
-	onAuthenticate: (data: { authenticated: boolean; email: string }) => void;
+	onAuthenticate: (data: APIAuth) => void;
 }
 
 // services
@@ -15,8 +16,20 @@ export function usePasswordSignUp({ onAuthenticate }: Props) {
 	const [password, setPassword] = useState<string>("");
 	const [confirmPassword, setConfirmPassword] = useState<string>("");
 	const [error, setError] = useState<string | null>(null);
-	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 	const navigate = useNavigate();
+
+	const {
+		execute,
+		error: fetchError,
+		loading,
+	} = useFetch<APIAuth>(
+		{
+			url: "/api/auth/signup",
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+		},
+		false,
+	);
 
 	useEffect(() => {
 		setError(validateAll(password, confirmPassword));
@@ -24,45 +37,15 @@ export function usePasswordSignUp({ onAuthenticate }: Props) {
 
 	const handlePasswordSignUp = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setIsSubmitting(true);
 		setError(null);
-		const controller = new AbortController();
-		try {
-			const response = await fetch("/api/auth/signup", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					email,
-					password,
-					type: authTypes.passwordLogin,
-				}),
-				signal: controller.signal,
-			});
-			if (!response.ok) {
-				if (response.status >= 500) {
-					throw new Error(ErrorMessages.GENERIC_ERROR);
-				}
-				const errorData = await response.json();
-				throw new Error(errorData.message || ErrorMessages.FAILED_TO_SIGNUP);
-			}
-			const data = await response.json();
-			onAuthenticate(data);
+		const result = await execute({
+			body: { email, password, type: authTypes.passwordLogin },
+		});
+		if (result) {
+			onAuthenticate(result);
 			navigate("/");
-		} catch (error) {
-			if (error instanceof DOMException && error.name === "AbortError") {
-				// Fetch was aborted, do nothing
-				return;
-			}
-			setError(
-				error instanceof Error
-					? error.message
-					: "Signup failed. Please try again.",
-			);
-		} finally {
-			setIsSubmitting(false);
-			controller.abort();
+		} else {
+			setError(fetchError || "Signup failed. Please try again.");
 		}
 	};
 
@@ -74,7 +57,7 @@ export function usePasswordSignUp({ onAuthenticate }: Props) {
 		confirmPassword,
 		setConfirmPassword,
 		error,
-		isSubmitting,
+		loading,
 		handlePasswordSignUp,
 	};
 }

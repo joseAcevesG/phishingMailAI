@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { APIMessage, AuthState } from "../types";
+import type { APIAuth } from "../types";
 import { useFetch } from "./useFetch";
 
 export const useAuth = () => {
@@ -34,21 +35,15 @@ export const useAuth = () => {
 		}
 	}, [executeLogout, navigate, logoutError]);
 
-	const handleAuthenticate = useCallback(
-		(data: { authenticated: boolean; email: string }) => {
-			setState((prev) => ({
-				...prev,
-				isAuthenticated: data.authenticated,
-				userEmail: data.email,
-			}));
-		},
-		[],
-	);
+	const handleAuthenticate = useCallback((data: APIAuth) => {
+		setState((prev) => ({
+			...prev,
+			isAuthenticated: data.authenticated,
+			userEmail: data.email,
+		}));
+	}, []);
 
-	const { execute: fetchStatus } = useFetch<{
-		authenticated: boolean;
-		email: string;
-	}>(
+	const { execute: fetchStatus } = useFetch<APIAuth>(
 		{
 			url: "/api/auth/status",
 			credentials: "include",

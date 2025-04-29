@@ -1,57 +1,26 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useFetch } from "../../../hooks/useFetch";
 import styles from "./settings.module.css";
-import ErrorMessages from "../../../types/error-messages";
+import type { APIMessage } from "../../../types";
 
 const ApiKeyForm: React.FC = () => {
 	const [apiKey, setApiKey] = useState("");
-	const [error, setError] = useState<string | null>(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const navigate = useNavigate();
+	const { execute, error, loading } = useFetch<APIMessage>(
+		{
+			url: "/api/auth/change-trial",
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+		},
+		false
+	);
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		setIsSubmitting(true);
-		setError(null);
-
-		const controller = new AbortController();
-
-		try {
-			const response = await fetch("/api/auth/change-trial", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ api_key: apiKey }),
-				signal: controller.signal,
-			});
-
-			if (!response.ok) {
-				if (response.status >= 500) {
-					throw new Error(ErrorMessages.GENERIC_ERROR);
-				}
-				const errorData = await response.json();
-				throw new Error(
-					errorData.message || ErrorMessages.FAILED_TO_SET_API_KEY
-				);
-			}
-
-			// Success - redirect to home
-			navigate("/");
-		} catch (err) {
-			if (err instanceof DOMException && err.name === "AbortError") {
-				// Fetch was aborted, do nothing
-				return;
-			}
-			setError(
-				err instanceof Error
-					? err.message
-					: "An error occurred while setting API key"
-			);
-		} finally {
-			setIsSubmitting(false);
-			controller.abort();
-		}
+		execute({ body: { api_key: apiKey } }).then((res) => {
+			if (res) navigate("/");
+		});
 	};
 
 	return (
@@ -73,8 +42,8 @@ const ApiKeyForm: React.FC = () => {
 						value={apiKey}
 					/>
 				</div>
-				<button disabled={isSubmitting} type="submit">
-					{isSubmitting ? "Submitting..." : "Save API Key"}
+				<button disabled={loading} type="submit">
+					{loading ? "Submitting..." : "Save API Key"}
 				</button>
 			</form>
 			<Link className={styles.link} to="/reset-password-link">

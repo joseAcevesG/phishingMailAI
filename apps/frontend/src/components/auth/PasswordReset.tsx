@@ -1,63 +1,39 @@
 import { useEffect, useState } from "react";
 import styles from "./Password.module.css";
 import { validateAll } from "../../services/validatePassword";
-import ErrorMessages from "../../types/error-messages";
+import { useFetch } from "../../hooks/useFetch";
+import type { APIMessage } from "../../types";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
 const PasswordReset: React.FC = () => {
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
-	const [error, setError] = useState<string | null>(null);
-	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
+	const {
+		error: fetchError,
+		loading: isSubmitting,
+		execute,
+	} = useFetch<APIMessage>(
+		{
+			url: `/api/auth/authenticate?${searchParams.toString()}`,
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+		},
+		false
+	);
 
 	useEffect(() => {
-		setError(validateAll(password, confirmPassword));
+		setValidationError(validateAll(password, confirmPassword));
 	}, [password, confirmPassword]);
+
+	const [validationError, setValidationError] = useState<string | null>(null);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setIsSubmitting(true);
-		setError(null);
-		const controller = new AbortController();
-		try {
-			const response = await fetch(
-				`/api/auth/authenticate?${searchParams.toString()}`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						password,
-					}),
-					signal: controller.signal,
-				}
-			);
-			if (!response.ok) {
-				if (response.status >= 500) {
-					throw new Error(ErrorMessages.GENERIC_ERROR);
-				}
-				const errorData = await response.json();
-				throw new Error(
-					errorData.message || ErrorMessages.FAILED_TO_RESET_PASSWORD
-				);
-			}
+		const result = await execute({ body: { password } });
+		if (result) {
 			navigate("/login");
-		} catch (error) {
-			if (error instanceof DOMException && error.name === "AbortError") {
-				// Fetch was aborted, do nothing
-				return;
-			}
-			setError(
-				error instanceof Error
-					? error.message
-					: "Failed to reset password. Please try again."
-			);
-		} finally {
-			setIsSubmitting(false);
-			controller.abort();
 		}
 	};
 
@@ -81,11 +57,15 @@ const PasswordReset: React.FC = () => {
 					onChange={(e) => setConfirmPassword(e.target.value)}
 				/>
 			</div>
-			{error && <p className={styles.errorMessage}>{error}</p>}
+			{(validationError || fetchError) && (
+				<p className={styles.errorMessage}>{validationError || fetchError}</p>
+			)}
 			<button
 				className={styles.loginButton}
 				type="submit"
-				disabled={isSubmitting || !password || !confirmPassword || !!error}
+				disabled={
+					isSubmitting || !password || !confirmPassword || !!validationError
+				}
 			>
 				{isSubmitting ? "Resetting..." : "Reset Password"}
 			</button>

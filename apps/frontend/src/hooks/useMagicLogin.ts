@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import ErrorMessages from "../types/error-messages";
+import type { APIAuth } from "../types";
+// removed unused useNavigate import
+import { useFetch } from "./useFetch";
 
 /**
  * Custom hook to handle resend cooldown logic for buttons.
@@ -10,7 +12,7 @@ export function useMagicLogin(initialCountdown = 15) {
 	const [email, setEmail] = useState("");
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const [countdown, setCountdown] = useState(initialCountdown);
-	const [error, setError] = useState<string | null>(null);
+	const [inputError, setInputError] = useState<string | null>(null);
 
 	useEffect(() => {
 		let timer: NodeJS.Timeout;
@@ -30,46 +32,26 @@ export function useMagicLogin(initialCountdown = 15) {
 		};
 	}, [isButtonDisabled, countdown, initialCountdown]);
 
-	const handleMagicLinkRequest = async () => {
+	const { execute, error: fetchError } = useFetch<APIAuth>(
+		{
+			url: "/api/auth/login",
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			credentials: "include",
+		},
+		false,
+	);
+
+	const handleMagicLinkRequest = () => {
 		if (!email) {
-			setError("Please enter your email address");
+			setInputError("Please enter your email address");
 			return;
 		}
 
-		const controller = new AbortController();
-		try {
-			setError(null);
-			const response = await fetch("/api/auth/login", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ type: "magic_links", email }),
-				credentials: "include",
-			});
-
-			if (!response.ok) {
-				if (response.status >= 500) {
-					throw new Error(ErrorMessages.GENERIC_ERROR);
-				}
-				const errorData = await response.json();
-				throw new Error(errorData.message || ErrorMessages.FAILED_TO_LOGIN);
-			}
-
-			setIsButtonDisabled(true);
-		} catch (err) {
-			if (err instanceof DOMException && err.name === "AbortError") {
-				// Fetch was aborted, do nothing
-				return;
-			}
-			setError(
-				err instanceof Error
-					? err.message
-					: "An error occurred while logging in",
-			);
-		} finally {
-			controller.abort();
-		}
+		setInputError(null);
+		execute({ body: { type: "magic_links", email } }).then((res) => {
+			if (res) setIsButtonDisabled(true);
+		});
 	};
 
 	return {
@@ -77,8 +59,8 @@ export function useMagicLogin(initialCountdown = 15) {
 		setEmail,
 		isButtonDisabled,
 		countdown,
-		error,
-		setError,
+		error: inputError || fetchError,
+		setError: setInputError,
 		handleMagicLinkRequest,
 	};
 }

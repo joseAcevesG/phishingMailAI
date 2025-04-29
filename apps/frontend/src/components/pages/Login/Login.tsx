@@ -3,10 +3,11 @@ import { Link, Navigate } from "react-router-dom";
 import styles from "./Login.module.css";
 import MagicLinkLogin from "../../auth/MagicLinkLogin";
 import PasswordLogin from "../../auth/PasswordLogin";
+import type { APIAuth } from "../../../types";
 
 interface Props {
 	isAuthenticated?: boolean;
-	onAuthenticate: (data: { authenticated: boolean; email: string }) => void;
+	onAuthenticate: (data: APIAuth) => void;
 }
 
 export const Login: React.FC<Props> = ({ isAuthenticated, onAuthenticate }) => {

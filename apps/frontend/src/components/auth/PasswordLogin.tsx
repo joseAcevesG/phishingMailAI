@@ -1,61 +1,39 @@
 import { useState } from "react";
+import { useFetch } from "../../hooks/useFetch";
 import styles from "./Password.module.css";
 import { useNavigate } from "react-router-dom";
-import ErrorMessages from "../../types/error-messages";
 import { authTypes } from "shared/auth-types";
+import type { APIAuth } from "../../types";
 
 interface Props {
-	onAuthenticate: (data: { authenticated: boolean; email: string }) => void;
+	onAuthenticate: (data: APIAuth) => void;
 }
 
 const PasswordLogin: React.FC<Props> = ({ onAuthenticate }) => {
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
-	const [error, setError] = useState<string | null>(null);
-	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+	const {
+		error,
+		loading: isSubmitting,
+		execute,
+	} = useFetch<APIAuth>(
+		{
+			url: "/api/auth/login",
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+		},
+		false
+	);
 	const navigate = useNavigate();
 
 	const handlePasswordLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setIsSubmitting(true);
-		setError(null);
-		const controller = new AbortController();
-		try {
-			const response = await fetch("/api/auth/login", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					email,
-					password,
-					type: authTypes.passwordLogin,
-				}),
-				signal: controller.signal,
-			});
-			if (!response.ok) {
-				if (response.status >= 500) {
-					throw new Error(ErrorMessages.GENERIC_ERROR);
-				}
-				const errorData = await response.json();
-				throw new Error(errorData.message || ErrorMessages.FAILED_TO_LOGIN);
-			}
-			const data = await response.json();
-			onAuthenticate(data);
+		const result = await execute({
+			body: { email, password, type: authTypes.passwordLogin },
+		});
+		if (result) {
+			onAuthenticate(result);
 			navigate("/");
-		} catch (error) {
-			if (error instanceof DOMException && error.name === "AbortError") {
-				// Fetch was aborted, do nothing
-				return;
-			}
-			setError(
-				error instanceof Error
-					? error.message
-					: "Login failed. Please try again."
-			);
-		} finally {
-			setIsSubmitting(false);
-			controller.abort();
 		}
 	};
 

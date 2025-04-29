@@ -15,6 +15,11 @@ export interface APIMessage {
 	message: string;
 }
 
+export interface APIAuth {
+	authenticated: boolean;
+	email: string;
+}
+
 export interface FetchConfig {
 	url: string;
 	method?: string;

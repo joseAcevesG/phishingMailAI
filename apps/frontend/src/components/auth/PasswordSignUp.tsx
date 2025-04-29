@@ -1,8 +1,9 @@
 import { usePasswordSignUp } from "../../hooks/usePasswordSignUp";
 import styles from "./Password.module.css";
+import type { APIAuth } from "../../types";
 
 interface Props {
-	onAuthenticate: (data: { authenticated: boolean; email: string }) => void;
+	onAuthenticate: (data: APIAuth) => void;
 }
 
 const PasswordSignUp: React.FC<Props> = ({ onAuthenticate }) => {
@@ -14,7 +15,7 @@ const PasswordSignUp: React.FC<Props> = ({ onAuthenticate }) => {
 		confirmPassword,
 		setConfirmPassword,
 		error,
-		isSubmitting,
+		loading,
 		handlePasswordSignUp,
 	} = usePasswordSignUp({ onAuthenticate });
 
@@ -51,11 +52,9 @@ const PasswordSignUp: React.FC<Props> = ({ onAuthenticate }) => {
 			<button
 				className={styles.loginButton}
 				type="submit"
-				disabled={
-					isSubmitting || !email || !password || !confirmPassword || !!error
-				}
+				disabled={loading || !email || !password || !confirmPassword || !!error}
 			>
-				{isSubmitting ? "Signing up..." : "Sign Up"}
+				{loading ? "Signing up..." : "Sign Up"}
 			</button>
 		</form>
 	);

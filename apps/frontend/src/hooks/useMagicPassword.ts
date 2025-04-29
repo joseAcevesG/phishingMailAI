@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import ErrorMessages from "../types/error-messages";
+import type { APIAuth } from "../types";
+import { useFetch } from "./useFetch";
 
 /**
  * Custom hook to handle resend cooldown logic for buttons.
@@ -11,6 +12,16 @@ export function useMagicPassword(initialCountdown = 15) {
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const [countdown, setCountdown] = useState(initialCountdown);
 	const [error, setError] = useState<string | null>(null);
+
+	const { execute, error: fetchError } = useFetch<APIAuth>(
+		{
+			url: "/api/auth/reset-password",
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			credentials: "include",
+		},
+		false,
+	);
 
 	useEffect(() => {
 		let timer: NodeJS.Timeout;
@@ -36,39 +47,12 @@ export function useMagicPassword(initialCountdown = 15) {
 			return;
 		}
 
-		const controller = new AbortController();
-		try {
-			setError(null);
-			const response = await fetch("/api/auth/reset-password", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ type: "magic_links", email }),
-				credentials: "include",
-			});
-
-			if (!response.ok) {
-				if (response.status >= 500) {
-					throw new Error(ErrorMessages.GENERIC_ERROR);
-				}
-				const errorData = await response.json();
-				throw new Error(errorData.message || ErrorMessages.FAILED_TO_LOGIN);
-			}
-
+		setError(null);
+		const result = await execute({ body: { type: "magic_links", email } });
+		if (result) {
 			setIsButtonDisabled(true);
-		} catch (err) {
-			if (err instanceof DOMException && err.name === "AbortError") {
-				// Fetch was aborted, do nothing
-				return;
-			}
-			setError(
-				err instanceof Error
-					? err.message
-					: "An error occurred while logging in",
-			);
-		} finally {
-			controller.abort();
+		} else {
+			setError(fetchError || "An error occurred while sending magic link");
 		}
 	};
 
