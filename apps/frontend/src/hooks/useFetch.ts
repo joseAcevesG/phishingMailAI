@@ -69,11 +69,7 @@ export function useFetch<T = unknown>(
 			return result;
 		} catch (err: unknown) {
 			if (err instanceof DOMException && err.name === "AbortError") return null;
-			setError(
-				err instanceof Error
-					? err.message || "Request failed"
-					: "Request failed",
-			);
+			setError(err instanceof Error ? err.message : "Request failed");
 			return null;
 		} finally {
 			setLoading(false);
