@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import styles from "./UploadForm.module.css";
 
 interface Props {
@@ -9,6 +9,8 @@ interface Props {
 export const UploadForm: React.FC<Props> = ({ onAnalyze, isUploading }) => {
 	const [file, setFile] = useState<File | null>(null);
 	const [error, setError] = useState<string | null>(null);
+	const [dragActive, setDragActive] = useState(false);
+	const inputRef = useRef<HTMLInputElement>(null);
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const selectedFile = e.target.files?.[0];
@@ -19,6 +21,44 @@ export const UploadForm: React.FC<Props> = ({ onAnalyze, isUploading }) => {
 			setFile(null);
 			setError("Please select a valid .eml file");
 		}
+	};
+
+	const handleDrop = (
+		e: React.DragEvent<HTMLLabelElement | HTMLDivElement>
+	) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setDragActive(false);
+		const droppedFile = e.dataTransfer.files?.[0];
+		if (droppedFile?.name.endsWith(".eml")) {
+			setFile(droppedFile);
+			setError(null);
+			// Optionally, update the file input's value
+			if (inputRef.current) {
+				const dataTransfer = new DataTransfer();
+				dataTransfer.items.add(droppedFile);
+				inputRef.current.files = dataTransfer.files;
+			}
+		} else {
+			setFile(null);
+			setError("Please select a valid .eml file");
+		}
+	};
+
+	const handleDragOver = (
+		e: React.DragEvent<HTMLLabelElement | HTMLDivElement>
+	) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setDragActive(true);
+	};
+
+	const handleDragLeave = (
+		e: React.DragEvent<HTMLLabelElement | HTMLDivElement>
+	) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setDragActive(false);
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -36,16 +76,32 @@ export const UploadForm: React.FC<Props> = ({ onAnalyze, isUploading }) => {
 		<div className={styles.uploadCard}>
 			<h1>Upload Email for Analysis</h1>
 			<form className={styles.uploadForm} onSubmit={handleSubmit}>
-				<div className={styles.fileInputContainer}>
+				<div
+					className={styles.fileInputContainer}
+					onDrop={handleDrop}
+					onDragOver={handleDragOver}
+					onDragLeave={handleDragLeave}
+				>
 					<input
 						accept=".eml"
 						className={styles.fileInput}
 						id="file-input"
 						onChange={handleFileChange}
 						type="file"
+						ref={inputRef}
 					/>
-					<label className={styles.fileInputLabel} htmlFor="file-input">
-						{file ? file.name : "Choose .eml file"}
+					<label
+						className={
+							dragActive
+								? `${styles.fileInputLabel} ${styles.dragActive}`
+								: styles.fileInputLabel
+						}
+						htmlFor="file-input"
+						onDrop={handleDrop}
+						onDragOver={handleDragOver}
+						onDragLeave={handleDragLeave}
+					>
+						{file ? file.name : "Choose .eml file (Drag & Drop supported)"}
 					</label>
 				</div>
 				{error && <p className={styles.errorMessage}>{error}</p>}

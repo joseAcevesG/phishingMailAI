@@ -25,6 +25,15 @@ export function useFetch<T = unknown>(
 		};
 		configRef.current = config;
 		const { url, method = "GET", headers, body, credentials } = config;
+		// if body is FormData, delete Content-Type header so browser sets it correctly
+		const finalHeaders =
+			body instanceof FormData
+				? Object.fromEntries(
+						Object.entries(headers).filter(
+							([key]) => key.toLowerCase() !== "content-type",
+						),
+					)
+				: headers;
 		controllerRef.current = new AbortController();
 		setLoading(true);
 		setError(null);
@@ -36,7 +45,7 @@ export function useFetch<T = unknown>(
 					: url,
 				{
 					method,
-					headers,
+					headers: finalHeaders,
 					body:
 						method !== "GET"
 							? body instanceof FormData
