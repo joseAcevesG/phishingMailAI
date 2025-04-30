@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import type { Request, Response } from "express";
+import type { Express, Request, Response } from "express";
 import { simpleParser } from "mailparser";
 import { Types } from "mongoose";
 import {
@@ -35,7 +35,7 @@ vi.spyOn(Types, "ObjectId").mockImplementation(
 
 /** Test-specific request & response types */
 type TestRequest = Request & {
-	file?: { path: string };
+	file?: Partial<Express.Multer.File>;
 	user?: User;
 	params?: { id: string };
 };
@@ -93,7 +93,7 @@ describe("AnalyzeMailController", () => {
 		});
 
 		it("should return 400 if email content is empty", async () => {
-			req.file = { path: "path" };
+			req.file = { path: "path" } as Express.Multer.File;
 			(readFile as Mock).mockResolvedValue(" ");
 			AnalyzeMailController.create(req, res);
 			await new Promise((r) => setImmediate(r));
@@ -105,7 +105,7 @@ describe("AnalyzeMailController", () => {
 		});
 
 		it("should return analysis on success", async () => {
-			req.file = { path: "path" };
+			req.file = { path: "path" } as Express.Multer.File;
 			req.user = runUser;
 			(readFile as Mock).mockResolvedValue("raw email");
 			(simpleParser as Mock).mockResolvedValue({
@@ -144,7 +144,7 @@ describe("AnalyzeMailController", () => {
 		});
 
 		it("should return 400 for invalid API key error", async () => {
-			req.file = { path: "path" };
+			req.file = { path: "path" } as Express.Multer.File;
 			(readFile as Mock).mockResolvedValue("raw");
 			(simpleParser as Mock).mockResolvedValue({
 				html: "<p>1</p>",
@@ -166,7 +166,7 @@ describe("AnalyzeMailController", () => {
 		});
 
 		it("should return 500 for other errors", async () => {
-			req.file = { path: "p" };
+			req.file = { path: "p" } as Express.Multer.File;
 			(readFile as Mock).mockRejectedValue(new Error("foo"));
 			AnalyzeMailController.create(req, res);
 			await new Promise((r) => setImmediate(r));

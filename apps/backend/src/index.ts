@@ -2,7 +2,6 @@ import path from "node:path";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { type Request, type Response } from "express";
-// Swagger imports
 import swaggerUi from "swagger-ui-express";
 import { EnvConfig } from "./config/env.config";
 import connectDB from "./config/mongoose";

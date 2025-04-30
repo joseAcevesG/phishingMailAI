@@ -119,12 +119,11 @@ class AnalyzeMailController {
 						.json({ message: "Invalid OpenAI API key provided" });
 					return;
 				}
-
-				console.error("Error analyzing email:", error);
-
 				res
 					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
 					.json({ message: StatusCodes.INTERNAL_SERVER_ERROR.message });
+
+				console.error("Error analyzing email:", error);
 			});
 	}
 
@@ -224,10 +223,11 @@ class AnalyzeMailController {
 					});
 					return;
 				}
-				console.error("Error deleting analysis:", error);
 				res
 					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
 					.json({ message: StatusCodes.INTERNAL_SERVER_ERROR.message });
+
+				console.error("Error deleting analysis:", error);
 			});
 	}
 }

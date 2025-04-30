@@ -1,11 +1,12 @@
 import type { Request, Response } from "express";
 import { authTypes } from "shared/auth-types";
+import { StytchError } from "stytch";
 import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
+import { stytchClient } from "../../../src/config/stytch";
 import AuthController from "../../../src/controllers/auth.controller";
 import User from "../../../src/models/user.model";
 import StatusCodes from "../../../src/utils/response-codes";
 import * as tokenService from "../../../src/utils/token-service";
-import { stytchClient } from "../../../src/config/stytch";
 // Stub stytchClient to avoid config environment check
 vi.mock("../../../src/config/stytch", () => ({
 	stytchClient: {
@@ -17,6 +18,7 @@ vi.mock("../../../src/config/stytch", () => ({
 		},
 		passwords: {
 			create: vi.fn(),
+			authenticate: vi.fn(),
 		},
 	},
 }));
@@ -222,6 +224,157 @@ describe("AuthController", () => {
 			expect(res.json).toHaveBeenCalledWith({
 				authenticated: true,
 				email: "existing@example.com",
+			});
+		});
+	});
+
+	describe("login", () => {
+		let req: Partial<Request> & { body?: Record<string, unknown> };
+		let res: Partial<Response> & { status: Mock; json: Mock };
+
+		beforeEach(() => {
+			req = { body: {} };
+			res = { status: vi.fn().mockReturnThis(), json: vi.fn() };
+			vi.clearAllMocks();
+		});
+
+		it("should return 400 if request body fails validation", async () => {
+			// Zod validation fails (missing email/type)
+			AuthController.login(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
+			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
+		});
+
+		it("should send magic link on magicLink type (success)", async () => {
+			req.body = { email: "test@example.com", type: authTypes.magicLink };
+			const mockLogin = stytchClient.magicLinks.email.loginOrCreate as Mock;
+			mockLogin.mockResolvedValue({});
+			AuthController.login(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(mockLogin).toHaveBeenCalledWith({ email: "test@example.com" });
+			expect(res.json).toHaveBeenCalledWith({
+				message: "Magic link sent successfully",
+			});
+		});
+
+		it("should handle error from magic link login", async () => {
+			req.body = { email: "fail@example.com", type: authTypes.magicLink };
+			const mockLogin = stytchClient.magicLinks.email.loginOrCreate as Mock;
+			const error = new StytchError({
+				error_type: "request_invalid",
+				error_message: "stytch error",
+				status_code: 400,
+				request_id: "mock-request-id",
+				error_url: "https://example.com/error",
+			});
+			mockLogin.mockRejectedValue(error);
+			AuthController.login(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
+			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
+		});
+
+		it("should return 400 if password is missing for passwordLogin", async () => {
+			req.body = { email: "test@example.com", type: authTypes.passwordLogin };
+			AuthController.login(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
+			expect(res.json).toHaveBeenCalledWith({
+				message: "Password is required",
+			});
+		});
+
+		it("should authenticate and create new user on passwordLogin (user not found)", async () => {
+			req.body = {
+				email: "new@example.com",
+				type: authTypes.passwordLogin,
+				password: "Password1!",
+			};
+			const mockAuth = stytchClient.passwords.authenticate as Mock;
+			mockAuth.mockResolvedValue({
+				user: { emails: [{ email: "new@example.com" }] },
+			});
+			(User.findOne as Mock).mockResolvedValue(null);
+			(User.create as Mock).mockResolvedValue({
+				_id: "id1",
+				email: "new@example.com",
+			});
+			(tokenService.issueAuthTokens as Mock).mockResolvedValue(undefined);
+			AuthController.login(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(mockAuth).toHaveBeenCalledWith({
+				email: "new@example.com",
+				password: "Password1!",
+			});
+			expect(User.findOne).toHaveBeenCalledWith({ email: "new@example.com" });
+			expect(User.create).toHaveBeenCalledWith({ email: "new@example.com" });
+			expect(tokenService.issueAuthTokens).toHaveBeenCalledWith(
+				res as Response,
+				"new@example.com",
+				"id1",
+			);
+			expect(res.json).toHaveBeenCalledWith({
+				authenticated: true,
+				email: "new@example.com",
+			});
+		});
+
+		it("should authenticate and use existing user on passwordLogin", async () => {
+			req.body = {
+				email: "existing@example.com",
+				type: authTypes.passwordLogin,
+				password: "Password1!",
+			};
+			const mockAuth = stytchClient.passwords.authenticate as Mock;
+			mockAuth.mockResolvedValue({
+				user: { emails: [{ email: "existing@example.com" }] },
+			});
+			const existingUser = { _id: "u1", email: "existing@example.com" };
+			(User.findOne as Mock).mockResolvedValue(existingUser);
+			(tokenService.issueAuthTokens as Mock).mockResolvedValue(undefined);
+			AuthController.login(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(User.create).not.toHaveBeenCalled();
+			expect(tokenService.issueAuthTokens).toHaveBeenCalledWith(
+				res as Response,
+				"existing@example.com",
+				"u1",
+			);
+			expect(res.json).toHaveBeenCalledWith({
+				authenticated: true,
+				email: "existing@example.com",
+			});
+		});
+
+		it("should handle error from password login authenticate", async () => {
+			req.body = {
+				email: "fail@example.com",
+				type: authTypes.passwordLogin,
+				password: "Password1!",
+			};
+			const mockAuth = stytchClient.passwords.authenticate as Mock;
+			const error = new StytchError({
+				error_type: "request_invalid",
+				error_message: "stytch error",
+				status_code: 400,
+				request_id: "mock-request-id",
+				error_url: "https://example.com/error",
+			});
+			mockAuth.mockRejectedValue(error);
+			AuthController.login(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
+			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
+		});
+
+		it("should return 400 for unsupported auth type", async () => {
+			req.body = { email: "test@example.com", type: "invalidType" };
+			AuthController.login(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
+			expect(res.json).toHaveBeenCalledWith({
+				message: expect.stringContaining("Invalid enum value"),
 			});
 		});
 	});

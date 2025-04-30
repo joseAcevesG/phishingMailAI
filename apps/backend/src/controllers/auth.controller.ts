@@ -35,10 +35,10 @@ class AuthController {
 			});
 			return;
 		}
-		console.error(err);
 		res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
 			message: StatusCodes.INTERNAL_SERVER_ERROR.message,
 		});
+		console.error(err);
 	}
 
 	signUp(req: Request, res: Response) {
@@ -283,10 +283,10 @@ class AuthController {
 				});
 			})
 			.catch((err) => {
-				console.error(err);
 				res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
 					message: StatusCodes.INTERNAL_SERVER_ERROR.message,
 				});
+				console.error(err);
 			});
 	}
 
@@ -305,10 +305,10 @@ class AuthController {
 				});
 			})
 			.catch((error) => {
-				console.error(error);
 				res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
 					message: StatusCodes.INTERNAL_SERVER_ERROR.message,
 				});
+				console.error(error);
 			});
 	}
 
@@ -346,10 +346,10 @@ class AuthController {
 				});
 			})
 			.catch((error: Error) => {
-				console.error(error);
 				res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
 					message: StatusCodes.INTERNAL_SERVER_ERROR.message,
 				});
+				console.error(error);
 			});
 	}
 

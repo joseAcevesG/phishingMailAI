@@ -40,10 +40,10 @@ function processRefresh(req: Request, res: Response, next: NextFunction) {
 					message: ResponseStatus.UNAUTHORIZED.message,
 				});
 			} else {
-				console.error(error);
 				res.status(ResponseStatus.INTERNAL_SERVER_ERROR.code).json({
 					message: ResponseStatus.INTERNAL_SERVER_ERROR.message,
 				});
+				console.error(error);
 			}
 		});
 }
