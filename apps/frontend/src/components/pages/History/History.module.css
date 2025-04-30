@@ -40,6 +40,19 @@
 	border-bottom: none;
 }
 
+.actions {
+	display: flex;
+	gap: 8px;
+}
+
+.actions .deleteButton {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	margin-left: 8px;
+}
+
 button {
 	background-color: var(--accent-primary);
 	color: var(--text-primary);
@@ -52,5 +65,5 @@ button {
 }
 
 button:hover {
-	background-color: #218838;
+	background-color: var(--accent-secondary);
 }

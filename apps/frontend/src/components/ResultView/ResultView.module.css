@@ -1,4 +1,5 @@
 .resultBox {
+	margin: 2rem auto;
 	background: var(--bg-secondary);
 	padding: 3rem;
 	border-radius: 8px;
