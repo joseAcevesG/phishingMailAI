@@ -1,4 +1,4 @@
-import styles from "../../assets/MagicLink.module.css";
+import styles from "./MagicLink.module.css";
 
 interface Props {
 	email: string;
