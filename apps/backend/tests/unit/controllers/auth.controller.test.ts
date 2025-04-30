@@ -1,4 +1,11 @@
+import type { Request, Response } from "express";
+import { authTypes } from "shared/auth-types";
 import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
+import AuthController from "../../../src/controllers/auth.controller";
+import User from "../../../src/models/user.model";
+import StatusCodes from "../../../src/utils/response-codes";
+import * as tokenService from "../../../src/utils/token-service";
+import { stytchClient } from "../../../src/config/stytch";
 // Stub stytchClient to avoid config environment check
 vi.mock("../../../src/config/stytch", () => ({
 	stytchClient: {
@@ -8,17 +15,21 @@ vi.mock("../../../src/config/stytch", () => ({
 				user: { emails: [{ email: "user@example.com" }] },
 			}),
 		},
+		passwords: {
+			create: vi.fn(),
+		},
 	},
 }));
 // Mock token-service to stub auth flows
 vi.mock("../../../src/utils/token-service", () => ({
 	verifyAccessToken: vi.fn(),
 	rotateAuthTokens: vi.fn(),
+	issueAuthTokens: vi.fn(),
 }));
-import type { Request, Response } from "express";
-import AuthController from "../../../src/controllers/auth.controller";
-import StatusCodes from "../../../src/utils/response-codes";
-import * as tokenService from "../../../src/utils/token-service";
+// Mock User model
+vi.mock("../../../src/models/user.model", () => ({
+	default: { findOne: vi.fn(), create: vi.fn() },
+}));
 
 // Type for verifyAccessToken mock return
 type VerifyAccessReturn = Awaited<
@@ -109,6 +120,108 @@ describe("AuthController", () => {
 			expect(res.json).toHaveBeenCalledWith({
 				authenticated: false,
 				email: undefined,
+			});
+		});
+	});
+
+	describe("signUp", () => {
+		let req: Partial<Request> & { body?: Record<string, unknown> };
+		let res: Partial<Response> & { status: Mock; json: Mock };
+
+		beforeEach(() => {
+			req = { body: {} };
+			res = { status: vi.fn().mockReturnThis(), json: vi.fn() };
+			vi.clearAllMocks();
+		});
+
+		it("should return 400 if request body fails validation", async () => {
+			AuthController.signUp(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
+			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
+		});
+
+		it("should return 400 for unsupported auth type", async () => {
+			req.body = { type: authTypes.magicLink, email: "test@example.com" };
+			AuthController.signUp(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
+			expect(res.json).toHaveBeenCalledWith({
+				message: "Unsupported auth type",
+			});
+		});
+
+		it("should return 400 when password is missing for passwordLogin", async () => {
+			req.body = { type: authTypes.passwordLogin, email: "test@example.com" };
+			AuthController.signUp(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
+			expect(res.json).toHaveBeenCalledWith({
+				message: "Password is required",
+			});
+		});
+
+		it("should create new user on success and return authenticated true", async () => {
+			req.body = {
+				type: authTypes.passwordLogin,
+				email: "new@example.com",
+				password: "Password1!",
+			};
+			(stytchClient.passwords.create as Mock).mockResolvedValue({
+				user: { emails: [{ email: "new@example.com" }] },
+			});
+			(User.findOne as Mock).mockResolvedValue(null);
+			(User.create as Mock).mockResolvedValue({
+				_id: "id1",
+				email: "new@example.com",
+			});
+			(tokenService.issueAuthTokens as Mock).mockResolvedValue(undefined);
+
+			AuthController.signUp(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+
+			expect(stytchClient.passwords.create).toHaveBeenCalledWith({
+				email: "new@example.com",
+				password: "Password1!",
+			});
+			expect(User.findOne).toHaveBeenCalledWith({ email: "new@example.com" });
+			expect(User.create).toHaveBeenCalledWith({ email: "new@example.com" });
+			expect(tokenService.issueAuthTokens).toHaveBeenCalledWith(
+				res as Response,
+				"new@example.com",
+				"id1",
+			);
+			expect(res.json).toHaveBeenCalledWith({
+				authenticated: true,
+				email: "new@example.com",
+			});
+		});
+
+		it("should use existing user on success and return authenticated true", async () => {
+			req.body = {
+				type: authTypes.passwordLogin,
+				email: "existing@example.com",
+				password: "Password1!",
+			};
+			(stytchClient.passwords.create as Mock).mockResolvedValue({
+				user: { emails: [{ email: "existing@example.com" }] },
+			});
+			const existingUser = { _id: "u1", email: "existing@example.com" };
+			(User.findOne as Mock).mockResolvedValue(existingUser);
+			(tokenService.issueAuthTokens as Mock).mockResolvedValue(undefined);
+
+			AuthController.signUp(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+
+			expect(User.create).not.toHaveBeenCalled();
+			expect(tokenService.issueAuthTokens).toHaveBeenCalledWith(
+				res as Response,
+				"existing@example.com",
+				"u1",
+			);
+			expect(res.json).toHaveBeenCalledWith({
+				authenticated: true,
+				email: "existing@example.com",
 			});
 		});
 	});
