@@ -5,7 +5,7 @@ import authRouter from "./auth";
 const router = Router();
 
 router.get("/", (_req, res) => {
-	res.json({ name: "test monorepo" });
+	res.json({ name: "PhishingMailAI" });
 });
 
 router.use("/auth", authRouter);

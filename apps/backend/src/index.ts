@@ -2,8 +2,11 @@ import path from "node:path";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { type Request, type Response } from "express";
+// Swagger imports
+import swaggerUi from "swagger-ui-express";
 import { EnvConfig } from "./config/env.config";
 import connectDB from "./config/mongoose";
+import swaggerSpec from "./docs/swagger";
 import routes from "./routes";
 
 const app = express();
@@ -15,6 +18,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
 app.use("/api", routes);
+// Swagger docs route
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get("*", (_req: Request, res: Response) => {
 	res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
