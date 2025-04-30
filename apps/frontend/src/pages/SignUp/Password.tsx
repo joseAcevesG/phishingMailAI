@@ -6,7 +6,7 @@ interface Props {
 	onAuthenticate: (data: APIAuth) => void;
 }
 
-const PasswordSignUp: React.FC<Props> = ({ onAuthenticate }) => {
+const Password: React.FC<Props> = ({ onAuthenticate }) => {
 	const {
 		email,
 		setEmail,
@@ -60,4 +60,4 @@ const PasswordSignUp: React.FC<Props> = ({ onAuthenticate }) => {
 	);
 };
 
-export default PasswordSignUp;
+export default Password;

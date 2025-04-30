@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import styles from "./Login.module.css";
-import MagicLinkLogin from "../../components/magicLink/MagicLinkLogin";
-import PasswordLogin from "./PasswordLogin";
+import MagicLink from "./MagicLink";
+import Password from "./Password";
 import type { APIAuth } from "../../types";
 
 interface Props {
@@ -44,9 +44,9 @@ export const Login: React.FC<Props> = ({ isAuthenticated, onAuthenticate }) => {
 					</button>
 				</div>
 				{selectedMethod === "magic" ? (
-					<MagicLinkLogin />
+					<MagicLink />
 				) : (
-					<PasswordLogin onAuthenticate={onAuthenticate} />
+					<Password onAuthenticate={onAuthenticate} />
 				)}
 				<div className={styles.linkContainer}>
 					{selectedMethod === "password" && (

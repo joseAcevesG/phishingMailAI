@@ -9,7 +9,7 @@ interface Props {
 	onAuthenticate: (data: APIAuth) => void;
 }
 
-const PasswordLogin: React.FC<Props> = ({ onAuthenticate }) => {
+const Password: React.FC<Props> = ({ onAuthenticate }) => {
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const {
@@ -69,4 +69,4 @@ const PasswordLogin: React.FC<Props> = ({ onAuthenticate }) => {
 	);
 };
 
-export default PasswordLogin;
+export default Password;

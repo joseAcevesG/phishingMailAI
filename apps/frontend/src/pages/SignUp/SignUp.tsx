@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import styles from "./SignUp.module.css";
-import MagicLinkLogin from "../../components/magicLink/MagicLinkLogin";
-import PasswordSignUp from "./PasswordSignUp";
+import MagicLink from "./MagicLink";
+import Password from "./Password";
 import type { APIAuth } from "../../types";
 
 interface Props {
@@ -47,9 +47,9 @@ export const SignUp: React.FC<Props> = ({
 					</button>
 				</div>
 				{selectedMethod === "magic" ? (
-					<MagicLinkLogin />
+					<MagicLink />
 				) : (
-					<PasswordSignUp onAuthenticate={onAuthenticate} />
+					<Password onAuthenticate={onAuthenticate} />
 				)}
 				<Link className={styles.link} to="/login">
 					Already have an account?

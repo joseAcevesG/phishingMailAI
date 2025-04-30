@@ -1,17 +1,24 @@
 import styles from "../../assets/MagicLink.module.css";
-import { useMagicPassword } from "../../hooks/useMagicPassword";
 
-export const MagicLinkPassword: React.FC = () => {
-	const {
-		email,
-		setEmail,
-		isButtonDisabled,
-		countdown,
-		error,
-		setError,
-		handleMagicLinkRequest,
-	} = useMagicPassword(15);
+interface Props {
+	email: string;
+	setEmail: (email: string) => void;
+	isButtonDisabled: boolean;
+	error: string | null;
+	setError: (error: string | null) => void;
+	handleMagicLinkRequest: () => void;
+	buttonText: string;
+}
 
+const MagicLink: React.FC<Props> = ({
+	email,
+	setEmail,
+	isButtonDisabled,
+	error,
+	setError,
+	handleMagicLinkRequest,
+	buttonText,
+}) => {
 	return (
 		<form
 			className={styles.magicLinkForm}
@@ -38,12 +45,10 @@ export const MagicLinkPassword: React.FC = () => {
 				disabled={isButtonDisabled || email.length === 0}
 				type="submit"
 			>
-				{isButtonDisabled
-					? `You can resend a password reset in: ${countdown} seconds`
-					: "Reset Password"}
+				{buttonText}
 			</button>
 		</form>
 	);
 };
 
-export default MagicLinkPassword;
+export default MagicLink;
