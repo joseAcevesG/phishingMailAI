@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import styles from "./Authenticate.module.css";
-import type { APIAuth } from "../../../types";
-import { useFetch } from "../../../hooks/useFetch";
+import type { APIAuth } from "../../types";
+import { useFetch } from "../../hooks/useFetch";
 
 interface Props {
 	onAuthenticate: (data: APIAuth) => void;

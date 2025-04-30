@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import styles from "./Password.module.css";
+import styles from "../../assets/Password.module.css";
 import { validateAll } from "../../services/validatePassword";
 import { useFetch } from "../../hooks/useFetch";
 import type { APIMessage } from "../../types";

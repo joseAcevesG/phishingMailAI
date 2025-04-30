@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
-import styles from "./Password.module.css";
+import styles from "../../assets/Password.module.css";
 import { useNavigate } from "react-router-dom";
 import { authTypes } from "shared/auth-types";
 import type { APIAuth } from "../../types";

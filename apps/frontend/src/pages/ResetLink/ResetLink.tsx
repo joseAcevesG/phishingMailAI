@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import styles from "./ResetLink.module.css";
-import MagicLinkPassword from "../../auth/MagicLinkPassword";
+import MagicLinkPassword from "./MagicLinkPassword";
 
 interface Props {
 	isAuthenticated?: boolean;

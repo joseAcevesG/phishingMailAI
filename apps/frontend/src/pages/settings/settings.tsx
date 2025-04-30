@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useFetch } from "../../../hooks/useFetch";
+import { useFetch } from "../../hooks/useFetch";
 import styles from "./settings.module.css";
-import type { APIMessage } from "../../../types";
+import type { APIMessage } from "../../types";
 
 const SettingsPage: React.FC = () => {
 	const [apiKey, setApiKey] = useState("");

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { APIMessage, History } from "../../../types";
+import type { APIMessage, History } from "../../types";
 import styles from "./History.module.css";
-import { useFetch } from "../../../hooks/useFetch";
-import TrashIcon from "../../../assets/icons/trash";
+import { useFetch } from "../../hooks/useFetch";
+import TrashIcon from "../../assets/icons/trash";
 
 const HistoryPage: React.FC = () => {
 	const navigate = useNavigate();

@@ -1,8 +1,8 @@
 import type { Analysis } from "shared";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ResultView } from "../../ResultView/ResultView";
-import { useFetch } from "../../../hooks/useFetch";
+import { ResultView } from "./ResultView";
+import { useFetch } from "../../hooks/useFetch";
 
 const Analyze: React.FC = () => {
 	const { id } = useParams<{ id: string }>();

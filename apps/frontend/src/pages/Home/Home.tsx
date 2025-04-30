@@ -1,6 +1,6 @@
-import { UploadForm } from "../../UploadForm/UploadForm";
-import { useEmailAnalysis } from "../../../hooks/useEmailAnalysis";
-import ErrorMessages from "../../../types/error-messages";
+import { UploadForm } from "./UploadForm";
+import { useEmailAnalysis } from "../../hooks/useEmailAnalysis";
+import ErrorMessages from "../../types/error-messages";
 import styles from "./Home.module.css";
 
 const Home: React.FC = () => {

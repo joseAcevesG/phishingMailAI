@@ -1,7 +1,7 @@
-import styles from "./MagicLink.module.css";
-import { useMagicPassword } from "../../hooks/useMagicPassword";
+import styles from "../../assets/MagicLink.module.css";
+import { useMagicLogin } from "../../hooks/useMagicLogin";
 
-export const MagicLinkPassword: React.FC = () => {
+export const MagicLinkLogin: React.FC = () => {
 	const {
 		email,
 		setEmail,
@@ -10,7 +10,7 @@ export const MagicLinkPassword: React.FC = () => {
 		error,
 		setError,
 		handleMagicLinkRequest,
-	} = useMagicPassword(15);
+	} = useMagicLogin(15);
 
 	return (
 		<form
@@ -39,11 +39,11 @@ export const MagicLinkPassword: React.FC = () => {
 				type="submit"
 			>
 				{isButtonDisabled
-					? `You can resend a password reset in: ${countdown} seconds`
-					: "Reset Password"}
+					? `You can resend a magic link in: ${countdown} seconds`
+					: "Login with Magic Link"}
 			</button>
 		</form>
 	);
 };
 
-export default MagicLinkPassword;
+export default MagicLinkLogin;

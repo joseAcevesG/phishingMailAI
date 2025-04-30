@@ -1,5 +1,5 @@
 import { usePasswordSignUp } from "../../hooks/usePasswordSignUp";
-import styles from "./Password.module.css";
+import styles from "../../assets/Password.module.css";
 import type { APIAuth } from "../../types";
 
 interface Props {

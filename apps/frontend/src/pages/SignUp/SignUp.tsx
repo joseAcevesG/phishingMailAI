@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import styles from "./Login.module.css";
-import MagicLinkLogin from "../../auth/MagicLinkLogin";
-import PasswordLogin from "../../auth/PasswordLogin";
-import type { APIAuth } from "../../../types";
+import styles from "./SignUp.module.css";
+import MagicLinkLogin from "../../components/magicLink/MagicLinkLogin";
+import PasswordSignUp from "./PasswordSignUp";
+import type { APIAuth } from "../../types";
 
 interface Props {
 	isAuthenticated?: boolean;
 	onAuthenticate: (data: APIAuth) => void;
 }
 
-export const Login: React.FC<Props> = ({ isAuthenticated, onAuthenticate }) => {
+export const SignUp: React.FC<Props> = ({
+	isAuthenticated,
+	onAuthenticate,
+}) => {
 	const [selectedMethod, setSelectedMethod] = useState<"magic" | "password">(
 		"magic"
 	);
@@ -19,10 +22,10 @@ export const Login: React.FC<Props> = ({ isAuthenticated, onAuthenticate }) => {
 	}
 
 	return (
-		<div className={styles.loginContainer} id="login">
-			<div className={styles.loginBox}>
+		<div className={styles.signupContainer} id="signup">
+			<div className={styles.signupBox}>
 				<h1>Welcome to Phishing Mail AI</h1>
-				<p>Please log in to continue</p>
+				<p>Please sign up to continue</p>
 				<div className={styles.toggleContainer}>
 					<button
 						className={`${styles.toggleButton} ${
@@ -46,19 +49,14 @@ export const Login: React.FC<Props> = ({ isAuthenticated, onAuthenticate }) => {
 				{selectedMethod === "magic" ? (
 					<MagicLinkLogin />
 				) : (
-					<PasswordLogin onAuthenticate={onAuthenticate} />
+					<PasswordSignUp onAuthenticate={onAuthenticate} />
 				)}
-				<div className={styles.linkContainer}>
-					{selectedMethod === "password" && (
-						<Link className={styles.link} to="/reset-password-link">
-							Forgot your password?
-						</Link>
-					)}
-					<Link className={styles.link} to="/signup">
-						Don't have an account?
-					</Link>
-				</div>
+				<Link className={styles.link} to="/login">
+					Already have an account?
+				</Link>
 			</div>
 		</div>
 	);
 };
+
+export default SignUp;
