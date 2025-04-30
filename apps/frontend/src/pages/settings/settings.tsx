@@ -1,43 +1,18 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useFetch } from "../../hooks/useFetch";
+import { Link } from "react-router-dom";
+import { useSettings } from "./useSettings";
 import styles from "./settings.module.css";
-import type { APIMessage } from "../../types";
 
 const SettingsPage: React.FC = () => {
-	const [apiKey, setApiKey] = useState("");
-	const navigate = useNavigate();
-
-	// change trial / save key
 	const {
-		execute: saveKey,
-		error: keyError,
-		loading: keyLoading,
-	} = useFetch<APIMessage>(
-		{ url: "/api/auth/change-trial", method: "POST" },
-		false
-	);
-
-	// logout everywhere
-	const {
-		execute: logoutAll,
-		error: logoutError,
-		loading: logoutLoading,
-	} = useFetch<APIMessage>(
-		{ url: "/api/auth/logout-all", method: "POST" },
-		false
-	);
-
-	const handleKeySubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		const res = await saveKey({ body: { api_key: apiKey } });
-		if (res) navigate("/");
-	};
-
-	const handleLogoutAll = async () => {
-		const res = await logoutAll();
-		if (res) navigate("/login");
-	};
+		apiKey,
+		setApiKey,
+		keyError,
+		keyLoading,
+		handleKeySubmit,
+		logoutError,
+		logoutLoading,
+		handleLogoutAll,
+	} = useSettings();
 
 	return (
 		<div className={styles.container}>

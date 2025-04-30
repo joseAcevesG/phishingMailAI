@@ -1,24 +1,22 @@
 import styles from "./MagicLink.module.css";
+import { useMagicLink } from "./useMagicLink";
 
 interface Props {
-	email: string;
-	setEmail: (email: string) => void;
-	isButtonDisabled: boolean;
-	error: string | null;
-	setError: (error: string | null) => void;
-	handleMagicLinkRequest: () => void;
 	buttonText: string;
+	url: string;
 }
 
-const MagicLink: React.FC<Props> = ({
-	email,
-	setEmail,
-	isButtonDisabled,
-	error,
-	setError,
-	handleMagicLinkRequest,
-	buttonText,
-}) => {
+const MagicLink: React.FC<Props> = ({ buttonText, url }) => {
+	const {
+		email,
+		setEmail,
+		isButtonDisabled,
+		countdown,
+		error,
+		setError,
+		handleMagicLinkRequest,
+	} = useMagicLink({ url });
+
 	return (
 		<form
 			className={styles.magicLinkForm}
@@ -45,7 +43,9 @@ const MagicLink: React.FC<Props> = ({
 				disabled={isButtonDisabled || email.length === 0}
 				type="submit"
 			>
-				{buttonText}
+				{isButtonDisabled
+					? `You can resend a magic link in: ${countdown} seconds`
+					: buttonText}
 			</button>
 		</form>
 	);

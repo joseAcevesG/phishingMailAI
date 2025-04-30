@@ -1,11 +1,11 @@
 import { UploadForm } from "./UploadForm";
-import { useEmailAnalysis } from "../../hooks/useEmailAnalysis";
+import { useMailAnalysis } from "./useMailAnalysis";
 import ErrorMessages from "../../types/error-messages";
 import styles from "./Home.module.css";
 
 const Home: React.FC = () => {
 	const { uploading, error, analyzeEmail, reset, goToSetApiKey } =
-		useEmailAnalysis();
+		useMailAnalysis();
 
 	return (
 		<div className={styles.homeContainer}>

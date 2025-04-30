@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import styles from "./ResetLink.module.css";
-import MagicLink from "./MagicLink";
+import MagicLink from "../../components/magicLink/MagicLink";
 
 interface Props {
 	isAuthenticated?: boolean;
@@ -16,7 +16,10 @@ export const ResetLink: React.FC<Props> = ({ isAuthenticated }) => {
 			<div className={styles.loginBox}>
 				<h1>Reset Password</h1>
 				<p>Enter your email address to reset your password</p>
-				<MagicLink />
+				<MagicLink
+					url={"/api/auth/reset-password"}
+					buttonText={"Reset Password"}
+				/>
 			</div>
 		</div>
 	);

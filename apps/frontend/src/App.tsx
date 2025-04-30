@@ -42,6 +42,7 @@ const AppContent: React.FC = () => {
 			{<Header onLogout={handleLogout} userEmail={userEmail} />}
 			<main className={styles.mainContent}>
 				<Routes>
+					{/* root route */}
 					<Route
 						element={
 							isAuthenticated ? (
@@ -54,7 +55,9 @@ const AppContent: React.FC = () => {
 						}
 						path="/"
 					/>
+					{/* reset password route */}
 					<Route element={<ResetLink />} path="/reset-password-link" />
+					{/* analyze route */}
 					<Route
 						element={
 							<ProtectedRoute isAuthenticated={isAuthenticated}>
@@ -63,6 +66,7 @@ const AppContent: React.FC = () => {
 						}
 						path="/analyze/:id"
 					/>
+					{/* settings route */}
 					<Route
 						element={
 							<ProtectedRoute isAuthenticated={isAuthenticated}>
@@ -71,6 +75,7 @@ const AppContent: React.FC = () => {
 						}
 						path="/settings"
 					/>
+					{/* history route */}
 					<Route
 						element={
 							<ProtectedRoute isAuthenticated={isAuthenticated}>
@@ -79,6 +84,7 @@ const AppContent: React.FC = () => {
 						}
 						path="/history"
 					/>
+					{/* login route */}
 					<Route
 						element={
 							isAuthenticated ? (
@@ -89,6 +95,7 @@ const AppContent: React.FC = () => {
 						}
 						path="/login"
 					/>
+					{/* signup route */}
 					<Route
 						element={
 							isAuthenticated ? (
@@ -99,6 +106,7 @@ const AppContent: React.FC = () => {
 						}
 						path="/signup"
 					/>
+					{/* authenticate route */}
 					<Route
 						element={
 							isAuthenticated ? (
@@ -109,6 +117,7 @@ const AppContent: React.FC = () => {
 						}
 						path="/authenticate"
 					/>
+					{/* reset password route */}
 					<Route element={<ResetPassword />} path="/reset-password" />
 				</Routes>
 			</main>

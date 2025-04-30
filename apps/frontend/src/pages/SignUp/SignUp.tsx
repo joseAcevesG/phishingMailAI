@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import styles from "./SignUp.module.css";
-import MagicLink from "./MagicLink";
+import MagicLink from "../../components/magicLink/MagicLink";
 import Password from "./Password";
+import ToggleButtonGroup from "../../components/ToggleButtonGroup/ToggleButtonGroup";
 import type { APIAuth } from "../../types";
 
 interface Props {
@@ -26,28 +27,15 @@ export const SignUp: React.FC<Props> = ({
 			<div className={styles.signupBox}>
 				<h1>Welcome to Phishing Mail AI</h1>
 				<p>Please sign up to continue</p>
-				<div className={styles.toggleContainer}>
-					<button
-						className={`${styles.toggleButton} ${
-							selectedMethod === "magic" ? styles.toggleActive : ""
-						}`}
-						type="button"
-						onClick={() => setSelectedMethod("magic")}
-					>
-						Magic Link
-					</button>
-					<button
-						className={`${styles.toggleButton} ${
-							selectedMethod === "password" ? styles.toggleActive : ""
-						}`}
-						type="button"
-						onClick={() => setSelectedMethod("password")}
-					>
-						Password
-					</button>
-				</div>
+				<ToggleButtonGroup
+					selectedMethod={selectedMethod}
+					setSelectedMethod={setSelectedMethod}
+				/>
 				{selectedMethod === "magic" ? (
-					<MagicLink />
+					<MagicLink
+						url={"/api/auth/login"}
+						buttonText={"Sign up with Magic Link"}
+					/>
 				) : (
 					<Password onAuthenticate={onAuthenticate} />
 				)}

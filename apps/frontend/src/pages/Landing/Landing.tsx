@@ -1,6 +1,6 @@
 "use client";
 
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import styles from "./Landing.module.css";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 }
 export const Landing: React.FC<Props> = ({ isAuthenticated }) => {
 	if (isAuthenticated) {
-		return null;
+		return <Navigate replace to="/" />;
 	}
 
 	return (

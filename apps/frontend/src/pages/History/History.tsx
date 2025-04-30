@@ -1,41 +1,11 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import type { APIMessage, History } from "../../types";
 import styles from "./History.module.css";
-import { useFetch } from "../../hooks/useFetch";
-import TrashIcon from "../../assets/icons/trash";
+import { useNavigate } from "react-router-dom";
+import { useHistoryList } from "./useHistoryList";
+import HistoryRow from "./HistoryRow";
 
-const HistoryPage: React.FC = () => {
+const HistoryPage = () => {
 	const navigate = useNavigate();
-	const {
-		data: history,
-		error,
-		loading,
-	} = useFetch<History[]>({ url: "/api/analyze-mail" });
-
-	// Local state for optimistic UI
-	const [historyList, setHistoryList] = useState<History[] | null>(null);
-
-	// Sync local state when fetched data changes
-	useEffect(() => {
-		if (history) setHistoryList(history);
-	}, [history]);
-
-	const { execute: deleteHistory } = useFetch<APIMessage>(
-		{ url: "/api/analyze-mail/:id", method: "DELETE" },
-		false
-	);
-
-	const handleDelete = async (id: string) => {
-		if (!historyList) return;
-		// Optimistically remove from UI
-		const prevList = historyList;
-		setHistoryList(historyList.filter((item) => item._id !== id));
-		const result = await deleteHistory({ url: `/api/analyze-mail/${id}` });
-		if (!result) {
-			setHistoryList(prevList);
-		}
-	};
+	const { historyList, loading, error, handleDelete } = useHistoryList();
 
 	if (loading) return <div>Loading history...</div>;
 	if (error) return <div>Error: {error}</div>;
@@ -56,27 +26,12 @@ const HistoryPage: React.FC = () => {
 				</thead>
 				<tbody>
 					{historyList.map((item) => (
-						<tr key={item._id}>
-							<td>{item.subject}</td>
-							<td>{item.from}</td>
-							<td>{item.to}</td>
-							<td className={styles.actions}>
-								<button
-									type="button"
-									onClick={() => handleDelete(item._id)}
-									className={styles.deleteButton}
-									aria-label="Delete"
-								>
-									<TrashIcon />
-								</button>
-								<button
-									onClick={() => navigate(`/analyze/${item._id}`)}
-									type="button"
-								>
-									View
-								</button>
-							</td>
-						</tr>
+						<HistoryRow
+							key={item._id}
+							item={item}
+							handleDelete={handleDelete}
+							navigate={navigate}
+						/>
 					))}
 				</tbody>
 			</table>

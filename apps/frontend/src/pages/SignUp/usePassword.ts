@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authTypes } from "shared/auth-types";
-import { validateAll } from "../services/validatePassword";
-import type { APIAuth } from "../types";
-import { useFetch } from "./useFetch";
+import { useFetch } from "../../hooks/useFetch";
+import { validateAll } from "../../services/validatePassword";
+import type { APIAuth } from "../../types";
 
 interface Props {
 	onAuthenticate: (data: APIAuth) => void;
@@ -11,7 +11,7 @@ interface Props {
 
 // services
 
-export function usePasswordSignUp({ onAuthenticate }: Props) {
+export function usePassword({ onAuthenticate }: Props) {
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [confirmPassword, setConfirmPassword] = useState<string>("");

@@ -1,4 +1,4 @@
-import { usePasswordSignUp } from "../../hooks/usePasswordSignUp";
+import { usePassword } from "./usePassword";
 import styles from "../../assets/Password.module.css";
 import type { APIAuth } from "../../types";
 
@@ -17,7 +17,7 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 		error,
 		loading,
 		handlePasswordSignUp,
-	} = usePasswordSignUp({ onAuthenticate });
+	} = usePassword({ onAuthenticate });
 
 	return (
 		<form className={styles.passwordForm} onSubmit={handlePasswordSignUp}>

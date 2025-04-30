@@ -1,18 +1,33 @@
 import { useEffect, useState } from "react";
-import type { APIMessage } from "../types";
-// removed unused useNavigate import
-import { useFetch } from "./useFetch";
+import { useFetch } from "../../hooks/useFetch";
+import type { APIMessage } from "../../types";
 
 /**
- * Custom hook to handle resend cooldown logic for buttons.
+ * Custom hook to handle magic link resend cooldown logic for buttons.
  * @param initialCountdown The initial countdown value in seconds (default: 15)
+ * @param url The URL to send the magic link request to
  * @returns Object with email, setEmail, isButtonDisabled, setIsButtonDisabled, countdown, error, setError
  */
-export function useMagicLogin(initialCountdown = 15) {
+export function useMagicLink({
+	initialCountdown = 15,
+	url,
+}: { initialCountdown?: number; url: string }) {
 	const [email, setEmail] = useState("");
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 	const [countdown, setCountdown] = useState(initialCountdown);
-	const [inputError, setInputError] = useState<string | null>(null);
+	const [error, setError] = useState<string | null>(null);
+
+	const { execute, error: fetchError } = useFetch<APIMessage>(
+		{
+			url,
+			method: "POST",
+		},
+		false,
+	);
+
+	useEffect(() => {
+		if (fetchError) setError(fetchError);
+	}, [fetchError]);
 
 	useEffect(() => {
 		let timer: NodeJS.Timeout;
@@ -32,23 +47,17 @@ export function useMagicLogin(initialCountdown = 15) {
 		};
 	}, [isButtonDisabled, countdown, initialCountdown]);
 
-	const { execute, error: fetchError } = useFetch<APIMessage>(
-		{
-			url: "/api/auth/login",
-			method: "POST",
-		},
-		false,
-	);
-
 	const handleMagicLinkRequest = async () => {
 		if (!email) {
-			setInputError("Please enter your email address");
+			setError("Please enter your email address");
 			return;
 		}
 
-		setInputError(null);
+		setError(null);
 		const result = await execute({ body: { type: "magic_links", email } });
-		if (result) setIsButtonDisabled(true);
+		if (result) {
+			setIsButtonDisabled(true);
+		}
 	};
 
 	return {
@@ -56,8 +65,8 @@ export function useMagicLogin(initialCountdown = 15) {
 		setEmail,
 		isButtonDisabled,
 		countdown,
-		error: inputError || fetchError,
-		setError: setInputError,
+		error,
+		setError,
 		handleMagicLinkRequest,
 	};
 }

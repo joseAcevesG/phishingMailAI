@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import styles from "./Login.module.css";
-import MagicLink from "./MagicLink";
+import MagicLink from "../../components/magicLink/MagicLink";
 import Password from "./Password";
 import type { APIAuth } from "../../types";
+import ToggleButtonGroup from "../../components/ToggleButtonGroup/ToggleButtonGroup";
 
 interface Props {
 	isAuthenticated?: boolean;
@@ -23,28 +24,15 @@ export const Login: React.FC<Props> = ({ isAuthenticated, onAuthenticate }) => {
 			<div className={styles.loginBox}>
 				<h1>Welcome to Phishing Mail AI</h1>
 				<p>Please log in to continue</p>
-				<div className={styles.toggleContainer}>
-					<button
-						className={`${styles.toggleButton} ${
-							selectedMethod === "magic" ? styles.toggleActive : ""
-						}`}
-						type="button"
-						onClick={() => setSelectedMethod("magic")}
-					>
-						Magic Link
-					</button>
-					<button
-						className={`${styles.toggleButton} ${
-							selectedMethod === "password" ? styles.toggleActive : ""
-						}`}
-						type="button"
-						onClick={() => setSelectedMethod("password")}
-					>
-						Password
-					</button>
-				</div>
+				<ToggleButtonGroup
+					selectedMethod={selectedMethod}
+					setSelectedMethod={setSelectedMethod}
+				/>
 				{selectedMethod === "magic" ? (
-					<MagicLink />
+					<MagicLink
+						url={"/api/auth/login"}
+						buttonText={"Login with Magic Link"}
+					/>
 				) : (
 					<Password onAuthenticate={onAuthenticate} />
 				)}

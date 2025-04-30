@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Analysis } from "shared";
-import { useFetch } from "./useFetch";
+import { useFetch } from "../../hooks/useFetch";
 
-export const useEmailAnalysis = () => {
+export const useMailAnalysis = () => {
 	const navigate = useNavigate();
 	const [error, setError] = useState<string | null>(null);
 	const {

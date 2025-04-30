@@ -1,40 +1,17 @@
-import { useEffect, useState } from "react";
 import styles from "../../assets/Password.module.css";
-import { validateAll } from "../../services/validatePassword";
-import { useFetch } from "../../hooks/useFetch";
-import type { APIMessage } from "../../types";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { usePasswordReset } from "./usePasswordReset";
 
 const PasswordReset: React.FC = () => {
-	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
-	const [searchParams] = useSearchParams();
-	const navigate = useNavigate();
 	const {
-		error: fetchError,
-		loading: isSubmitting,
-		execute,
-	} = useFetch<APIMessage>(
-		{
-			url: `/api/auth/authenticate?${searchParams.toString()}`,
-			method: "POST",
-		},
-		false
-	);
-
-	useEffect(() => {
-		setValidationError(validateAll(password, confirmPassword));
-	}, [password, confirmPassword]);
-
-	const [validationError, setValidationError] = useState<string | null>(null);
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		const result = await execute({ body: { password } });
-		if (result) {
-			navigate("/login");
-		}
-	};
+		password,
+		setPassword,
+		confirmPassword,
+		setConfirmPassword,
+		validationError,
+		fetchError,
+		isSubmitting,
+		handleSubmit,
+	} = usePasswordReset();
 
 	return (
 		<form onSubmit={handleSubmit}>
@@ -62,9 +39,7 @@ const PasswordReset: React.FC = () => {
 			<button
 				className={styles.loginButton}
 				type="submit"
-				disabled={
-					isSubmitting || !password || !confirmPassword || !!validationError
-				}
+				disabled={isSubmitting || !!validationError}
 			>
 				{isSubmitting ? "Resetting..." : "Reset Password"}
 			</button>

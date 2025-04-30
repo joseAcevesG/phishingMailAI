@@ -20,6 +20,13 @@ export const useAuth = () => {
 		false,
 	);
 
+	const { execute: fetchStatus } = useFetch<APIAuth>(
+		{
+			url: "/api/auth/status",
+		},
+		false,
+	);
+
 	const handleLogout = useCallback(async () => {
 		const result = await executeLogout();
 		if (result !== null) {
@@ -39,13 +46,6 @@ export const useAuth = () => {
 			userEmail: data.email,
 		}));
 	}, []);
-
-	const { execute: fetchStatus } = useFetch<APIAuth>(
-		{
-			url: "/api/auth/status",
-		},
-		false,
-	);
 
 	useEffect(() => {
 		const handleStatus = async () => {
