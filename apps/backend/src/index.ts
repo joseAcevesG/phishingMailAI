@@ -1,7 +1,11 @@
 import path from "node:path";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import express, { type Request, type Response } from "express";
+import express, {
+	type Request,
+	type Response,
+	type NextFunction,
+} from "express";
 import swaggerUi from "swagger-ui-express";
 import { EnvConfig } from "./config/env.config";
 import connectDB from "./config/mongoose";
@@ -23,6 +27,20 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get("*", (_req: Request, res: Response) => {
 	res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
 });
+
+app.use(
+	(
+		err: Error & { status?: number },
+		_req: Request,
+		res: Response,
+		_next: NextFunction,
+	) => {
+		const status = err.status || 500;
+		res
+			.status(status)
+			.json({ message: err.message || "Internal Server Error" });
+	},
+);
 
 // Start server after DB connection
 const startServer = async () => {
