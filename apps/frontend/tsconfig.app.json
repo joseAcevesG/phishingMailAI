@@ -4,7 +4,8 @@
 		"jsx": "react-jsx",
 		"moduleResolution": "bundler",
 		"baseUrl": ".",
-		"noEmit": true
+		"noEmit": true,
+		"types": ["node"]
 	},
 	"references": [{ "path": "../../packages/shared" }],
 	"include": ["src"]
