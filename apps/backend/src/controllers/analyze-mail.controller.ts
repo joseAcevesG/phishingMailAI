@@ -23,8 +23,20 @@ class AnalyzeMailController {
 		let emailData: Mail;
 		let mailId: string;
 
-		// Parse the email file
-		readFile(req.file.path, "utf-8")
+		// Support both disk and memory storage
+		let getEmailContent: Promise<string>;
+		if (req.file.path) {
+			getEmailContent = readFile(req.file.path, "utf-8");
+		} else if (req.file.buffer) {
+			getEmailContent = Promise.resolve(req.file.buffer.toString("utf-8"));
+		} else {
+			res
+				.status(StatusCodes.BAD_REQUEST.code)
+				.json({ message: "Email file missing or unreadable" });
+			return;
+		}
+
+		getEmailContent
 			.then((emailContent) => {
 				if (!emailContent || emailContent.trim() === "") {
 					throw new BadRequestError("Email content cannot be empty");
