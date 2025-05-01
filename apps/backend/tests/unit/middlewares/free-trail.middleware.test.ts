@@ -132,4 +132,17 @@ describe("freeTrial middleware", () => {
 		});
 		expect(next).not.toHaveBeenCalled();
 	});
+
+	it("should return error if decrypt fails (INTERNAL_SERVER_ERROR)", async () => {
+		req.user = runUser;
+		req.user.freeTrial = false;
+		req.user.api_key = "encryptedKey";
+		(decrypt as Mock).mockRejectedValue(new Error("fail"));
+		freeTrialMiddleware(req as Request, res as Response, next);
+		await new Promise((r) => setImmediate(r));
+		expect(res.status).toHaveBeenCalledWith(ResponseStatus.INTERNAL_SERVER_ERROR.code);
+		expect(res.json).toHaveBeenCalledWith({
+			message: ResponseStatus.INTERNAL_SERVER_ERROR.message,
+		});
+	});
 });

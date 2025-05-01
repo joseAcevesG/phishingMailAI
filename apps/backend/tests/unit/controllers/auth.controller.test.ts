@@ -155,6 +155,51 @@ describe("AuthController", () => {
 				email: "existing@example.com",
 			});
 		});
+
+		it("should return 400 and message if StytchError with email_duplicate is thrown", async () => {
+			req.body = {
+				type: authTypes.passwordLogin,
+				email: "new@example.com",
+				password: "Password1!",
+			};
+			const stytchError = new StytchError({
+				error_type: "email_duplicate",
+				error_message: "Email already exists",
+				status_code: 400,
+				request_id: "mock-request-id",
+				error_url: "https://example.com/error",
+			});
+			(stytchClient.passwords.create as Mock).mockRejectedValue(stytchError);
+			AuthController.signUp(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
+			expect(res.json).toHaveBeenCalledWith({
+				message:
+					"Email already exists. Please use a different email or change your password.",
+			});
+		});
+
+		it("should return 400 and message if StytchError with invalid_email is thrown", async () => {
+			req.body = {
+				type: authTypes.passwordLogin,
+				email: "new@example.com",
+				password: "Password1!",
+			};
+			const stytchError = new StytchError({
+				error_type: "invalid_email",
+				error_message: "Invalid email",
+				status_code: 400,
+				request_id: "mock-request-id",
+				error_url: "https://example.com/error",
+			});
+			(stytchClient.passwords.create as Mock).mockRejectedValue(stytchError);
+			AuthController.signUp(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
+			expect(res.json).toHaveBeenCalledWith({
+				message: "Invalid email",
+			});
+		});
 	});
 
 	describe("login", () => {
@@ -173,6 +218,16 @@ describe("AuthController", () => {
 			await new Promise((r) => setImmediate(r));
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
 			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
+		});
+
+		it("should return 400 and message on invalid auth type", async () => {
+			req.body = { email: "test@example.com", type: "reset_password" };
+			AuthController.login(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
+			expect(res.json).toHaveBeenCalledWith({
+				message: "Unsupported auth type",
+			});
 		});
 
 		it("should send magic link on magicLink type (success)", async () => {
@@ -360,10 +415,12 @@ describe("AuthController", () => {
 	});
 
 	describe("authenticate", () => {
-		let req: Partial<Request> & {
-			body?: Record<string, unknown>;
-			query?: Record<string, unknown>;
-		};
+		let req: Partial<
+			Request & {
+				body?: Record<string, unknown>;
+				query?: Record<string, unknown>;
+			}
+		>;
 		let res: Partial<Response> & { status: Mock; json: Mock };
 
 		beforeEach(() => {
@@ -811,6 +868,20 @@ describe("AuthController", () => {
 				"refreshToken",
 				res as Response,
 			);
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.code);
+			expect(res.json).toHaveBeenCalledWith({
+				authenticated: false,
+				email: undefined,
+			});
+		});
+
+		it("should return 401 and unauthenticated if tokenService.verifyAccessToken rejects", async () => {
+			req.cookies = { session_token: "badToken" };
+			vi.spyOn(tokenService, "verifyAccessToken").mockRejectedValue(
+				new Error("fail"),
+			);
+			AuthController.status(req as Request, res as Response);
+			await new Promise((r) => setImmediate(r));
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.code);
 			expect(res.json).toHaveBeenCalledWith({
 				authenticated: false,

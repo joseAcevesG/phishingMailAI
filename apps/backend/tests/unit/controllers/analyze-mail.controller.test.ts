@@ -104,6 +104,39 @@ describe("AnalyzeMailController", () => {
 			});
 		});
 
+		it("should return 400 if parsed email has no html", async () => {
+			req.file = { path: "path" };
+			(readFile as Mock).mockResolvedValue("raw email");
+			(simpleParser as Mock).mockResolvedValue({
+				html: undefined,
+			});
+			AnalyzeMailController.create(req, res);
+			await new Promise((r) => setImmediate(r));
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
+			expect(res.json).toHaveBeenCalledWith({
+				message: "Email content cannot be empty",
+			});
+		});
+
+		it("should return 400 if email data is invalid per schema", async () => {
+			req.file = { path: "path" };
+			(readFile as Mock).mockResolvedValue("raw email");
+			// Simulate parsed email with missing subject (or other required field)
+			(simpleParser as Mock).mockResolvedValue({
+				html: "<p>hi</p>",
+				subject: undefined, // or any field to break schema
+				from: { text: "from" },
+				to: { text: "to" },
+				text: "text",
+			});
+			AnalyzeMailController.create(req, res);
+			await new Promise((r) => setImmediate(r));
+			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
+			expect(res.json).toHaveBeenCalledWith({
+				message: expect.stringContaining("Invalid email data"),
+			});
+		});
+
 		it("should return analysis on success", async () => {
 			req.file = { path: "path" };
 			req.user = runUser;
@@ -268,7 +301,8 @@ describe("AnalyzeMailController", () => {
 		it("should delete and return list on success", async () => {
 			req.user = runUser;
 			req.params = { id: id1 };
-			(userModel.findOneAndUpdate as Mock).mockResolvedValue({ analysis: [] });
+			const analysis = [{ _id: id1, subject: "s", from: "f", to: "t" }];
+			(userModel.findOneAndUpdate as Mock).mockResolvedValue({ analysis });
 			AnalyzeMailController.delete(req, res);
 			await new Promise((r) => setImmediate(r));
 			expect(userModel.findOneAndUpdate).toHaveBeenCalledWith(
@@ -276,7 +310,7 @@ describe("AnalyzeMailController", () => {
 				{ $set: { analysis: [] } },
 				{ new: true },
 			);
-			expect(res.json).toHaveBeenCalledWith([]);
+			expect(res.json).toHaveBeenCalledWith(analysis);
 		});
 
 		it("should return 500 on db error", async () => {
