@@ -82,7 +82,7 @@ class AuthController {
 				.catch((err) => {
 					if (
 						err instanceof StytchError &&
-						err.error_type === "email_duplicate"
+						err.error_type === "duplicate_email"
 					) {
 						res.status(StatusCodes.BAD_REQUEST.code).json({
 							message:

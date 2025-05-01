@@ -163,7 +163,7 @@ describe("AuthController", () => {
 				password: "Password1!",
 			};
 			const stytchError = new StytchError({
-				error_type: "email_duplicate",
+				error_type: "duplicate_email",
 				error_message: "Email already exists",
 				status_code: 400,
 				request_id: "mock-request-id",
