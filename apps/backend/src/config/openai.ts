@@ -37,3 +37,4 @@ class OpenAIConfig {
 }
 
 export default new OpenAIConfig();
+export { OpenAIConfig };
