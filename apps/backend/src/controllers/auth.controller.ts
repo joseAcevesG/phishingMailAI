@@ -346,10 +346,10 @@ class AuthController {
 				});
 			})
 			.catch((error: Error) => {
+				console.error('changeTrial error:', error); // Added detailed error logging
 				res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
 					message: StatusCodes.INTERNAL_SERVER_ERROR.message,
 				});
-				console.error(error);
 			});
 	}
 
