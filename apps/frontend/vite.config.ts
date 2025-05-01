@@ -1,8 +1,8 @@
+/// <reference types="vitest" />
 import path from "node:path";
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 
-// https://vite.dev/config/
 export default defineConfig({
 	plugins: [react()],
 	resolve: {
@@ -16,6 +16,16 @@ export default defineConfig({
 				target: "http://localhost:3000",
 				changeOrigin: true,
 			},
+		},
+	},
+	test: {
+		globals: true,
+		environment: "jsdom",
+		setupFiles: "./src/setupTests.ts",
+		include: ["src/**/*.{test,spec}.{js,ts,jsx,tsx}"],
+		coverage: {
+			provider: "istanbul",
+			reporter: ["text", "json", "html"],
 		},
 	},
 });
