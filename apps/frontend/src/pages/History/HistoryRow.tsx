@@ -1,5 +1,5 @@
-import styles from "./History.module.css";
 import TrashIcon from "../../assets/icons/trash";
+import styles from "./History.module.css";
 
 interface Props {
 	item: {
@@ -19,10 +19,10 @@ const HistoryRow: React.FC<Props> = ({ item, handleDelete, navigate }) => (
 		<td>{item.to}</td>
 		<td className={styles.actions}>
 			<button
-				type="button"
-				onClick={() => handleDelete(item._id)}
-				className={styles.deleteButton}
 				aria-label="Delete"
+				className={styles.deleteButton}
+				onClick={() => handleDelete(item._id)}
+				type="button"
 			>
 				<TrashIcon />
 			</button>

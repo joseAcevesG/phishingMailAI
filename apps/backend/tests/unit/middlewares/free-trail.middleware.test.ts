@@ -8,12 +8,12 @@ import {
 	it,
 	vi,
 } from "vitest";
+import openai from "../../../src/config/openai";
 import freeTrialMiddleware from "../../../src/middlewares/free-trail";
 import userModel from "../../../src/models/user.model";
 import type { User } from "../../../src/types";
 import { decrypt } from "../../../src/utils/encrypt-string";
 import ResponseStatus from "../../../src/utils/response-codes";
-import openai from "../../../src/config/openai";
 
 vi.mock("../../../src/models/user.model", () => ({
 	default: { updateOne: vi.fn() },
@@ -140,7 +140,9 @@ describe("freeTrial middleware", () => {
 		(decrypt as Mock).mockRejectedValue(new Error("fail"));
 		freeTrialMiddleware(req as Request, res as Response, next);
 		await new Promise((r) => setImmediate(r));
-		expect(res.status).toHaveBeenCalledWith(ResponseStatus.INTERNAL_SERVER_ERROR.code);
+		expect(res.status).toHaveBeenCalledWith(
+			ResponseStatus.INTERNAL_SERVER_ERROR.code,
+		);
 		expect(res.json).toHaveBeenCalledWith({
 			message: ResponseStatus.INTERNAL_SERVER_ERROR.message,
 		});

@@ -1,7 +1,7 @@
-import styles from "./History.module.css";
 import { useNavigate } from "react-router-dom";
-import { useHistoryList } from "./useHistoryList";
+import styles from "./History.module.css";
 import HistoryRow from "./HistoryRow";
+import { useHistoryList } from "./useHistoryList";
 
 const HistoryPage = () => {
 	const navigate = useNavigate();
@@ -27,9 +27,9 @@ const HistoryPage = () => {
 				<tbody>
 					{historyList.map((item) => (
 						<HistoryRow
-							key={item._id}
-							item={item}
 							handleDelete={handleDelete}
+							item={item}
+							key={item._id}
 							navigate={navigate}
 						/>
 					))}

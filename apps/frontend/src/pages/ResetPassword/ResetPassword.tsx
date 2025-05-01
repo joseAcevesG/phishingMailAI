@@ -1,5 +1,5 @@
-import styles from "./ResetPassword.module.css";
 import Reset from "./Reset";
+import styles from "./ResetPassword.module.css";
 
 export const ResetPassword: React.FC = () => {
 	return (

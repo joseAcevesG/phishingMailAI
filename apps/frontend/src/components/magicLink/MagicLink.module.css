@@ -1,56 +1,60 @@
 .magicLinkForm {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
 }
 
 .inputGroup {
-  margin-bottom: 2rem;
+	margin-bottom: 2rem;
 }
 
 .emailInput {
-  width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-  border: 2px solid var(--border-color);
-  border-radius: 4px;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  transition: border-color 0.3s ease;
+	width: 100%;
+	padding: 1rem;
+	font-size: 1rem;
+	border: 2px solid var(--border-color);
+	border-radius: 4px;
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
+	transition: border-color 0.3s ease;
 }
 
 .emailInput:focus {
-  outline: none;
-  border-color: var(--accent-primary);
+	outline: none;
+	border-color: var(--accent-primary);
 }
 
 .loginButton {
-  font-size: 1.1rem;
-  padding: 1rem 2rem;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  color: white;
-  border: none;
-  min-width: 200px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+	font-size: 1.1rem;
+	padding: 1rem 2rem;
+	background: linear-gradient(
+		135deg,
+		var(--accent-primary),
+		var(--accent-secondary)
+	);
+	color: white;
+	border: none;
+	min-width: 200px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: all 0.3s ease;
 }
 
 .loginButton:disabled {
-  background: var(--bg-disabled);
-  cursor: not-allowed;
-  transform: none;
-  opacity: 0.7;
+	background: var(--bg-disabled);
+	cursor: not-allowed;
+	transform: none;
+	opacity: 0.7;
 }
 
 .loginButton:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(74, 158, 255, 0.2);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(74, 158, 255, 0.2);
 }
 
 .errorMessage {
-  color: var(--error);
-  margin: 0 0 1rem 0;
-  font-size: 0.875rem;
-  text-align: left;
+	color: var(--error);
+	margin: 0 0 1rem 0;
+	font-size: 0.875rem;
+	text-align: left;
 }

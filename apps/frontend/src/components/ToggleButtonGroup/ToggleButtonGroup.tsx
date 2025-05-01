@@ -14,8 +14,8 @@ const ToggleButtonGroup: React.FC<ToggleButtonGroupProps> = ({
 			className={`${styles.toggleButton} ${
 				selectedMethod === "magic" ? styles.toggleActive : ""
 			}`}
-			type="button"
 			onClick={() => setSelectedMethod("magic")}
+			type="button"
 		>
 			Magic Link
 		</button>
@@ -23,8 +23,8 @@ const ToggleButtonGroup: React.FC<ToggleButtonGroupProps> = ({
 			className={`${styles.toggleButton} ${
 				selectedMethod === "password" ? styles.toggleActive : ""
 			}`}
-			type="button"
 			onClick={() => setSelectedMethod("password")}
+			type="button"
 		>
 			Password
 		</button>

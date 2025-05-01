@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import styles from "./Authenticate.module.css";
-import type { APIAuth } from "../../types";
 import { useFetch } from "../../hooks/useFetch";
+import type { APIAuth } from "../../types";
+import styles from "./Authenticate.module.css";
 
 interface Props {
 	onAuthenticate: (data: APIAuth) => void;
@@ -13,7 +13,7 @@ export const Authenticate: React.FC<Props> = ({ onAuthenticate }) => {
 	const [searchParams] = useSearchParams();
 	const { execute } = useFetch<APIAuth>(
 		{ url: "/api/auth/authenticate", method: "POST" },
-		false
+		false,
 	);
 
 	useEffect(() => {

@@ -18,19 +18,19 @@ const PasswordReset: React.FC = () => {
 			<div className={styles.inputGroup}>
 				<input
 					className={styles.passwordInput}
-					type="password"
-					placeholder="Enter your password"
-					value={password}
 					onChange={(e) => setPassword(e.target.value)}
+					placeholder="Enter your password"
+					type="password"
+					value={password}
 				/>
 			</div>
 			<div className={styles.inputGroup}>
 				<input
 					className={styles.passwordInput}
-					type="password"
-					placeholder="Confirm your password"
-					value={confirmPassword}
 					onChange={(e) => setConfirmPassword(e.target.value)}
+					placeholder="Confirm your password"
+					type="password"
+					value={confirmPassword}
 				/>
 			</div>
 			{(validationError || fetchError) && (
@@ -38,8 +38,8 @@ const PasswordReset: React.FC = () => {
 			)}
 			<button
 				className={styles.loginButton}
-				type="submit"
 				disabled={isSubmitting || !!validationError}
+				type="submit"
 			>
 				{isSubmitting ? "Resetting..." : "Reset Password"}
 			</button>

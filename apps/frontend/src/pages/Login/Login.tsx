@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import styles from "./Login.module.css";
-import MagicLink from "../../components/magicLink/MagicLink";
-import Password from "./Password";
-import type { APIAuth } from "../../types";
 import ToggleButtonGroup from "../../components/ToggleButtonGroup/ToggleButtonGroup";
+import MagicLink from "../../components/magicLink/MagicLink";
+import type { APIAuth } from "../../types";
+import styles from "./Login.module.css";
+import Password from "./Password";
 
 interface Props {
 	isAuthenticated?: boolean;
@@ -13,7 +13,7 @@ interface Props {
 
 export const Login: React.FC<Props> = ({ isAuthenticated, onAuthenticate }) => {
 	const [selectedMethod, setSelectedMethod] = useState<"magic" | "password">(
-		"magic"
+		"magic",
 	);
 	if (isAuthenticated) {
 		return <Navigate replace to="/" />;
@@ -30,8 +30,8 @@ export const Login: React.FC<Props> = ({ isAuthenticated, onAuthenticate }) => {
 				/>
 				{selectedMethod === "magic" ? (
 					<MagicLink
-						url={"/api/auth/login"}
 						buttonText={"Login with Magic Link"}
+						url={"/api/auth/login"}
 					/>
 				) : (
 					<Password onAuthenticate={onAuthenticate} />

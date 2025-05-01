@@ -15,10 +15,10 @@ import HistoryPage from "./pages/History/History";
 import Home from "./pages/Home/Home";
 import { Landing } from "./pages/Landing/Landing";
 import { Login } from "./pages/Login/Login";
-import SettingsPage from "./pages/settings/settings";
-import SignUp from "./pages/SignUp/SignUp";
 import { ResetLink } from "./pages/ResetLink/ResetLink";
 import { ResetPassword } from "./pages/ResetPassword/ResetPassword";
+import SignUp from "./pages/SignUp/SignUp";
+import SettingsPage from "./pages/settings/settings";
 
 const AppContent: React.FC = () => {
 	const {

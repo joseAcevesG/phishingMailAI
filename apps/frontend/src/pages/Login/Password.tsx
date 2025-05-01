@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useFetch } from "../../hooks/useFetch";
-import styles from "../../assets/Password.module.css";
 import { useNavigate } from "react-router-dom";
 import { authTypes } from "shared/auth-types";
+import styles from "../../assets/Password.module.css";
+import { useFetch } from "../../hooks/useFetch";
 import type { APIAuth } from "../../types";
 
 interface Props {
@@ -22,7 +22,7 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 		},
-		false
+		false,
 	);
 	const navigate = useNavigate();
 
@@ -42,26 +42,26 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 			<div className={styles.inputGroup}>
 				<input
 					className={styles.emailInput}
-					type="email"
-					placeholder="Enter your email"
-					value={email}
 					onChange={(e) => setEmail(e.target.value)}
+					placeholder="Enter your email"
+					type="email"
+					value={email}
 				/>
 			</div>
 			<div className={styles.inputGroup}>
 				<input
 					className={styles.passwordInput}
-					type="password"
-					placeholder="Enter your password"
-					value={password}
 					onChange={(e) => setPassword(e.target.value)}
+					placeholder="Enter your password"
+					type="password"
+					value={password}
 				/>
 			</div>
 			{error && <p className={styles.errorMessage}>{error}</p>}
 			<button
 				className={styles.loginButton}
-				type="submit"
 				disabled={isSubmitting || !email || !password}
+				type="submit"
 			>
 				{isSubmitting ? "Logging in..." : "Login"}
 			</button>

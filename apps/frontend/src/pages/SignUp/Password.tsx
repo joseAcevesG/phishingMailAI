@@ -1,6 +1,6 @@
-import { usePassword } from "./usePassword";
 import styles from "../../assets/Password.module.css";
 import type { APIAuth } from "../../types";
+import { usePassword } from "./usePassword";
 
 interface Props {
 	onAuthenticate: (data: APIAuth) => void;
@@ -24,35 +24,35 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 			<div className={styles.inputGroup}>
 				<input
 					className={styles.emailInput}
-					type="email"
-					placeholder="Enter your email"
-					value={email}
 					onChange={(e) => setEmail(e.target.value)}
+					placeholder="Enter your email"
+					type="email"
+					value={email}
 				/>
 			</div>
 			<div className={styles.inputGroup}>
 				<input
 					className={styles.passwordInput}
-					type="password"
-					placeholder="Enter your password"
-					value={password}
 					onChange={(e) => setPassword(e.target.value)}
+					placeholder="Enter your password"
+					type="password"
+					value={password}
 				/>
 			</div>
 			<div className={styles.inputGroup}>
 				<input
 					className={styles.passwordInput}
-					type="password"
-					placeholder="Confirm your password"
-					value={confirmPassword}
 					onChange={(e) => setConfirmPassword(e.target.value)}
+					placeholder="Confirm your password"
+					type="password"
+					value={confirmPassword}
 				/>
 			</div>
 			{error && <p className={styles.errorMessage}>{error}</p>}
 			<button
 				className={styles.loginButton}
-				type="submit"
 				disabled={loading || !email || !password || !confirmPassword || !!error}
+				type="submit"
 			>
 				{loading ? "Signing up..." : "Sign Up"}
 			</button>

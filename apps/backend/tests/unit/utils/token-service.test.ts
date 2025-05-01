@@ -1,11 +1,11 @@
 import type { Response } from "express";
 import type { Types } from "mongoose";
 import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
+import RefreshTokenModel from "../../../src/models/refresh-token.model";
+import User from "../../../src/models/user.model";
+import * as createToken from "../../../src/utils/create-token";
 import { UnauthorizedError } from "../../../src/utils/errors";
 import * as tokenService from "../../../src/utils/token-service";
-import User from "../../../src/models/user.model";
-import RefreshTokenModel from "../../../src/models/refresh-token.model";
-import * as createToken from "../../../src/utils/create-token";
 
 // Mocks
 const mockUser = { email: "user@example.com", _id: "u1" };

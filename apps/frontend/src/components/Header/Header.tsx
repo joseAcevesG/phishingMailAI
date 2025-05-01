@@ -54,7 +54,7 @@ export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
 					</button>
 				</div>
 			) : (
-				<div className={styles.userInfoPlaceholder} aria-hidden="true" />
+				<div aria-hidden="true" className={styles.userInfoPlaceholder} />
 			)}
 		</header>
 	);

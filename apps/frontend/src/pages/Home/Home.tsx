@@ -1,7 +1,7 @@
-import { UploadForm } from "./UploadForm";
-import { useMailAnalysis } from "./useMailAnalysis";
 import ErrorMessages from "../../types/error-messages";
 import styles from "./Home.module.css";
+import { UploadForm } from "./UploadForm";
+import { useMailAnalysis } from "./useMailAnalysis";
 
 const Home: React.FC = () => {
 	const { uploading, error, analyzeEmail, reset, goToSetApiKey } =

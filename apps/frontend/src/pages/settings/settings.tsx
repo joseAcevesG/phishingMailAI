@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { useSettings } from "./useSettings";
 import styles from "./settings.module.css";
+import { useSettings } from "./useSettings";
 
 const SettingsPage: React.FC = () => {
 	const {
@@ -23,7 +23,7 @@ const SettingsPage: React.FC = () => {
 				</div>
 				<div className={styles.body}>
 					<p>If you've forgotten your password, you can reset it here:</p>
-					<Link type="button" className={styles.link} to="/reset-password-link">
+					<Link className={styles.link} to="/reset-password-link" type="button">
 						Reset password
 					</Link>
 				</div>
@@ -39,11 +39,11 @@ const SettingsPage: React.FC = () => {
 					{keyError && <div className={styles.errorMessage}>{keyError}</div>}
 					<form className={styles.form} onSubmit={handleKeySubmit}>
 						<input
-							type="password"
-							placeholder="sk-..."
-							value={apiKey}
-							required
 							onChange={(e) => setApiKey(e.target.value)}
+							placeholder="sk-..."
+							required
+							type="password"
+							value={apiKey}
 						/>
 						<button disabled={keyLoading || !apiKey} type="submit">
 							{keyLoading ? "Saving…" : "Save API Key"}
@@ -62,10 +62,10 @@ const SettingsPage: React.FC = () => {
 						<div className={styles.errorMessage}>{logoutError}</div>
 					)}
 					<button
-						type="button"
 						className={styles.dangerButton}
-						onClick={handleLogoutAll}
 						disabled={logoutLoading}
+						onClick={handleLogoutAll}
+						type="button"
 					>
 						{logoutLoading ? "Logging out…" : "Log out on all devices"}
 					</button>

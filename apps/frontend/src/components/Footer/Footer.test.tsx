@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 import Footer from "./Footer";
 
 describe("Footer", () => {
@@ -7,7 +7,7 @@ describe("Footer", () => {
 		render(<Footer />);
 		const year = new Date().getFullYear().toString();
 		expect(
-			screen.getByText(`© ${year} PhishingMail AI. All rights reserved.`)
+			screen.getByText(`© ${year} PhishingMail AI. All rights reserved.`),
 		).toBeInTheDocument();
 	});
 });

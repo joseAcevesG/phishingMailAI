@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import styles from "./UploadForm.module.css";
 
 interface Props {
@@ -24,7 +24,7 @@ export const UploadForm: React.FC<Props> = ({ onAnalyze, isUploading }) => {
 	};
 
 	const handleDrop = (
-		e: React.DragEvent<HTMLLabelElement | HTMLDivElement>
+		e: React.DragEvent<HTMLLabelElement | HTMLDivElement>,
 	) => {
 		e.preventDefault();
 		e.stopPropagation();
@@ -46,7 +46,7 @@ export const UploadForm: React.FC<Props> = ({ onAnalyze, isUploading }) => {
 	};
 
 	const handleDragOver = (
-		e: React.DragEvent<HTMLLabelElement | HTMLDivElement>
+		e: React.DragEvent<HTMLLabelElement | HTMLDivElement>,
 	) => {
 		e.preventDefault();
 		e.stopPropagation();
@@ -54,7 +54,7 @@ export const UploadForm: React.FC<Props> = ({ onAnalyze, isUploading }) => {
 	};
 
 	const handleDragLeave = (
-		e: React.DragEvent<HTMLLabelElement | HTMLDivElement>
+		e: React.DragEvent<HTMLLabelElement | HTMLDivElement>,
 	) => {
 		e.preventDefault();
 		e.stopPropagation();
@@ -78,17 +78,17 @@ export const UploadForm: React.FC<Props> = ({ onAnalyze, isUploading }) => {
 			<form className={styles.uploadForm} onSubmit={handleSubmit}>
 				<div
 					className={styles.fileInputContainer}
-					onDrop={handleDrop}
-					onDragOver={handleDragOver}
 					onDragLeave={handleDragLeave}
+					onDragOver={handleDragOver}
+					onDrop={handleDrop}
 				>
 					<input
 						accept=".eml"
 						className={styles.fileInput}
 						id="file-input"
 						onChange={handleFileChange}
-						type="file"
 						ref={inputRef}
+						type="file"
 					/>
 					<label
 						className={
@@ -97,9 +97,9 @@ export const UploadForm: React.FC<Props> = ({ onAnalyze, isUploading }) => {
 								: styles.fileInputLabel
 						}
 						htmlFor="file-input"
-						onDrop={handleDrop}
-						onDragOver={handleDragOver}
 						onDragLeave={handleDragLeave}
+						onDragOver={handleDragOver}
+						onDrop={handleDrop}
 					>
 						{file ? file.name : "Choose .eml file (Drag & Drop supported)"}
 					</label>
