@@ -31,8 +31,14 @@
     "check:frontend": "pnpm run --filter frontend check",
     "check:detailed": "pnpm run --filter backend check:detailed && pnpm run --filter frontend check:detailed",
     "check:detailed:backend": "pnpm run --filter backend check:detailed",
-    "check:detailed:frontend": "pnpm run --filter frontend check:detailed"
-  },
+    "check:detailed:frontend": "pnpm run --filter frontend check:detailed",
+    "test": "pnpm run -r --parallel --aggregate-output test",
+    "test:backend": "pnpm run --filter backend test",
+    "test:frontend": "pnpm run --filter frontend test",
+    "test:coverage": "pnpm run --filter backend test:coverage && pnpm run --filter frontend test:coverage",
+    "test:coverage:backend": "pnpm run --filter backend test:coverage",
+    "test:coverage:frontend": "pnpm run --filter frontend test:coverage"
+    },
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -27,7 +27,8 @@ export default (req: Request, res: Response, next: NextFunction) => {
 				res.status(ResponseStatus.INTERNAL_SERVER_ERROR.code).json({
 					message: ResponseStatus.INTERNAL_SERVER_ERROR.message,
 				});
-				console.error(error);
+				if (EnvConfig().environment !== "test")
+					console.error("Free trial error:", error);
 				return;
 			});
 		return;
@@ -47,6 +48,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
 			res.status(ResponseStatus.INTERNAL_SERVER_ERROR.code).json({
 				message: ResponseStatus.INTERNAL_SERVER_ERROR.message,
 			});
-			console.error(error);
+			if (EnvConfig().environment !== "test")
+				console.error("Free trial error:", error);
 		});
 };

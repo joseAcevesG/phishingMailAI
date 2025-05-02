@@ -44,7 +44,11 @@ uploads
 coverage
 
 # Playwright
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+
+#temp
+playwright.yml

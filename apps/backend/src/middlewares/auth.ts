@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 
+import { EnvConfig } from "../config/env.config";
 import { UnauthorizedError } from "../utils/errors";
 import ResponseStatus from "../utils/response-codes";
 import { rotateAuthTokens, verifyAccessToken } from "../utils/token-service";
@@ -43,7 +44,8 @@ function processRefresh(req: Request, res: Response, next: NextFunction) {
 				res.status(ResponseStatus.INTERNAL_SERVER_ERROR.code).json({
 					message: ResponseStatus.INTERNAL_SERVER_ERROR.message,
 				});
-				console.error(error);
+				if (EnvConfig().environment !== "test")
+					console.error("Rotate auth tokens error:", error);
 			}
 		});
 }

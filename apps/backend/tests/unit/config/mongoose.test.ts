@@ -60,9 +60,6 @@ describe("connectDB", () => {
 		});
 		const error = new Error("Connection failed");
 		vi.spyOn(mongoose, "connect").mockRejectedValueOnce(error);
-		const consoleErrorSpy = vi
-			.spyOn(console, "error")
-			.mockImplementation(() => {});
 		const exitSpy = vi.fn((code?: number) => {
 			throw new Error(`process.exit: ${code}`);
 		}) as (code?: number) => never;
@@ -76,10 +73,6 @@ describe("connectDB", () => {
 		}
 
 		expect(envConfigModule.EnvConfig).toHaveBeenCalled();
-		expect(consoleErrorSpy).toHaveBeenCalledWith(
-			"MongoDB connection error:",
-			error,
-		);
 		expect(exitSpy).toHaveBeenCalledWith(1);
 		expect((thrownError as Error)?.message).toBe("process.exit: 1");
 	});

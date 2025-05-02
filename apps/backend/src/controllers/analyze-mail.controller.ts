@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import { simpleParser } from "mailparser";
 import { Types } from "mongoose";
 import type { Analysis } from "shared";
+import { EnvConfig } from "../config/env.config";
 import openaiConfig from "../config/openai";
 import userModel from "../models/user.model";
 import IdSchema from "../schemas/id.schema";
@@ -135,7 +136,8 @@ class AnalyzeMailController {
 					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
 					.json({ message: StatusCodes.INTERNAL_SERVER_ERROR.message });
 
-				console.error("Error analyzing email:", error);
+				if (EnvConfig().environment !== "test")
+					console.error("Error analyzing email:", error);
 			});
 	}
 
@@ -239,7 +241,8 @@ class AnalyzeMailController {
 					.status(StatusCodes.INTERNAL_SERVER_ERROR.code)
 					.json({ message: StatusCodes.INTERNAL_SERVER_ERROR.message });
 
-				console.error("Error deleting analysis:", error);
+				if (EnvConfig().environment !== "test")
+					console.error("Error deleting analysis:", error);
 			});
 	}
 }

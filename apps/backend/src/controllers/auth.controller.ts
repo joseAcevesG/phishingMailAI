@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { authTypes } from "shared/auth-types";
 import { StytchError } from "stytch";
 import type { ZodIssue } from "zod";
+import { EnvConfig } from "../config/env.config";
 import { stytchClient } from "../config/stytch";
 import User from "../models/user.model";
 import AuthSchema, {
@@ -38,7 +39,7 @@ class AuthController {
 		res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
 			message: StatusCodes.INTERNAL_SERVER_ERROR.message,
 		});
-		console.error(err);
+		if (EnvConfig().environment !== "test") console.error("Stytch error:", err);
 	}
 
 	signUp(req: Request, res: Response) {
@@ -286,7 +287,8 @@ class AuthController {
 				res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
 					message: StatusCodes.INTERNAL_SERVER_ERROR.message,
 				});
-				console.error(err);
+				if (EnvConfig().environment !== "test")
+					console.error("Logout error:", err);
 			});
 	}
 
@@ -308,7 +310,8 @@ class AuthController {
 				res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
 					message: StatusCodes.INTERNAL_SERVER_ERROR.message,
 				});
-				console.error(error);
+				if (EnvConfig().environment !== "test")
+					console.error("Logout all error:", error);
 			});
 	}
 
@@ -346,10 +349,11 @@ class AuthController {
 				});
 			})
 			.catch((error: Error) => {
-				console.error("changeTrial error:", error); // Added detailed error logging
 				res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
 					message: StatusCodes.INTERNAL_SERVER_ERROR.message,
 				});
+				if (EnvConfig().environment !== "test")
+					console.error("Change trial error:", error);
 			});
 	}
 

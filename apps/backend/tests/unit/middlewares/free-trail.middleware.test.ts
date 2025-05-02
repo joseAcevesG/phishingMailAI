@@ -26,7 +26,7 @@ vi.mock("../../../src/config/openai", () => ({
 }));
 
 vi.mock("../../../src/config/env.config", () => ({
-	EnvConfig: () => ({ freeTrialLimit: 3 }),
+	EnvConfig: () => ({ freeTrialLimit: 3, environment: "test" }),
 }));
 
 const next: NextFunction = vi.fn();

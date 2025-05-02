@@ -148,6 +148,9 @@ importers:
       '@vitejs/plugin-react-swc':
         specifier: ^3.8.0
         version: 3.8.1(vite@6.2.3(@types/node@22.13.13))
+      '@vitest/coverage-istanbul':
+        specifier: 3.1.1
+        version: 3.1.1(vitest@3.1.1(@types/node@22.13.13)(jsdom@26.1.0)(msw@2.7.5(@types/node@22.13.13)(typescript@5.8.3)))
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0
