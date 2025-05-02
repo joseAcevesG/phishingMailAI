@@ -1,7 +1,7 @@
 import styles from "./MagicLink.module.css";
 import { useMagicLink } from "./useMagicLink";
 
-export interface Props {
+interface Props {
 	buttonText: string;
 	url: string;
 }

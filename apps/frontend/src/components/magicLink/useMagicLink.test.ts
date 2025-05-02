@@ -1,22 +1,20 @@
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { MockedFunction } from "vitest";
-import type { APIMessage, UseFetchReturn } from "../../types";
+import { useFetch } from "../../hooks/useFetch";
 import { useMagicLink } from "./useMagicLink";
-// Mock useFetch
+
 vi.mock("../../hooks/useFetch", () => ({
 	useFetch: vi.fn(),
 }));
 
-import { useFetch } from "../../hooks/useFetch";
+type MockFetch = MockedFunction<typeof useFetch>;
 
 describe("useMagicLink", () => {
 	let executeMock: ReturnType<typeof vi.fn>;
 	beforeEach(() => {
 		executeMock = vi.fn();
-		(
-			useFetch as MockedFunction<() => UseFetchReturn<APIMessage>>
-		).mockReturnValue({
+		(useFetch as MockFetch).mockReturnValue({
 			data: null,
 			loading: false,
 			execute: executeMock,
@@ -50,9 +48,7 @@ describe("useMagicLink", () => {
 	});
 
 	it("shows error if fetchError is set", () => {
-		(
-			useFetch as MockedFunction<() => UseFetchReturn<APIMessage>>
-		).mockReturnValue({
+		(useFetch as MockFetch).mockReturnValue({
 			data: null,
 			loading: false,
 			execute: executeMock,
@@ -76,9 +72,7 @@ describe("useMagicLink", () => {
 	});
 
 	it("handleMagicLinkRequest calls execute and disables button on success", async () => {
-		(
-			useFetch as MockedFunction<() => UseFetchReturn<APIMessage>>
-		).mockReturnValue({
+		(useFetch as MockFetch).mockReturnValue({
 			data: null,
 			loading: false,
 			execute: vi.fn().mockResolvedValue(true),
@@ -98,9 +92,7 @@ describe("useMagicLink", () => {
 
 	it("countdown disables and re-enables button", async () => {
 		vi.useFakeTimers();
-		(
-			useFetch as MockedFunction<() => UseFetchReturn<APIMessage>>
-		).mockReturnValue({
+		(useFetch as MockFetch).mockReturnValue({
 			data: null,
 			loading: false,
 			execute: vi.fn().mockResolvedValue(true),
