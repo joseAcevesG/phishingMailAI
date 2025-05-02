@@ -37,7 +37,8 @@
     "test:frontend": "pnpm run --filter frontend test",
     "test:coverage": "pnpm run --filter backend test:coverage && pnpm run --filter frontend test:coverage",
     "test:coverage:backend": "pnpm run --filter backend test:coverage",
-    "test:coverage:frontend": "pnpm run --filter frontend test:coverage"
+    "test:coverage:frontend": "pnpm run --filter frontend test:coverage",
+    "test:e2e": "pnpm run --filter frontend test:e2e"
     },
   "keywords": [],
   "author": "",

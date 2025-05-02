@@ -1,7 +1,7 @@
 import styles from "./MagicLink.module.css";
 import { useMagicLink } from "./useMagicLink";
 
-interface Props {
+export interface Props {
 	buttonText: string;
 	url: string;
 }
@@ -19,6 +19,7 @@ const MagicLink: React.FC<Props> = ({ buttonText, url }) => {
 
 	return (
 		<form
+			data-testid="magic-link-form"
 			className={styles.magicLinkForm}
 			onSubmit={(e) => {
 				e.preventDefault();

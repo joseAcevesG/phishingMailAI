@@ -2,12 +2,6 @@ import { useEffect, useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
 import type { APIMessage } from "../../types";
 
-/**
- * Custom hook to handle magic link resend cooldown logic for buttons.
- * @param initialCountdown The initial countdown value in seconds (default: 15)
- * @param url The URL to send the magic link request to
- * @returns Object with email, setEmail, isButtonDisabled, setIsButtonDisabled, countdown, error, setError
- */
 export function useMagicLink({
 	initialCountdown = 15,
 	url,
@@ -70,3 +64,5 @@ export function useMagicLink({
 		handleMagicLinkRequest,
 	};
 }
+
+export type UseMagicLinkReturn = ReturnType<typeof useMagicLink>;

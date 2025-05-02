@@ -33,7 +33,7 @@ vi.spyOn(Types, "ObjectId").mockImplementation(
 	() => ({ toString: () => testId }) as Types.ObjectId,
 );
 
-/** Test-specific request & response types */
+// Test-specific request & response types
 type TestRequest = Request & {
 	file?: { path: string };
 	user?: User;

@@ -20,11 +20,6 @@ import {
 } from "../utils/token-service";
 
 class AuthController {
-	/**
-	 * Handles errors from Stytch API calls and sends appropriate HTTP responses.
-	 * @param err The error object thrown.
-	 * @param res The Express response object.
-	 */
 	private handleStytchError(err: unknown, res: Response) {
 		if (
 			err instanceof StytchError &&

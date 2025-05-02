@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from "./Header.module.css";
 
-interface Props {
+export interface Props {
 	userEmail: string | null;
 	onLogout: () => void;
 }
