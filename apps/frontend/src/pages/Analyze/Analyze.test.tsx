@@ -4,15 +4,13 @@ import { render, screen, act } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import type { Analysis } from "shared";
 import Analyze from "./Analyze";
-import type * as ReactRouterDOM from "react-router-dom";
-import { useFetch } from "../../hooks/useFetch";
-import type { UseFetchReturn } from "src/types";
+import { useAnalyze } from "./useAnalyze";
 
-// Mock useFetch
-vi.mock("../../hooks/useFetch", () => ({
-	useFetch: vi.fn(),
+// Mock useAnalyze
+vi.mock("./useAnalyze", () => ({
+	useAnalyze: vi.fn(),
 }));
-const mockUseFetch = useFetch as unknown as Mock;
+const mockUseAnalyze = useAnalyze as unknown as Mock;
 
 // Mock ResultView
 type ResultViewProps = {
@@ -30,23 +28,9 @@ vi.mock("./ResultView", () => ({
 	),
 }));
 
-vi.mock("react-router-dom", async () => {
-	// importActual will return the real module, typed as typeof ReactRouterDOM
-	const actual: typeof ReactRouterDOM = await vi.importActual<
-		typeof ReactRouterDOM
-	>("react-router-dom");
-
-	return {
-		...actual,
-		useNavigate: () => navigate,
-	};
-});
-
-// Cast to the real module type via vi.importActual
 const navigate = vi.fn();
 
 describe("Analyze page", () => {
-	// Create a mock Analysis object with all required fields
 	const analysis: Analysis = {
 		_id: "1",
 		subject: "Test Subject",
@@ -57,8 +41,14 @@ describe("Analyze page", () => {
 		redFlags: ["Urgency", "Unknown sender"],
 	};
 
-	const setup = (fetchState: UseFetchReturn<Analysis>) => {
-		mockUseFetch.mockReturnValue({ ...fetchState });
+	const setup = (hookState: Partial<ReturnType<typeof useAnalyze>>) => {
+		mockUseAnalyze.mockReturnValue({
+			analysis: null,
+			error: null,
+			loading: false,
+			navigate,
+			...hookState,
+		});
 		window.history.pushState({}, "", "/analyze/123");
 		return render(
 			<MemoryRouter initialEntries={["/analyze/123"]}>
@@ -74,34 +64,29 @@ describe("Analyze page", () => {
 	});
 
 	it("shows loading state", () => {
-		setup({ loading: true, error: null, data: null, execute: vi.fn() });
+		setup({ loading: true });
 		expect(screen.getByText(/loading analysis/i)).toBeInTheDocument();
 	});
 
 	it("shows error state", () => {
-		setup({
-			loading: false,
-			error: "Something went wrong",
-			data: null,
-			execute: vi.fn(),
-		});
+		setup({ loading: false, error: "Something went wrong" });
 		expect(screen.getByText(/error/i)).toBeInTheDocument();
 		expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
 	});
 
 	it("shows no analysis found state", () => {
-		setup({ loading: false, error: null, data: null, execute: vi.fn() });
+		setup({ loading: false, analysis: null });
 		expect(screen.getByText(/no analysis found/i)).toBeInTheDocument();
 	});
 
 	it("renders ResultView when analysis is present", () => {
-		setup({ loading: false, error: null, data: analysis, execute: vi.fn() });
+		setup({ loading: false, analysis });
 		expect(screen.getByTestId("result-view")).toBeInTheDocument();
 		expect(screen.getByText(analysis.subject)).toBeInTheDocument();
 	});
 
 	it("navigates on reset", () => {
-		setup({ loading: false, error: null, data: analysis, execute: vi.fn() });
+		setup({ loading: false, analysis });
 		act(() => {
 			screen.getByText("Reset").click();
 		});
