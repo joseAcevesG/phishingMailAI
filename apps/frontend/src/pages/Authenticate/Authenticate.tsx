@@ -1,6 +1,4 @@
-import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useFetch } from "../../hooks/useFetch";
+import { useAuthenticate } from "./useAuthenticate";
 import type { APIAuth } from "../../types";
 import styles from "./Authenticate.module.css";
 
@@ -9,35 +7,7 @@ interface Props {
 }
 
 export const Authenticate: React.FC<Props> = ({ onAuthenticate }) => {
-	const navigate = useNavigate();
-	const [searchParams] = useSearchParams();
-	const { execute } = useFetch<APIAuth>(
-		{ url: "/api/auth/authenticate", method: "POST" },
-		false,
-	);
-
-	useEffect(() => {
-		const queryString = searchParams.toString();
-		const handleAuthenticate = () => {
-			execute({
-				url: `/api/auth/authenticate?${queryString}`,
-			})
-				.then((result) => {
-					if (result) onAuthenticate(result);
-					else navigate("/login");
-				})
-				.catch(() => {
-					navigate("/login");
-				});
-		};
-
-		if (!queryString) {
-			navigate("/login");
-			return;
-		}
-
-		handleAuthenticate();
-	}, [execute, navigate, onAuthenticate, searchParams]);
+	useAuthenticate(onAuthenticate);
 
 	return (
 		<div className={styles.authenticateContainer}>
