@@ -1,8 +1,10 @@
 import { act, renderHook } from "@testing-library/react";
+import { useNavigate } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { MockedFunction } from "vitest";
+import type { Mock } from "vitest";
 import type { FetchConfig } from "../types";
 import { useAuth } from "./useAuth";
+import { useFetch } from "./useFetch";
 
 // Mocks
 vi.mock("react-router-dom", () => ({
@@ -12,11 +14,8 @@ vi.mock("./useFetch", () => ({
 	useFetch: vi.fn(),
 }));
 
-import { useNavigate } from "react-router-dom";
-import { useFetch } from "./useFetch";
-
-type MockFetch = MockedFunction<typeof useFetch>;
-type MockNavigate = MockedFunction<typeof useNavigate>;
+const mockUseFetch = useFetch as unknown as Mock;
+const mockUseNavigate = useNavigate as unknown as Mock;
 
 describe("useAuth", () => {
 	let fetchStatusMock: ReturnType<typeof vi.fn>;
@@ -27,7 +26,7 @@ describe("useAuth", () => {
 		fetchStatusMock = vi.fn();
 		executeLogoutMock = vi.fn();
 		navigateMock = vi.fn();
-		(useFetch as MockFetch).mockImplementation((config: FetchConfig) => {
+		mockUseFetch.mockImplementation((config: FetchConfig) => {
 			if (config.url === "/api/auth/logout") {
 				return {
 					data: null,
@@ -46,7 +45,7 @@ describe("useAuth", () => {
 			}
 			return { data: null, error: null, loading: false, execute: vi.fn() };
 		});
-		(useNavigate as MockNavigate).mockReturnValue(navigateMock);
+		mockUseNavigate.mockReturnValue(navigateMock);
 	});
 
 	it("initializes with loading true", () => {

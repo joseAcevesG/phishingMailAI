@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { MockedFunction } from "vitest";
+import type { Mock } from "vitest";
 import { useFetch } from "../../hooks/useFetch";
 import { useMagicLink } from "./useMagicLink";
 
@@ -8,13 +8,13 @@ vi.mock("../../hooks/useFetch", () => ({
 	useFetch: vi.fn(),
 }));
 
-type MockFetch = MockedFunction<typeof useFetch>;
+const mockUseFetch = useFetch as unknown as Mock;
 
 describe("useMagicLink", () => {
 	let executeMock: ReturnType<typeof vi.fn>;
 	beforeEach(() => {
 		executeMock = vi.fn();
-		(useFetch as MockFetch).mockReturnValue({
+		mockUseFetch.mockReturnValue({
 			data: null,
 			loading: false,
 			execute: executeMock,
@@ -48,7 +48,7 @@ describe("useMagicLink", () => {
 	});
 
 	it("shows error if fetchError is set", () => {
-		(useFetch as MockFetch).mockReturnValue({
+		mockUseFetch.mockReturnValue({
 			data: null,
 			loading: false,
 			execute: executeMock,
@@ -72,7 +72,7 @@ describe("useMagicLink", () => {
 	});
 
 	it("handleMagicLinkRequest calls execute and disables button on success", async () => {
-		(useFetch as MockFetch).mockReturnValue({
+		mockUseFetch.mockReturnValue({
 			data: null,
 			loading: false,
 			execute: vi.fn().mockResolvedValue(true),
@@ -92,7 +92,7 @@ describe("useMagicLink", () => {
 
 	it("countdown disables and re-enables button", async () => {
 		vi.useFakeTimers();
-		(useFetch as MockFetch).mockReturnValue({
+		mockUseFetch.mockReturnValue({
 			data: null,
 			loading: false,
 			execute: vi.fn().mockResolvedValue(true),
