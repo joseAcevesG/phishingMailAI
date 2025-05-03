@@ -18,9 +18,9 @@ const mockUseFetch = useFetch as unknown as Mock;
 const mockUseNavigate = useNavigate as unknown as Mock;
 
 describe("useAuth", () => {
-	let fetchStatusMock: ReturnType<typeof vi.fn>;
-	let executeLogoutMock: ReturnType<typeof vi.fn>;
-	let navigateMock: ReturnType<typeof vi.fn>;
+	let fetchStatusMock: Mock;
+	let executeLogoutMock: Mock;
+	let navigateMock: Mock;
 
 	beforeEach(() => {
 		fetchStatusMock = vi.fn();

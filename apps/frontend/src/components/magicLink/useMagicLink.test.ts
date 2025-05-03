@@ -11,7 +11,7 @@ vi.mock("../../hooks/useFetch", () => ({
 const mockUseFetch = useFetch as unknown as Mock;
 
 describe("useMagicLink", () => {
-	let executeMock: ReturnType<typeof vi.fn>;
+	let executeMock: Mock;
 	beforeEach(() => {
 		executeMock = vi.fn();
 		mockUseFetch.mockReturnValue({
