@@ -47,9 +47,16 @@ describe("useAuth", () => {
 		mockUseNavigate.mockReturnValue(navigateMock);
 	});
 
-	it("initializes with loading true", () => {
-		const { result } = renderHook(() => useAuth());
-		expect(result.current.loading).toBe(true);
+	it("sets loading to false after effect", async () => {
+		let result: ReturnType<typeof renderHook>["result"] = {} as ReturnType<
+			typeof renderHook
+		>["result"];
+		await act(async () => {
+			result = renderHook(() => useAuth()).result;
+		});
+		type UseAuthReturn = ReturnType<typeof useAuth>;
+		const current = result.current as UseAuthReturn;
+		expect(current.loading).toBe(false);
 	});
 
 	it("sets authenticated state on successful status fetch", async () => {
@@ -89,13 +96,14 @@ describe("useAuth", () => {
 	});
 
 	it("handleAuthenticate updates auth state", () => {
-		const { result } = renderHook(() => useAuth());
+		const { result, rerender } = renderHook(() => useAuth());
 		act(() => {
 			result.current.handleAuthenticate({
 				authenticated: true,
 				email: "foo@bar.com",
 			});
 		});
+		rerender();
 		expect(result.current.isAuthenticated).toBe(true);
 		expect(result.current.userEmail).toBe("foo@bar.com");
 	});

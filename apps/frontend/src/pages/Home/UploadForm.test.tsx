@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { UploadForm } from "./UploadForm";
 
 function createFile(name = "test.eml", type = "message/rfc822") {
@@ -51,9 +51,11 @@ describe("UploadForm", () => {
 		render(<UploadForm onAnalyze={mockOnAnalyze} isUploading={false} />);
 		const input = screen.getByLabelText(/choose .eml file/i);
 		const file = createFile();
-		await fireEvent.change(input, { target: { files: [file] } });
-		const button = screen.getByRole("button", { name: /analyze email/i });
-		await fireEvent.click(button);
+		await act(async () => {
+			await fireEvent.change(input, { target: { files: [file] } });
+			const button = screen.getByRole("button", { name: /analyze email/i });
+			await fireEvent.click(button);
+		});
 		expect(mockOnAnalyze).toHaveBeenCalledWith(file);
 	});
 
