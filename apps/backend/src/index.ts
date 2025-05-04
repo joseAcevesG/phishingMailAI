@@ -14,6 +14,7 @@ import routes from "./routes";
 
 const app = express();
 const PORT = EnvConfig().port;
+const env = EnvConfig().environment;
 
 app.use(cors());
 app.use(express.json());
@@ -57,7 +58,7 @@ const startServer = async () => {
 };
 
 // only start server if not in test environment
-if (process.env.NODE_ENV !== "test") {
+if (env !== "test") {
 	startServer();
 }
 
