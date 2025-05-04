@@ -18,7 +18,7 @@ import { Login } from "./pages/Login/Login";
 import { ResetLink } from "./pages/ResetLink/ResetLink";
 import { ResetPassword } from "./pages/ResetPassword/ResetPassword";
 import SignUp from "./pages/SignUp/SignUp";
-import SettingsPage from "./pages/settings/settings";
+import SettingsPage from "./pages/Settings/Settings";
 
 const AppContent: React.FC = () => {
 	const {
