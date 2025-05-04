@@ -14,7 +14,7 @@ const PasswordReset: React.FC = () => {
 	} = usePasswordReset();
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<form data-testid="reset-password-form" onSubmit={handleSubmit}>
 			<div className={styles.inputGroup}>
 				<input
 					className={styles.passwordInput}
