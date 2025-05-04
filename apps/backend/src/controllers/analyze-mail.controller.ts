@@ -12,8 +12,32 @@ import type { Mail, OpenAIResponse } from "../types";
 import { BadRequestError } from "../utils/errors";
 import StatusCodes from "../utils/response-codes";
 
+/**
+ * Handles HTTP requests related to email analysis.
+ *
+ * @class AnalyzeMailController
+ *
+ */
 class AnalyzeMailController {
+	/**
+	 * Analyze an uploaded email file for phishing attempts using GPT-4o-mini.
+	 *
+	 * @param req Request object
+	 * @param res Response object
+	 *
+	 * Reads the email content from the file on disk, extracts relevant information,
+	 * validates it with Zod, and analyzes it with GPT-4o-mini. The analysis result is
+	 * saved to the user's history and returned as JSON.
+	 *
+	 * If the file is not present in the request, it returns a 400 Bad Request error.
+	 * If the email content is empty or invalid, it returns a 400 Bad Request error.
+	 * If the user is not authenticated, it returns a 401 Unauthorized error.
+	 * If there is an error with the OpenAI API, it returns a 500 Internal Server Error.
+	 * If there is an unexpected error, it returns a 500 Internal Server Error.
+	 *
+	 */
 	create(req: Request, res: Response): void {
+		// Check if the file is present in the request
 		if (!req.file) {
 			res
 				.status(StatusCodes.BAD_REQUEST.code)
@@ -27,8 +51,10 @@ class AnalyzeMailController {
 		// Support both disk and memory storage
 		let getEmailContent: Promise<string>;
 		if (req.file.path) {
+			// Read the email content from the file on disk
 			getEmailContent = readFile(req.file.path, "utf-8");
 		} else if (req.file.buffer) {
+			// Read the email content from the file buffer in memory
 			getEmailContent = Promise.resolve(req.file.buffer.toString("utf-8"));
 		} else {
 			res
@@ -39,12 +65,14 @@ class AnalyzeMailController {
 
 		getEmailContent
 			.then((emailContent) => {
+				// Check if the email content is not empty
 				if (!emailContent || emailContent.trim() === "") {
 					throw new BadRequestError("Email content cannot be empty");
 				}
 				return simpleParser(emailContent);
 			})
 			.then((parsedEmail) => {
+				// Check if the email content is valid
 				if (!parsedEmail?.html) {
 					throw new BadRequestError("Email content cannot be empty");
 				}
@@ -141,7 +169,16 @@ class AnalyzeMailController {
 			});
 	}
 
+	/**
+	 * Get all analyzed emails for the authenticated user
+	 *
+	 * @param req Request object
+	 * @param res Response object
+	 *
+	 * If the user is not authenticated, it returns a 401 Unauthorized error.
+	 */
 	read(req: Request, res: Response): void {
+		// Check if the user is authenticated
 		if (!req.user) {
 			res
 				.status(StatusCodes.UNAUTHORIZED.code)
@@ -158,7 +195,18 @@ class AnalyzeMailController {
 		);
 	}
 
+	/**
+	 * Get a specific analyzed email by ID
+	 *
+	 * @param req Request object
+	 * @param res Response object
+	 *
+	 * If the user is not authenticated, it returns a 401 Unauthorized error.
+	 * If the ID is not valid, it returns a 400 Bad Request error.
+	 * If the analysis is not found, it returns a 404 Not Found error.
+	 */
 	getById(req: Request, res: Response): void {
+		// Check if the user is authenticated
 		if (!req.user) {
 			res
 				.status(StatusCodes.UNAUTHORIZED.code)
@@ -183,7 +231,18 @@ class AnalyzeMailController {
 		res.json(analysis);
 	}
 
+	/**
+	 * Delete a specific analyzed email by ID
+	 *
+	 * @param req Request object
+	 * @param res Response object
+	 *
+	 * If the user is not authenticated, it returns a 401 Unauthorized error.
+	 * If the ID is not valid, it returns a 400 Bad Request error.
+	 * If the analysis is not found, it returns a 404 Not Found error.
+	 */
 	delete(req: Request, res: Response): void {
+		// Check if the user is authenticated
 		if (!req.user) {
 			res
 				.status(StatusCodes.UNAUTHORIZED.code)
