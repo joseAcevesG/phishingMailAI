@@ -1,0 +1,99 @@
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import Home from "./Home";
+import ErrorMessages from "../../types/error-messages";
+import { useMailAnalysis } from "./useMailAnalysis";
+
+// Mock UploadForm
+vi.mock("./UploadForm", () => ({
+	UploadForm: ({
+		isUploading,
+		onAnalyze,
+	}: {
+		isUploading: boolean;
+		onAnalyze: () => void;
+	}) => (
+		<div data-testid="upload-form">
+			<button onClick={onAnalyze} disabled={isUploading} type="button">
+				Analyze
+			</button>
+		</div>
+	),
+}));
+
+// Mock useMailAnalysis as a vi.fn()
+const mockAnalyzeEmail = vi.fn();
+const mockReset = vi.fn();
+const mockGoToSetApiKey = vi.fn();
+
+vi.mock("./useMailAnalysis", () => ({
+	useMailAnalysis: vi.fn(),
+}));
+
+describe("Home", () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		(useMailAnalysis as Mock).mockReturnValue({
+			uploading: false,
+			error: null,
+			analyzeEmail: mockAnalyzeEmail,
+			reset: mockReset,
+			goToSetApiKey: mockGoToSetApiKey,
+		});
+	});
+
+	it("renders UploadForm when no error", () => {
+		render(<Home />);
+		expect(screen.getByTestId("upload-form")).toBeInTheDocument();
+	});
+
+	it("calls analyzeEmail when Analyze button is clicked", () => {
+		render(<Home />);
+		fireEvent.click(screen.getByText("Analyze"));
+		expect(mockAnalyzeEmail).toHaveBeenCalled();
+	});
+
+	it("renders error and Try Again when error is not API key related", () => {
+		(useMailAnalysis as Mock).mockReturnValue({
+			uploading: false,
+			error: "Some error",
+			analyzeEmail: mockAnalyzeEmail,
+			reset: mockReset,
+			goToSetApiKey: mockGoToSetApiKey,
+		});
+		render(<Home />);
+		expect(screen.getByText("Error")).toBeInTheDocument();
+		expect(screen.getByText("Some error")).toBeInTheDocument();
+		expect(screen.getByText("Try Again")).toBeInTheDocument();
+		fireEvent.click(screen.getByText("Try Again"));
+		expect(mockReset).toHaveBeenCalled();
+	});
+
+	it("renders Set OpenAI Key button when error is FREE_TRIAL_EXPIRED", () => {
+		(useMailAnalysis as Mock).mockReturnValue({
+			uploading: false,
+			error: ErrorMessages.FREE_TRIAL_EXPIRED,
+			analyzeEmail: mockAnalyzeEmail,
+			reset: mockReset,
+			goToSetApiKey: mockGoToSetApiKey,
+		});
+		render(<Home />);
+		expect(screen.getByText("Set OpenAI Key")).toBeInTheDocument();
+		fireEvent.click(screen.getByText("Set OpenAI Key"));
+		expect(mockGoToSetApiKey).toHaveBeenCalled();
+	});
+
+	it("renders Set OpenAI Key button when error is INVALID_API_KEY", () => {
+		(useMailAnalysis as Mock).mockReturnValue({
+			uploading: false,
+			error: ErrorMessages.INVALID_API_KEY,
+			analyzeEmail: mockAnalyzeEmail,
+			reset: mockReset,
+			goToSetApiKey: mockGoToSetApiKey,
+		});
+		render(<Home />);
+		expect(screen.getByText("Set OpenAI Key")).toBeInTheDocument();
+		fireEvent.click(screen.getByText("Set OpenAI Key"));
+		expect(mockGoToSetApiKey).toHaveBeenCalled();
+	});
+});
