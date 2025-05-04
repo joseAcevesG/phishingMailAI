@@ -1,4 +1,7 @@
-// All vi.mock calls must be placed BEFORE any imports for proper isolation
+import request from "supertest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import app from "../../../src/index";
+
 let shouldAuthenticate = true;
 
 vi.mock("../../../src/middlewares/auth", () => ({
@@ -20,8 +23,6 @@ vi.mock("../../../src/middlewares/free-trail", () => ({
 	__esModule: true,
 	default: (_req, _res, next) => next(),
 }));
-
-// DO NOT mock multer, let the real multer handle file upload
 
 vi.mock("../../../src/models/user.model", () => ({
 	__esModule: true,
@@ -57,7 +58,6 @@ vi.mock("stytch", () => ({
 	},
 }));
 
-// Mock OpenAI
 vi.mock("../../../src/config/openai", () => ({
 	__esModule: true,
 	default: {
@@ -83,10 +83,6 @@ vi.mock("../../../src/config/openai", () => ({
 		SYSTEM_PROMPT: "Analyze for phishing",
 	},
 }));
-
-import request from "supertest";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import app from "../../../src/index";
 
 const fakeSession = "validSessionToken";
 
@@ -126,7 +122,7 @@ describe("POST /api/analyze-mail/validate", () => {
 		const res = await request(app)
 			.post("/api/analyze-mail/validate")
 			.set("Cookie", [`session_token=${fakeSession}`]);
-		expect([400, 401]).toContain(res.status); // 401 if auth fails, 400 if file missing
+		expect([400, 401]).toContain(res.status);
 		expect(res.body).toHaveProperty("message");
 	});
 });

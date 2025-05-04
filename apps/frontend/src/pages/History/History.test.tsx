@@ -4,12 +4,10 @@ import HistoryPage from "./History";
 import type { History } from "../../types";
 import { useHistoryList } from "./useHistoryList";
 
-// Mock CSS module
 vi.mock("./History.module.css", () => ({
 	default: { container: "container", table: "table" },
 }));
 
-// Mock HistoryRow
 vi.mock("./HistoryRow", () => ({
 	__esModule: true,
 	default: ({ item }: { item: History }) => (

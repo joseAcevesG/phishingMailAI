@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import { Authenticate } from "./Authenticate";
 import { useAuthenticate } from "./useAuthenticate";
 
-// Mock the custom hook to verify it's called
 vi.mock("./useAuthenticate", () => ({
 	useAuthenticate: vi.fn(),
 }));

@@ -32,7 +32,6 @@ describe("usePasswordLogin", () => {
 		expect(result.current.password).toBe("");
 		expect(result.current.error).toBeNull();
 		expect(result.current.isSubmitting).toBe(false);
-		// functions
 		expect(typeof result.current.setEmail).toBe("function");
 		expect(typeof result.current.setPassword).toBe("function");
 		expect(typeof result.current.handlePasswordLogin).toBe("function");

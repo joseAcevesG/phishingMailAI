@@ -1,5 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
+import { useFetch } from "../../hooks/useFetch";
+import { validateAll } from "../../services/validatePassword";
 import { usePasswordReset } from "./usePasswordReset";
 
 vi.mock("react-router-dom", () => ({
@@ -14,11 +16,6 @@ vi.mock("../../hooks/useFetch", () => ({
 vi.mock("../../services/validatePassword", () => ({
 	validateAll: vi.fn(() => null),
 }));
-
-import { useFetch } from "../../hooks/useFetch";
-import { validateAll } from "../../services/validatePassword";
-
-import type { Mock } from "vitest";
 
 describe("usePasswordReset", () => {
 	beforeEach(() => {
@@ -82,7 +79,6 @@ describe("usePasswordReset", () => {
 			execute,
 		});
 		(validateAll as Mock).mockReturnValue(null);
-		// Patch useNavigate to return our mock
 		const routerDom = await import("react-router-dom");
 		(
 			routerDom as unknown as { useNavigate: () => typeof navigate }

@@ -16,7 +16,6 @@ export function useFetch<T = unknown>(
 	const controllerRef = useRef<AbortController | null>(null);
 
 	const execute = useCallback(async (overrideConfig?: Partial<FetchConfig>) => {
-		// Abort previous request if any
 		controllerRef.current?.abort();
 		const config = {
 			...configRef.current,
@@ -25,7 +24,6 @@ export function useFetch<T = unknown>(
 		};
 		configRef.current = config;
 		const { url, method = "GET", headers, body, credentials } = config;
-		// if body is FormData, delete Content-Type header so browser sets it correctly
 		const finalHeaders =
 			body instanceof FormData
 				? Object.fromEntries(

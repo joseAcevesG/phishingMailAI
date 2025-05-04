@@ -48,7 +48,6 @@ describe("Custom Error Classes", () => {
 	});
 
 	it("EnvError should format ZodError issues", () => {
-		// Fake ZodError with minimal structure for test
 		const fakeZodError = {
 			errors: [
 				{ path: ["FOO"], message: "Missing" },
@@ -59,7 +58,6 @@ describe("Custom Error Classes", () => {
 		expect(err.name).toBe("EnvError");
 		expect(err.message).toContain("FOO: Missing");
 		expect(err.message).toContain("BAR: Invalid");
-		// Should start with the emoji and intro
 		expect(err.message.startsWith("❌ Invalid environment variables:"));
 	});
 

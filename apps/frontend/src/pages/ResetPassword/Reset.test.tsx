@@ -1,14 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import PasswordReset from "./Reset";
+import { usePasswordReset } from "./usePasswordReset";
 
 vi.mock("./usePasswordReset", () => ({
 	__esModule: true,
 	usePasswordReset: vi.fn(),
 }));
-
-import type { Mock } from "vitest";
-import { usePasswordReset } from "./usePasswordReset";
 
 describe("PasswordReset", () => {
 	beforeEach(() => {

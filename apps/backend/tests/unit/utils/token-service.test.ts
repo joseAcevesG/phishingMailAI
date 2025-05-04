@@ -7,7 +7,6 @@ import * as createToken from "../../../src/utils/create-token";
 import { UnauthorizedError } from "../../../src/utils/errors";
 import * as tokenService from "../../../src/utils/token-service";
 
-// Mocks
 const mockUser = { email: "user@example.com", _id: "u1" };
 const mockTokenDoc = { user: "u1", tokens: ["old"], save: vi.fn() };
 const mockRes = () => ({ cookie: vi.fn() }) as unknown as Response;
@@ -30,7 +29,6 @@ vi.mock("../../../src/models/refresh-token.model", () => ({
 	},
 }));
 
-// Crypto randomBytes
 vi.spyOn(require("node:crypto"), "randomBytes").mockImplementation(() =>
 	Buffer.from("a".repeat(64)),
 );

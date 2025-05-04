@@ -3,11 +3,9 @@ import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import app from "../../../src/index";
 
-// Mock user and token utilities as needed
 const validEmail = "testuser@example.com";
 const validToken = "valid-auth-token";
 
-// You may need to mock token verification or user lookup depending on controller logic
 vi.mock("../../../src/utils/token-service", () => ({
 	__esModule: true,
 	verifyAuthToken: vi.fn((token: string) => {
@@ -19,7 +17,6 @@ vi.mock("../../../src/utils/token-service", () => ({
 	issueAuthTokens: vi.fn().mockResolvedValue(undefined),
 }));
 
-// Mock User model to provide .findOne and .create
 vi.mock("../../../src/models/user.model", () => {
 	return {
 		__esModule: true,
@@ -43,7 +40,6 @@ vi.mock("../../../src/models/user.model", () => {
 	};
 });
 
-// Add this mock to prevent stytch.Client instantiation errors
 vi.mock("stytch", () => {
 	class StytchError extends Error {
 		error_type: string;

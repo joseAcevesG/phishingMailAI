@@ -3,7 +3,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { FetchConfig } from "../types";
 import { useFetch } from "./useFetch";
 
-// Mock global fetch
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
@@ -27,7 +26,6 @@ describe("useFetch", () => {
 			useFetch<{ foo: string }>(baseConfig, true),
 		);
 		expect(result.current.loading).toBe(true);
-		// Wait for effect to finish
 		await act(async () => {
 			await Promise.resolve();
 		});

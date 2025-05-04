@@ -9,10 +9,8 @@ export function useHistoryList() {
 		loading,
 	} = useFetch<History[]>({ url: "/api/analyze-mail" });
 
-	// Local state for optimistic UI
 	const [historyList, setHistoryList] = useState<History[] | null>(null);
 
-	// Sync local state when fetched data changes
 	useEffect(() => {
 		if (history) setHistoryList(history);
 	}, [history]);
@@ -24,7 +22,6 @@ export function useHistoryList() {
 
 	const handleDelete = async (id: string) => {
 		if (!historyList) return;
-		// Optimistically remove from UI
 		const prevList = historyList;
 		setHistoryList(historyList.filter((item) => item._id !== id));
 		const result = await deleteHistory({ url: `/api/analyze-mail/${id}` });

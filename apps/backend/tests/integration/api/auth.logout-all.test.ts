@@ -1,5 +1,9 @@
-// Place all vi.mock calls at the very top, before importing anything else
-// Helper to control auth middleware mock behavior
+import request from "supertest";
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
+import app from "../../../src/index";
+import User from "../../../src/models/user.model";
+import * as tokenService from "../../../src/utils/token-service";
+
 let shouldAuthenticate = true;
 
 vi.mock("../../../src/middleware/auth", () => ({
@@ -48,12 +52,6 @@ vi.mock("stytch", () => ({
 		})),
 	},
 }));
-
-import request from "supertest";
-import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
-import app from "../../../src/index";
-import User from "../../../src/models/user.model";
-import * as tokenService from "../../../src/utils/token-service";
 
 describe("POST /api/auth/logout-all", () => {
 	const fakeSession = "validSessionToken";

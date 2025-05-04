@@ -116,7 +116,7 @@ describe("useMagicLink", () => {
 		act(() => {
 			vi.advanceTimersByTime(1000);
 		});
-		expect(result.current.countdown).toBe(2); // resets after hitting 0
+		expect(result.current.countdown).toBe(2);
 		expect(result.current.isButtonDisabled).toBe(false);
 		vi.useRealTimers();
 	});

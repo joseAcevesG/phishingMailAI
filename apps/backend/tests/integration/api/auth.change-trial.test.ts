@@ -1,4 +1,9 @@
-// All vi.mock calls must be placed BEFORE any imports for proper isolation
+import request from "supertest";
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
+import app from "../../../src/index";
+import User from "../../../src/models/user.model";
+import { encrypt } from "../../../src/utils/encrypt-string";
+
 vi.mock("../../../src/middleware/auth", () => ({
 	__esModule: true,
 	default: (_req, _res, next) => {
@@ -70,13 +75,6 @@ vi.mock("../../../src/config/stytch", () => ({
 		magicLinks: { email: {} },
 	},
 }));
-
-// Now import all other dependencies
-import request from "supertest";
-import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
-import app from "../../../src/index";
-import User from "../../../src/models/user.model";
-import { encrypt } from "../../../src/utils/encrypt-string";
 
 let shouldAuthenticate = true;
 globalThis.shouldAuthenticate = shouldAuthenticate;

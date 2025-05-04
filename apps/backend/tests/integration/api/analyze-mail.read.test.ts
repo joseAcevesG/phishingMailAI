@@ -1,4 +1,7 @@
-// All vi.mock calls must be placed BEFORE any imports for proper isolation
+import request from "supertest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import app from "../../../src/index";
+
 let shouldAuthenticate = true;
 
 vi.mock("../../../src/middlewares/auth", () => ({
@@ -71,10 +74,6 @@ vi.mock("stytch", () => ({
 		})),
 	},
 }));
-
-import request from "supertest";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import app from "../../../src/index";
 
 const fakeSession = "validSessionToken";
 

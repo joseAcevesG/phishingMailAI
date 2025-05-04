@@ -4,13 +4,10 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Password from "./Password";
 import { usePasswordLogin } from "./usePasswordLogin";
 
-// Mock the usePasswordLogin hook to control its behavior in tests
 vi.mock("./usePasswordLogin", () => ({
 	__esModule: true,
 	usePasswordLogin: vi.fn(),
 }));
-
-// usePasswordLogin is now imported directly, no require
 
 describe("Password", () => {
 	const onAuthenticate = vi.fn();

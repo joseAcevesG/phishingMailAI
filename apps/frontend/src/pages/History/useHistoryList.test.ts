@@ -4,7 +4,6 @@ import { useFetch } from "../../hooks/useFetch";
 import type { FetchConfig, History } from "../../types";
 import { useHistoryList } from "./useHistoryList";
 
-// Mock useFetch
 vi.mock("../../hooks/useFetch", () => ({
 	useFetch: vi.fn(),
 }));
@@ -55,13 +54,12 @@ describe("useHistoryList", () => {
 	});
 
 	it("removes item optimistically and restores on failure", async () => {
-		deleteHistoryMock.mockResolvedValueOnce(null); // simulate failure
+		deleteHistoryMock.mockResolvedValueOnce(null);
 		const { result } = renderHook(() => useHistoryList());
 		expect(result.current.historyList).toHaveLength(2);
 		await act(async () => {
 			await result.current.handleDelete("1");
 		});
-		// Should restore previous state on failure
 		expect(result.current.historyList).toHaveLength(2);
 		expect(result.current.historyList?.[0]._id).toBe("1");
 	});

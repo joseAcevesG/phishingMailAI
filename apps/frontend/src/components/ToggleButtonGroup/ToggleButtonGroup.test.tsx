@@ -15,7 +15,6 @@ describe("ToggleButtonGroup", () => {
 		const passwordBtn = screen.getByRole("button", { name: /password/i });
 		expect(magicBtn).toBeInTheDocument();
 		expect(passwordBtn).toBeInTheDocument();
-		// Check active class for selected
 		expect(magicBtn.className).toMatch(/toggleActive/);
 		expect(passwordBtn.className).not.toMatch(/toggleActive/);
 

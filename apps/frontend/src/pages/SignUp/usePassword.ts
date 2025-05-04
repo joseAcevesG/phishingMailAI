@@ -9,8 +9,6 @@ interface Props {
 	onAuthenticate: (data: APIAuth) => void;
 }
 
-// services
-
 export function usePassword({ onAuthenticate }: Props) {
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");

@@ -47,7 +47,6 @@ describe("SettingsPage", () => {
 			screen.getByRole("link", { name: /reset password/i })
 		).toBeInTheDocument();
 
-		// API Key form
 		const apiInput = screen.getByPlaceholderText(/sk-/i);
 		fireEvent.change(apiInput, { target: { value: "sk-test" } });
 		expect(setApiKey).toHaveBeenCalledWith("sk-test");
@@ -59,7 +58,6 @@ describe("SettingsPage", () => {
 		fireEvent.submit(apiForm);
 		expect(handleKeySubmit).toHaveBeenCalled();
 
-		// Danger zone button
 		const logoutButton = screen.getByRole("button", {
 			name: /log out on all devices/i,
 		});

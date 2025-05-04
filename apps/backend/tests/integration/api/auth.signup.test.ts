@@ -1,4 +1,8 @@
 import { StytchError } from "stytch";
+import request from "supertest";
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
+import { stytchClient } from "../../../src/config/stytch";
+import app from "../../../src/index";
 
 vi.mock("stytch", () => {
 	class StytchError extends Error {
@@ -52,19 +56,11 @@ vi.mock("../../../src/models/user.model", () => ({
 	},
 }));
 
-import request from "supertest";
-import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
-import { stytchClient } from "../../../src/config/stytch";
-import app from "../../../src/index";
-
-// Mock tokenService.verifyAccessToken and issueAuthTokens for integration
-
 describe("POST /api/auth/signup", () => {
 	const validEmail = "testuser@example.com";
 	const validPassword = "thisIsAPassword123!";
 
 	beforeEach(() => {
-		// Optionally reset mocks if needed
 		vi.clearAllMocks();
 	});
 
@@ -91,7 +87,6 @@ describe("POST /api/auth/signup", () => {
 	});
 
 	it("returns 400 if email already exists", async () => {
-		// Simulate Stytch email_duplicate error
 		(stytchClient.passwords.create as Mock).mockRejectedValueOnce(
 			new StytchError({
 				error_type: "duplicate_email",

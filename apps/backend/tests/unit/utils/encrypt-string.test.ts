@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as encryptString from "../../../src/utils/encrypt-string";
 import { EncryptError } from "../../../src/utils/errors";
 
-// Mock EnvConfig to control the secret key and salt
 vi.mock("../../../src/config/env.config", () => ({
 	EnvConfig: () => ({ secretKey: "test-key", salt: "test-salt" }),
 }));

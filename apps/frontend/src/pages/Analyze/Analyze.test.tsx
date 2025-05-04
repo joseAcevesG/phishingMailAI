@@ -6,13 +6,11 @@ import type { Analysis } from "shared";
 import Analyze from "./Analyze";
 import { useAnalyze } from "./useAnalyze";
 
-// Mock useAnalyze
 vi.mock("./useAnalyze", () => ({
 	useAnalyze: vi.fn(),
 }));
 const mockUseAnalyze = useAnalyze as unknown as Mock;
 
-// Mock ResultView
 type ResultViewProps = {
 	onReset: () => void;
 	result: Analysis;

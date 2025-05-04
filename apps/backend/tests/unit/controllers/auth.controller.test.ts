@@ -8,7 +8,7 @@ import User from "../../../src/models/user.model";
 import { encrypt } from "../../../src/utils/encrypt-string";
 import StatusCodes from "../../../src/utils/response-codes";
 import * as tokenService from "../../../src/utils/token-service";
-// Stub stytchClient to avoid config environment check
+
 vi.mock("../../../src/config/stytch", () => ({
 	stytchClient: {
 		magicLinks: {
@@ -27,7 +27,7 @@ vi.mock("../../../src/config/stytch", () => ({
 		},
 	},
 }));
-// Mock token-service to stub auth flows
+
 vi.mock("../../../src/utils/token-service", () => ({
 	verifyAccessToken: vi.fn(),
 	rotateAuthTokens: vi.fn(),
@@ -35,21 +35,19 @@ vi.mock("../../../src/utils/token-service", () => ({
 	deleteAuthToken: vi.fn(),
 	deleteAllAuthTokens: vi.fn(),
 }));
-// Mock User model
+
 vi.mock("../../../src/models/user.model", () => ({
 	default: { findOne: vi.fn(), create: vi.fn(), findOneAndUpdate: vi.fn() },
 }));
-// Mock encrypt
+
 vi.mock("../../../src/utils/encrypt-string", () => ({
 	encrypt: vi.fn(),
 }));
 
-// Type for verifyAccessToken mock return
 type VerifyAccessReturn = Awaited<
 	ReturnType<typeof tokenService.verifyAccessToken>
 >;
 
-// Type for the resolved value of rotateAuthTokens
 type RotateAuthReturn = Awaited<
 	ReturnType<typeof tokenService.rotateAuthTokens>
 >;
@@ -213,7 +211,6 @@ describe("AuthController", () => {
 		});
 
 		it("should return 400 if request body fails validation", async () => {
-			// Zod validation fails (missing email/type)
 			AuthController.login(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
@@ -804,17 +801,14 @@ describe("AuthController", () => {
 		});
 
 		it("should return authenticated true and email when session token is valid", async () => {
-			// Arrange
 			req.cookies = { session_token: "validToken" };
 			vi.spyOn(tokenService, "verifyAccessToken").mockResolvedValue({
 				email: "user@example.com",
 			} as VerifyAccessReturn);
 
-			// Act
 			AuthController.status(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
 
-			// Assert
 			expect(tokenService.verifyAccessToken).toHaveBeenCalledWith("validToken");
 			expect(res.json).toHaveBeenCalledWith({
 				authenticated: true,
@@ -823,7 +817,6 @@ describe("AuthController", () => {
 		});
 
 		it("should return unauthenticated false and email undefined when no tokens", async () => {
-			// No session or refresh token
 			AuthController.status(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.code);
@@ -834,7 +827,6 @@ describe("AuthController", () => {
 		});
 
 		it("should return authenticated true and email when refresh token is valid", async () => {
-			// Session invalid, refresh valid
 			req.cookies = { refresh_token: "refreshToken" };
 			vi.spyOn(tokenService, "verifyAccessToken").mockRejectedValue(
 				new Error(),
@@ -856,7 +848,6 @@ describe("AuthController", () => {
 		});
 
 		it("should return unauthenticated false and email undefined when both session and refresh tokens invalid", async () => {
-			// Both tokens invalid
 			req.cookies = { refresh_token: "refreshToken" };
 			vi.spyOn(tokenService, "verifyAccessToken").mockRejectedValue(
 				new Error(),

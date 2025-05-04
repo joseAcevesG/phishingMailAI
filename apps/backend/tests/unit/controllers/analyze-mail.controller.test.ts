@@ -33,13 +33,11 @@ vi.spyOn(Types, "ObjectId").mockImplementation(
 	() => ({ toString: () => testId }) as Types.ObjectId,
 );
 
-// Test-specific request & response types
 type TestRequest = Request & {
 	file?: { path: string };
 	user?: User;
 	params?: { id: string };
 };
-// Response mock stub with vitest Mock
 type TestResponse = Response & {
 	status: Mock;
 	json: Mock;
@@ -121,10 +119,9 @@ describe("AnalyzeMailController", () => {
 		it("should return 400 if email data is invalid per schema", async () => {
 			req.file = { path: "path" };
 			(readFile as Mock).mockResolvedValue("raw email");
-			// Simulate parsed email with missing subject (or other required field)
 			(simpleParser as Mock).mockResolvedValue({
 				html: "<p>hi</p>",
-				subject: undefined, // or any field to break schema
+				subject: undefined,
 				from: { text: "from" },
 				to: { text: "to" },
 				text: "text",

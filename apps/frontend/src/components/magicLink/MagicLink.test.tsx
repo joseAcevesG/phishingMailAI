@@ -3,7 +3,6 @@ import type { MockedFunction } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import MagicLink from "./MagicLink";
 
-// Mock the useMagicLink hook
 vi.mock("./useMagicLink", () => ({
 	useMagicLink: vi.fn(),
 }));

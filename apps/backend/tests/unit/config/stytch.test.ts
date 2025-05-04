@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 declare global {
-	// eslint-disable-next-line no-var
 	var __stytchClientConfig: Record<string, string> | null;
 }
 

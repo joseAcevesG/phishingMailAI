@@ -1,6 +1,6 @@
 import path from "node:path";
-import { defineConfig, devices } from "@playwright/test";
 import { fileURLToPath } from "node:url";
+import { defineConfig, devices } from "@playwright/test";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -21,7 +21,7 @@ export default defineConfig({
 		{ name: "webkit", use: { ...devices["Desktop Safari"] } },
 	],
 	webServer: {
-		command: "pnpm run dev", // or “npm run dev”
+		command: "pnpm run dev",
 		cwd: path.resolve(__dirname, "../"),
 		url: "http://localhost:5173",
 		reuseExistingServer: !process.env.CI,

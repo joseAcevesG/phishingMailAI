@@ -1,4 +1,8 @@
-// All vi.mock calls must be placed BEFORE any imports for proper isolation
+import type { Analysis } from "shared";
+import request from "supertest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import app from "../../../src/index";
+
 let shouldAuthenticate = true;
 let userAnalysis: Analysis[];
 
@@ -65,11 +69,6 @@ vi.mock("stytch", () => ({
 	},
 }));
 
-import type { Analysis } from "shared";
-import request from "supertest";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import app from "../../../src/index";
-
 const fakeSession = "validSessionToken";
 
 describe("DELETE /api/analyze-mail/:id", () => {
@@ -102,10 +101,9 @@ describe("DELETE /api/analyze-mail/:id", () => {
 		const res = await request(app)
 			.delete("/api/analyze-mail/mail1")
 			.set("Cookie", [`session_token=${fakeSession}`]);
-		expect([200, 400]).toContain(res.status); // Accept 400 if controller returns 400 for missing analysis
+		expect([200, 400]).toContain(res.status);
 		if (res.status === 200) {
 			expect(res.body).toHaveProperty("message");
-			// Should remove the item from userAnalysis
 			expect(userAnalysis.some((a) => a._id === "mail1")).toBe(false);
 		} else {
 			expect(res.body).toHaveProperty("message");
@@ -116,7 +114,7 @@ describe("DELETE /api/analyze-mail/:id", () => {
 		const res = await request(app)
 			.delete("/api/analyze-mail/nonexistent")
 			.set("Cookie", [`session_token=${fakeSession}`]);
-		expect([404, 400]).toContain(res.status); // Accept 400 if controller returns 400 for missing analysis
+		expect([404, 400]).toContain(res.status);
 		expect(res.body).toHaveProperty("message");
 	});
 

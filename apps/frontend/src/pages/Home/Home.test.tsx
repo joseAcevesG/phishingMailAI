@@ -4,7 +4,6 @@ import Home from "./Home";
 import ErrorMessages from "../../types/error-messages";
 import { useMailAnalysis } from "./useMailAnalysis";
 
-// Mock UploadForm
 vi.mock("./UploadForm", () => ({
 	UploadForm: ({
 		isUploading,
@@ -21,7 +20,6 @@ vi.mock("./UploadForm", () => ({
 	),
 }));
 
-// Mock useMailAnalysis as a vi.fn()
 const mockAnalyzeEmail = vi.fn();
 const mockReset = vi.fn();
 const mockGoToSetApiKey = vi.fn();

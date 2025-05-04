@@ -1,4 +1,7 @@
-// All vi.mock calls must be placed BEFORE any imports for proper isolation
+import request from "supertest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import app from "../../../src/index";
+
 let shouldAuthenticate = true;
 
 vi.mock("../../../src/middlewares/auth", () => ({
@@ -72,10 +75,6 @@ vi.mock("stytch", () => ({
 	},
 }));
 
-import request from "supertest";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import app from "../../../src/index";
-
 const fakeSession = "validSessionToken";
 
 describe("GET /api/analyze-mail/:id", () => {
@@ -88,7 +87,7 @@ describe("GET /api/analyze-mail/:id", () => {
 		const res = await request(app)
 			.get("/api/analyze-mail/mail1")
 			.set("Cookie", [`session_token=${fakeSession}`]);
-		expect([200, 400]).toContain(res.status); // Accept 400 if controller returns 400 for missing analysis
+		expect([200, 400]).toContain(res.status);
 		if (res.status === 200) {
 			expect(res.body).toMatchObject({
 				_id: "mail1",
@@ -105,7 +104,7 @@ describe("GET /api/analyze-mail/:id", () => {
 		const res = await request(app)
 			.get("/api/analyze-mail/nonexistent")
 			.set("Cookie", [`session_token=${fakeSession}`]);
-		expect([404, 400]).toContain(res.status); // Accept 400 if controller returns 400 for missing analysis
+		expect([404, 400]).toContain(res.status);
 		expect(res.body).toHaveProperty("message");
 	});
 

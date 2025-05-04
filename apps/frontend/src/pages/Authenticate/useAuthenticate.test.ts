@@ -4,13 +4,10 @@ import { useFetch } from "../../hooks/useFetch";
 import type { APIAuth } from "../../types";
 import { useAuthenticate } from "./useAuthenticate";
 
-// Mock useFetch
 vi.mock("../../hooks/useFetch", () => ({
 	useFetch: vi.fn(),
 }));
 const mockUseFetch = useFetch as unknown as Mock;
-
-// Mock dependencies
 const mockNavigate = vi.fn();
 const mockExecute = vi.fn();
 const mockSearchParams = { toString: vi.fn() };

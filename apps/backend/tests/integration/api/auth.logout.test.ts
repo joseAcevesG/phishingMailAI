@@ -3,7 +3,6 @@ import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
 import app from "../../../src/index";
 import * as tokenService from "../../../src/utils/token-service";
 
-// Mock tokenService.verifyAccessToken for integration
 vi.mock("../../../src/utils/token-service", () => ({
 	verifyAccessToken: vi.fn(),
 	deleteAuthToken: vi.fn().mockResolvedValue(undefined),
@@ -19,7 +18,6 @@ vi.mock("../../../src/utils/token-service", () => ({
 	}),
 }));
 
-// Mock User model (required for auth middleware)
 vi.mock("../../../src/models/user.model", () => ({
 	__esModule: true,
 	default: {
@@ -29,7 +27,6 @@ vi.mock("../../../src/models/user.model", () => ({
 	},
 }));
 
-// Mock stytch to prevent instantiation errors
 vi.mock("stytch", () => ({
 	__esModule: true,
 	default: {
@@ -48,7 +45,6 @@ describe("POST /api/auth/logout", () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-		// By default, mock verifyAccessToken to resolve user
 		(tokenService.verifyAccessToken as Mock).mockResolvedValue({
 			_id: userId,
 			email: userEmail,
@@ -56,7 +52,6 @@ describe("POST /api/auth/logout", () => {
 	});
 
 	it("logs out user and clears cookies with valid tokens", async () => {
-		// Patch: Simulate no token rotation (use original refresh token)
 		(tokenService.rotateAuthTokens as Mock).mockResolvedValueOnce({
 			user: {
 				_id: userId,
@@ -101,11 +96,9 @@ describe("POST /api/auth/logout", () => {
 	});
 
 	it("returns 401 if user is not authenticated", async () => {
-		// Patch: Simulate verifyAccessToken failure
 		(tokenService.verifyAccessToken as Mock).mockRejectedValueOnce(
 			new Error("Invalid token"),
 		);
-		// Patch: Simulate rotateAuthTokens failure with UnauthorizedError
 		const { UnauthorizedError } = await import("../../../src/utils/errors");
 		(tokenService.rotateAuthTokens as Mock).mockRejectedValueOnce(
 			new UnauthorizedError("Invalid refresh token"),
@@ -124,7 +117,6 @@ describe("POST /api/auth/logout", () => {
 		(tokenService.deleteAuthToken as Mock).mockRejectedValueOnce(
 			new Error("DB error"),
 		);
-		// Patch: Simulate no token rotation (use original refresh token)
 		(tokenService.rotateAuthTokens as Mock).mockResolvedValueOnce({
 			user: {
 				_id: userId,

@@ -23,12 +23,14 @@ vi.mock("../../components/ToggleButtonGroup/ToggleButtonGroup", () => ({
 		</div>
 	),
 }));
+
 vi.mock("../../components/magicLink/MagicLink", () => ({
 	__esModule: true,
 	default: ({ buttonText }: { buttonText: string }) => (
 		<button type="button">{buttonText}</button>
 	),
 }));
+
 vi.mock("./Password", () => ({
 	__esModule: true,
 	default: ({
@@ -58,12 +60,10 @@ describe("Login", () => {
 		expect(
 			screen.getByRole("button", { name: /login with magic link/i })
 		).toBeInTheDocument();
-		// Switch to password
 		fireEvent.click(screen.getByText("Password"));
 		expect(
 			screen.getByRole("button", { name: /password login/i })
 		).toBeInTheDocument();
-		// Switch back to magic
 		fireEvent.click(screen.getByText("Magic"));
 		expect(
 			screen.getByRole("button", { name: /login with magic link/i })
@@ -76,9 +76,7 @@ describe("Login", () => {
 				<Login isAuthenticated={false} onAuthenticate={onAuthenticate} />
 			</MemoryRouter>
 		);
-		// Should not show forgot password link initially
 		expect(screen.queryByText(/forgot your password/i)).not.toBeInTheDocument();
-		// Switch to password
 		fireEvent.click(screen.getByText("Password"));
 		expect(screen.getByText(/forgot your password/i)).toBeInTheDocument();
 	});

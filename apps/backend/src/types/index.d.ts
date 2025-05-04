@@ -25,7 +25,6 @@ export interface Mail {
 	html: string;
 }
 
-// Extract types from the object
 export type ResponseCodeKeys = keyof typeof ResponseCodes;
 export type ResponseCodeValues = (typeof ResponseCodes)[ResponseCodeKeys];
 

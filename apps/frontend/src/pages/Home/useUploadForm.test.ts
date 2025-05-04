@@ -11,7 +11,6 @@ import {
 } from "vitest";
 import { useUploadForm } from "./useUploadForm";
 
-// Helper for type-safe ChangeEvent<HTMLInputElement>
 function createInputChangeEvent(
 	file: File,
 ): React.ChangeEvent<HTMLInputElement> {
@@ -102,7 +101,6 @@ describe("useUploadForm", () => {
 	it("handles drop with valid file", () => {
 		const { result } = renderHook(() => useUploadForm(onAnalyze));
 		const file = new File(["dummy"], "test.eml", { type: "message/rfc822" });
-		// Mock inputRef
 		result.current.inputRef.current = {
 			files: null,
 		} as unknown as HTMLInputElement;

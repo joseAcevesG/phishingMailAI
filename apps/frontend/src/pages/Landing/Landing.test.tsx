@@ -19,8 +19,6 @@ describe("Landing", () => {
 	});
 
 	it("redirects to / if authenticated", () => {
-		// react-router v6 Navigate triggers a replace in the router context
-		// We check that nothing from the landing page is rendered
 		render(
 			<MemoryRouter>
 				<Landing isAuthenticated={true} />

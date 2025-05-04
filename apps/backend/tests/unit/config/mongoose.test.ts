@@ -3,13 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import * as envConfigModule from "../../../src/config/env.config";
 import connectDB from "../../../src/config/mongoose";
 
-// Save original process.exit
 const originalProcessExit = process.exit;
 
-// Mock EnvConfig to control dbUrl
 const mockDbUrl = "mongodb://localhost:27017/testdb";
-
-// Helper to restore mocks and process.exit
 afterEach(() => {
 	vi.restoreAllMocks();
 	process.exit = originalProcessExit;

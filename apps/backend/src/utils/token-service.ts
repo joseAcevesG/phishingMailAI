@@ -51,7 +51,6 @@ export function rotateAuthTokens(oldRefreshToken: string, res: Response) {
 				...cookieOptions,
 				maxAge: REFRESH_TOKEN_EXPIRATION,
 			});
-			// return both for downstream handlers
 			return { user, newRefreshToken };
 		});
 }

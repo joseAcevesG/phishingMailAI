@@ -25,7 +25,6 @@ describe("ResetLink", () => {
 		expect(
 			screen.getByText(/enter your email address to reset your password/i)
 		).toBeInTheDocument();
-		// MagicLink form and button
 		expect(screen.getByTestId("magic-link-form")).toBeInTheDocument();
 		expect(
 			screen.getByRole("button", { name: /reset password/i })

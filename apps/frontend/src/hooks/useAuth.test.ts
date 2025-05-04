@@ -6,7 +6,6 @@ import type { FetchConfig } from "../types";
 import { useAuth } from "./useAuth";
 import { useFetch } from "./useFetch";
 
-// Mocks
 vi.mock("react-router-dom", () => ({
 	useNavigate: vi.fn(),
 }));
@@ -60,7 +59,7 @@ describe("useAuth", () => {
 		});
 		const { result } = renderHook(() => useAuth());
 		await act(async () => {
-			await Promise.resolve(); // flush effect
+			await Promise.resolve();
 		});
 		expect(result.current.isAuthenticated).toBe(true);
 		expect(result.current.userEmail).toBe("user@example.com");

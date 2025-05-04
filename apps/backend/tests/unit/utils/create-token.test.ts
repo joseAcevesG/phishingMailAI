@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { InputToken } from "../../../src/types";
 import * as createToken from "../../../src/utils/create-token";
 
-// Mock EnvConfig to control the secret key
 vi.mock("../../../src/config/env.config", () => ({
 	EnvConfig: () => ({ tokenKey: "test-secret" }),
 }));

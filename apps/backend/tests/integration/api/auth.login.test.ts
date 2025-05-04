@@ -1,4 +1,8 @@
 import { StytchError } from "stytch";
+import request from "supertest";
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
+import { stytchClient } from "../../../src/config/stytch";
+import app from "../../../src/index";
 
 vi.mock("stytch", () => {
 	class StytchError extends Error {
@@ -79,11 +83,6 @@ vi.mock("../../../src/models/user.model", () => ({
 			.mockImplementation(async (data) => ({ _id: "mockedUserId", ...data })),
 	},
 }));
-
-import request from "supertest";
-import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
-import { stytchClient } from "../../../src/config/stytch";
-import app from "../../../src/index";
 
 describe("POST /api/auth/login", () => {
 	const validEmail = "testuser@example.com";

@@ -3,12 +3,10 @@ import { describe, expect, it, vi } from "vitest";
 import HistoryRow from "./HistoryRow";
 import type { History } from "../../types";
 
-// Mock CSS module
 vi.mock("./History.module.css", () => ({
 	default: { actions: "actions", deleteButton: "deleteButton" },
 }));
 
-// Mock TrashIcon
 vi.mock("../../assets/icons/trash", () => ({
 	__esModule: true,
 	default: () => <svg data-testid="trash-icon" />,

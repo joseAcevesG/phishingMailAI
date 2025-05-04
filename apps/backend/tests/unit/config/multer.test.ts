@@ -1,6 +1,7 @@
 import type { Request } from "express";
 import type { Multer } from "multer";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import * as multerConfig from "../../../src/config/multer";
 
 interface TestFile {
 	originalname?: string;
@@ -23,8 +24,6 @@ vi.mock("node:fs", async () => {
 	};
 });
 
-import * as multerConfig from "../../../src/config/multer";
-
 let upload: Multer;
 let uploadsDir: string;
 
@@ -46,7 +45,6 @@ describe("multer config", () => {
 	it("should generate a filename with timestamp and original name", async () => {
 		const req = {} as Request;
 		const file: TestFile = { originalname: "test.eml" };
-		// Access storage internals for test purposes
 		const storage = (upload as unknown as { storage: StorageWithGetFilename })
 			.storage;
 		const filename = await new Promise<string>((resolve, reject) => {
