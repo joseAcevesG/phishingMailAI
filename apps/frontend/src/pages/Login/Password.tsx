@@ -1,8 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { usePasswordLogin } from "./usePasswordLogin";
 import { authTypes } from "shared/auth-types";
 import styles from "../../assets/Password.module.css";
-import { useFetch } from "../../hooks/useFetch";
 import type { APIAuth } from "../../types";
 
 interface Props {
@@ -10,32 +8,15 @@ interface Props {
 }
 
 const Password: React.FC<Props> = ({ onAuthenticate }) => {
-	const [email, setEmail] = useState<string>("");
-	const [password, setPassword] = useState<string>("");
 	const {
+		email,
+		setEmail,
+		password,
+		setPassword,
 		error,
-		loading: isSubmitting,
-		execute,
-	} = useFetch<APIAuth>(
-		{
-			url: "/api/auth/login",
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-		},
-		false,
-	);
-	const navigate = useNavigate();
-
-	const handlePasswordLogin = async (e: React.FormEvent) => {
-		e.preventDefault();
-		const result = await execute({
-			body: { email, password, type: authTypes.passwordLogin },
-		});
-		if (result) {
-			onAuthenticate(result);
-			navigate("/");
-		}
-	};
+		isSubmitting,
+		handlePasswordLogin,
+	} = usePasswordLogin({ onAuthenticate, authType: authTypes.passwordLogin });
 
 	return (
 		<form className={styles.passwordForm} onSubmit={handlePasswordLogin}>
@@ -43,25 +24,27 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 				<input
 					className={styles.emailInput}
 					onChange={(e) => setEmail(e.target.value)}
-					placeholder="Enter your email"
-					type="email"
 					value={email}
+					placeholder="Email"
+					type="email"
+					required
 				/>
 			</div>
 			<div className={styles.inputGroup}>
 				<input
 					className={styles.passwordInput}
 					onChange={(e) => setPassword(e.target.value)}
-					placeholder="Enter your password"
-					type="password"
 					value={password}
+					placeholder="Password"
+					type="password"
+					required
 				/>
 			</div>
-			{error && <p className={styles.errorMessage}>{error}</p>}
+			{error && <div className={styles.error}>{error}</div>}
 			<button
-				className={styles.loginButton}
-				disabled={isSubmitting || !email || !password}
+				className={styles.submitBtn}
 				type="submit"
+				disabled={isSubmitting}
 			>
 				{isSubmitting ? "Logging in..." : "Login"}
 			</button>
