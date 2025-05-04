@@ -19,16 +19,19 @@ const env = EnvConfig().environment;
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+// serve static files from the frontend build directory
 app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
 app.use("/api", routes);
 // Swagger docs route
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// serve static files from the frontend build directory
 app.get("*", (_req: Request, res: Response) => {
 	res.sendFile(path.join(__dirname, "../../frontend/dist", "index.html"));
 });
 
+// Error handler
 app.use(
 	(
 		err: Error & { status?: number },
