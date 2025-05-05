@@ -15,6 +15,7 @@ import type { User } from "../../../src/types";
 import { decrypt } from "../../../src/utils/encrypt-string";
 import ResponseStatus from "../../../src/utils/response-codes";
 
+// Mock dependencies to isolate middleware logic
 vi.mock("../../../src/models/user.model", () => ({
 	default: { updateOne: vi.fn() },
 }));
@@ -29,14 +30,18 @@ vi.mock("../../../src/config/env.config", () => ({
 	EnvConfig: () => ({ freeTrialLimit: 3, environment: "test" }),
 }));
 
+// Use a shared next function mock for all tests
 const next: NextFunction = vi.fn();
 
+// Test suite for freeTrial middleware
+// Covers all major code paths for free trial logic, user API key handling, and error cases
 describe("freeTrial middleware", () => {
 	let req: Partial<Request & { user?: User }>;
 	let res: Partial<Response> & { status: Mock; json: Mock };
 	let userMock: User;
 	let runUser: User;
 
+	// Initialize a base user object for cloning in each test
 	beforeAll(() => {
 		userMock = {
 			_id: "u1",
@@ -47,6 +52,7 @@ describe("freeTrial middleware", () => {
 		};
 	});
 
+	// Reset mocks and request/response objects before each test
 	beforeEach(() => {
 		req = {};
 		runUser = structuredClone(userMock);
@@ -55,12 +61,14 @@ describe("freeTrial middleware", () => {
 		vi.clearAllMocks();
 	});
 
+	// Test: User under free trial limit should be allowed and usage incremented
 	it("should allow if under free trial limit and increment usage", async () => {
 		req.user = runUser;
 		req.user.usageFreeTrial = 2;
 		(userModel.updateOne as Mock).mockResolvedValue({});
 		freeTrialMiddleware(req as Request, res as Response, next);
 		await new Promise((r) => setImmediate(r));
+		// Should increment usage and call next
 		expect(userModel.updateOne).toHaveBeenCalledWith(
 			{ _id: "u1" },
 			{ usageFreeTrial: 3 },
@@ -69,10 +77,12 @@ describe("freeTrial middleware", () => {
 		expect(res.status).not.toHaveBeenCalled();
 	});
 
+	// Test: User exceeding free trial limit should be blocked
 	it("should block if free trial limit exceeded", () => {
 		req.user = runUser;
 		req.user.usageFreeTrial = 3;
 		freeTrialMiddleware(req as Request, res as Response, next);
+		// Should return 403 Forbidden
 		expect(res.status).toHaveBeenCalledWith(ResponseStatus.FORBIDDEN.code);
 		expect(res.json).toHaveBeenCalledWith({
 			message: "Free trial limit exceeded",
@@ -80,12 +90,14 @@ describe("freeTrial middleware", () => {
 		expect(next).not.toHaveBeenCalled();
 	});
 
+	// Test: Should return error if updateOne fails
 	it("should return error if updateOne fails", async () => {
 		req.user = runUser;
 		req.user.usageFreeTrial = 2;
 		(userModel.updateOne as Mock).mockRejectedValue(new Error("fail"));
 		freeTrialMiddleware(req as Request, res as Response, next);
 		await new Promise((r) => setImmediate(r));
+		// Should return 500 Internal Server Error
 		expect(res.status).toHaveBeenCalledWith(
 			ResponseStatus.INTERNAL_SERVER_ERROR.code,
 		);
@@ -95,10 +107,12 @@ describe("freeTrial middleware", () => {
 		expect(next).not.toHaveBeenCalled();
 	});
 
+	// Test: Block if user is not in free trial and has no API key
 	it("should block if no api_key and not freeTrial", () => {
 		req.user = runUser;
 		req.user.freeTrial = false;
 		freeTrialMiddleware(req as Request, res as Response, next);
+		// Should return 403 Forbidden
 		expect(res.status).toHaveBeenCalledWith(ResponseStatus.FORBIDDEN.code);
 		expect(res.json).toHaveBeenCalledWith({
 			message: "Free trial limit exceeded",
@@ -106,6 +120,7 @@ describe("freeTrial middleware", () => {
 		expect(next).not.toHaveBeenCalled();
 	});
 
+	// Test: User has API key, should decrypt and set for OpenAI, then call next
 	it("should call decrypt and changeApiKey and next if api_key exists", async () => {
 		req.user = runUser;
 		req.user.freeTrial = false;
@@ -113,17 +128,20 @@ describe("freeTrial middleware", () => {
 		(decrypt as Mock).mockResolvedValue("realKey");
 		freeTrialMiddleware(req as Request, res as Response, next);
 		await new Promise((r) => setImmediate(r));
+		// Should decrypt API key and update OpenAI config
 		expect(decrypt).toHaveBeenCalledWith("encryptedKey");
 		expect(openai.changeApiKey).toHaveBeenCalledWith("realKey");
 		expect(next).toHaveBeenCalled();
 	});
 
+	// Test: Should return error if decrypt fails (user has api_key)
 	it("should return error if decrypt fails", async () => {
 		req.user = runUser;
 		req.user.api_key = "encryptedKey";
 		(decrypt as Mock).mockRejectedValue(new Error("fail"));
 		freeTrialMiddleware(req as Request, res as Response, next);
 		await new Promise((r) => setImmediate(r));
+		// Should return 500 Internal Server Error
 		expect(res.status).toHaveBeenCalledWith(
 			ResponseStatus.INTERNAL_SERVER_ERROR.code,
 		);
@@ -133,6 +151,7 @@ describe("freeTrial middleware", () => {
 		expect(next).not.toHaveBeenCalled();
 	});
 
+	// Test: Should return error if decrypt fails (user not in free trial, has api_key)
 	it("should return error if decrypt fails (INTERNAL_SERVER_ERROR)", async () => {
 		req.user = runUser;
 		req.user.freeTrial = false;
@@ -140,6 +159,7 @@ describe("freeTrial middleware", () => {
 		(decrypt as Mock).mockRejectedValue(new Error("fail"));
 		freeTrialMiddleware(req as Request, res as Response, next);
 		await new Promise((r) => setImmediate(r));
+		// Should return 500 Internal Server Error
 		expect(res.status).toHaveBeenCalledWith(
 			ResponseStatus.INTERNAL_SERVER_ERROR.code,
 		);
