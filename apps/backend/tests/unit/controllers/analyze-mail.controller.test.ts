@@ -1,3 +1,5 @@
+// Unit tests for AnalyzeMailController
+// Uses Vitest and mocks dependencies to test all controller logic and error handling
 import { readFile } from "node:fs/promises";
 import type { Request, Response } from "express";
 import { simpleParser } from "mailparser";
@@ -16,23 +18,31 @@ import AnalyzeMailController from "../../../src/controllers/analyze-mail.control
 import userModel from "../../../src/models/user.model";
 import type { User } from "../../../src/types";
 import StatusCodes from "../../../src/utils/response-codes";
+
+// Mock node:fs/promises to control file reading
 vi.mock("node:fs/promises", () => ({ readFile: vi.fn() }));
+// Mock mailparser to control email parsing
 vi.mock("mailparser", () => ({ simpleParser: vi.fn() }));
+// Mock OpenAI config to control AI responses
 vi.mock("../../../src/config/openai", () => ({
 	default: {
 		SYSTEM_PROMPT: "test-system-prompt",
 		openai: { chat: { completions: { create: vi.fn() } } },
 	},
 }));
+// Mock user model to control DB operations
 vi.mock("../../../src/models/user.model", () => ({
 	default: { findOneAndUpdate: vi.fn() },
 }));
 
+// Always return the same ObjectId for deterministic tests
 const testId = "test-id";
 vi.spyOn(Types, "ObjectId").mockImplementation(
 	() => ({ toString: () => testId }) as Types.ObjectId,
 );
 
+// Define test types for request and response with optional fields
+// Allows us to inject mocks and simulate Express behavior
 type TestRequest = Request & {
 	file?: { path: string };
 	user?: User;
@@ -43,6 +53,8 @@ type TestResponse = Response & {
 	json: Mock;
 };
 
+// Main test suite for AnalyzeMailController
+// Covers create, read, getById, and delete methods
 describe("AnalyzeMailController", () => {
 	let req: TestRequest;
 	let res: TestResponse;
@@ -50,6 +62,7 @@ describe("AnalyzeMailController", () => {
 	let id1: string;
 	let runUser: User;
 
+	// Set up reusable user and analysis data before all tests
 	beforeAll(() => {
 		id1 = "aaaaaaaaaaaaaaaaaaaaaaaa";
 		userMock = {
@@ -71,6 +84,7 @@ describe("AnalyzeMailController", () => {
 		};
 	});
 
+	// Reset mocks and clone user before each test
 	beforeEach(() => {
 		req = {} as TestRequest;
 		runUser = structuredClone(userMock);
@@ -81,7 +95,9 @@ describe("AnalyzeMailController", () => {
 		vi.clearAllMocks();
 	});
 
+	// Tests for create method
 	describe("create", () => {
+		// Should return 400 if no file is uploaded
 		it("should return 400 if no file", () => {
 			AnalyzeMailController.create(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
@@ -90,6 +106,7 @@ describe("AnalyzeMailController", () => {
 			});
 		});
 
+		// Should return 400 if email content is empty
 		it("should return 400 if email content is empty", async () => {
 			req.file = { path: "path" };
 			(readFile as Mock).mockResolvedValue(" ");
@@ -102,6 +119,7 @@ describe("AnalyzeMailController", () => {
 			});
 		});
 
+		// Should return 400 if parsed email has no html
 		it("should return 400 if parsed email has no html", async () => {
 			req.file = { path: "path" };
 			(readFile as Mock).mockResolvedValue("raw email");
@@ -116,6 +134,7 @@ describe("AnalyzeMailController", () => {
 			});
 		});
 
+		// Should return 400 if email data is invalid per schema
 		it("should return 400 if email data is invalid per schema", async () => {
 			req.file = { path: "path" };
 			(readFile as Mock).mockResolvedValue("raw email");
@@ -134,6 +153,7 @@ describe("AnalyzeMailController", () => {
 			});
 		});
 
+		// Should return analysis on success
 		it("should return analysis on success", async () => {
 			req.file = { path: "path" };
 			req.user = runUser;
@@ -173,6 +193,7 @@ describe("AnalyzeMailController", () => {
 			expect(res.json).toHaveBeenCalledWith(updated.analysis[0]);
 		});
 
+		// Should return 400 for invalid API key error
 		it("should return 400 for invalid API key error", async () => {
 			req.file = { path: "path" };
 			(readFile as Mock).mockResolvedValue("raw");
@@ -195,6 +216,7 @@ describe("AnalyzeMailController", () => {
 			});
 		});
 
+		// Should return 500 for other errors
 		it("should return 500 for other errors", async () => {
 			req.file = { path: "p" };
 			(readFile as Mock).mockRejectedValue(new Error("foo"));
@@ -209,7 +231,9 @@ describe("AnalyzeMailController", () => {
 		});
 	});
 
+	// Tests for read method
 	describe("read", () => {
+		// Should return 401 if no user is present
 		it("should return 401 if no user", () => {
 			AnalyzeMailController.read(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.code);
@@ -218,6 +242,7 @@ describe("AnalyzeMailController", () => {
 			});
 		});
 
+		// Should return analysis list for a valid user
 		it("should return analysis list", () => {
 			req.user = runUser;
 			AnalyzeMailController.read(req, res);
@@ -227,7 +252,9 @@ describe("AnalyzeMailController", () => {
 		});
 	});
 
+	// Tests for getById method
 	describe("getById", () => {
+		// Should return 401 if no user
 		it("should return 401 if no user", () => {
 			AnalyzeMailController.getById(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.code);
@@ -236,6 +263,7 @@ describe("AnalyzeMailController", () => {
 			});
 		});
 
+		// Should return 400 if id param is invalid
 		it("should return 400 if invalid id", () => {
 			req.user = runUser;
 			req.params = { id: "bad" };
@@ -244,6 +272,7 @@ describe("AnalyzeMailController", () => {
 			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
 		});
 
+		// Should return 404 if analysis is not found
 		it("should return 404 if analysis not found", () => {
 			req.user = runUser;
 			req.params = { id: "bbbbbbbbbbbbbbbbbbbbbbbb" };
@@ -252,6 +281,7 @@ describe("AnalyzeMailController", () => {
 			expect(res.json).toHaveBeenCalledWith({ message: "Analysis not found" });
 		});
 
+		// Should return analysis if found
 		it("should return analysis if found", () => {
 			const analysis = {
 				_id: id1,
@@ -269,7 +299,9 @@ describe("AnalyzeMailController", () => {
 		});
 	});
 
+	// Tests for delete method
 	describe("delete", () => {
+		// Should return 401 if no user
 		it("should return 401 if no user", () => {
 			AnalyzeMailController.delete(req, res);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.code);
@@ -278,6 +310,7 @@ describe("AnalyzeMailController", () => {
 			});
 		});
 
+		// Should return 400 if id param is invalid
 		it("should return 400 if invalid id", () => {
 			req.user = runUser;
 			req.params = { id: "bad" };
@@ -286,6 +319,7 @@ describe("AnalyzeMailController", () => {
 			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
 		});
 
+		// Should return list if analysis not found
 		it("should return list if analysis not found", () => {
 			req.user = runUser;
 			req.params = { id: "bbbbbbbbbbbbbbbbbbbbbbbb" };
@@ -295,6 +329,7 @@ describe("AnalyzeMailController", () => {
 			]);
 		});
 
+		// Should delete and return list on success
 		it("should delete and return list on success", async () => {
 			req.user = runUser;
 			req.params = { id: id1 };
@@ -310,6 +345,7 @@ describe("AnalyzeMailController", () => {
 			expect(res.json).toHaveBeenCalledWith(analysis);
 		});
 
+		// Should return 500 on db error
 		it("should return 500 on db error", async () => {
 			req.user = runUser;
 			req.params = { id: id1 };

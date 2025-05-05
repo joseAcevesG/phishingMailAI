@@ -1,3 +1,5 @@
+// Unit tests for AuthController
+// Uses Vitest and mocks dependencies to test all authentication, signup, login, logout, and status flows
 import type { Request, Response } from "express";
 import { authTypes } from "shared/auth-types";
 import { StytchError } from "stytch";
@@ -9,6 +11,7 @@ import { encrypt } from "../../../src/utils/encrypt-string";
 import StatusCodes from "../../../src/utils/response-codes";
 import * as tokenService from "../../../src/utils/token-service";
 
+// Mock stytchClient to control all Stytch authentication flows
 vi.mock("../../../src/config/stytch", () => ({
 	stytchClient: {
 		magicLinks: {
@@ -28,6 +31,7 @@ vi.mock("../../../src/config/stytch", () => ({
 	},
 }));
 
+// Mock token service to control token verification and issuance
 vi.mock("../../../src/utils/token-service", () => ({
 	verifyAccessToken: vi.fn(),
 	rotateAuthTokens: vi.fn(),
@@ -36,10 +40,12 @@ vi.mock("../../../src/utils/token-service", () => ({
 	deleteAllAuthTokens: vi.fn(),
 }));
 
+// Mock user model to control DB operations
 vi.mock("../../../src/models/user.model", () => ({
 	default: { findOne: vi.fn(), create: vi.fn(), findOneAndUpdate: vi.fn() },
 }));
 
+// Mock encrypt utility for API key encryption
 vi.mock("../../../src/utils/encrypt-string", () => ({
 	encrypt: vi.fn(),
 }));
@@ -52,7 +58,11 @@ type RotateAuthReturn = Awaited<
 	ReturnType<typeof tokenService.rotateAuthTokens>
 >;
 
+// Main test suite for AuthController
+// Covers signUp, login, resetPassword, authenticate, logout, logoutAll, changeTrial, and status methods
+
 describe("AuthController", () => {
+	// Test signUp method
 	describe("signUp", () => {
 		let req: Partial<Request> & { body?: Record<string, unknown> };
 		let res: Partial<Response> & { status: Mock; json: Mock };
@@ -63,14 +73,18 @@ describe("AuthController", () => {
 			vi.clearAllMocks();
 		});
 
+		// Should return 400 if request body fails validation
 		it("should return 400 if request body fails validation", async () => {
+			// Test case to verify that the signUp method returns a 400 error when the request body fails validation
 			AuthController.signUp(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
 			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
 		});
 
+		// Should return 400 for unsupported auth type
 		it("should return 400 for unsupported auth type", async () => {
+			// Test case to verify that the signUp method returns a 400 error when an unsupported auth type is provided
 			req.body = { type: authTypes.magicLink, email: "test@example.com" };
 			AuthController.signUp(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
@@ -80,7 +94,9 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return 400 when password is missing for passwordLogin
 		it("should return 400 when password is missing for passwordLogin", async () => {
+			// Test case to verify that the signUp method returns a 400 error when the password is missing for passwordLogin
 			req.body = { type: authTypes.passwordLogin, email: "test@example.com" };
 			AuthController.signUp(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
@@ -90,7 +106,9 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should create new user on success and return authenticated true
 		it("should create new user on success and return authenticated true", async () => {
+			// Test case to verify that the signUp method creates a new user and returns authenticated true on success
 			req.body = {
 				type: authTypes.passwordLogin,
 				email: "new@example.com",
@@ -126,7 +144,9 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should use existing user on success and return authenticated true
 		it("should use existing user on success and return authenticated true", async () => {
+			// Test case to verify that the signUp method uses an existing user and returns authenticated true on success
 			req.body = {
 				type: authTypes.passwordLogin,
 				email: "existing@example.com",
@@ -154,7 +174,9 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return 400 and message if StytchError with email_duplicate is thrown
 		it("should return 400 and message if StytchError with email_duplicate is thrown", async () => {
+			// Test case to verify that the signUp method returns a 400 error and a message when a StytchError with email_duplicate is thrown
 			req.body = {
 				type: authTypes.passwordLogin,
 				email: "new@example.com",
@@ -177,7 +199,9 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return 400 and message if StytchError with invalid_email is thrown
 		it("should return 400 and message if StytchError with invalid_email is thrown", async () => {
+			// Test case to verify that the signUp method returns a 400 error and a message when a StytchError with invalid_email is thrown
 			req.body = {
 				type: authTypes.passwordLogin,
 				email: "new@example.com",
@@ -200,6 +224,7 @@ describe("AuthController", () => {
 		});
 	});
 
+	// Test login method
 	describe("login", () => {
 		let req: Partial<Request> & { body?: Record<string, unknown> };
 		let res: Partial<Response> & { status: Mock; json: Mock };
@@ -210,14 +235,18 @@ describe("AuthController", () => {
 			vi.clearAllMocks();
 		});
 
+		// Should return 400 if request body fails validation
 		it("should return 400 if request body fails validation", async () => {
+			// Test case to verify that the login method returns a 400 error when the request body fails validation
 			AuthController.login(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST.code);
 			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
 		});
 
+		// Should return 400 and message on invalid auth type
 		it("should return 400 and message on invalid auth type", async () => {
+			// Test case to verify that the login method returns a 400 error and a message when an invalid auth type is provided
 			req.body = { email: "test@example.com", type: "reset_password" };
 			AuthController.login(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
@@ -227,7 +256,9 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should send magic link on magicLink type (success)
 		it("should send magic link on magicLink type (success)", async () => {
+			// Test case to verify that the login method sends a magic link on success when the magicLink type is provided
 			req.body = { email: "test@example.com", type: authTypes.magicLink };
 			const mockLogin = stytchClient.magicLinks.email.loginOrCreate as Mock;
 			mockLogin.mockResolvedValue({});
@@ -239,7 +270,9 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should handle error from magic link login
 		it("should handle error from magic link login", async () => {
+			// Test case to verify that the login method handles errors from the magic link login
 			req.body = { email: "fail@example.com", type: authTypes.magicLink };
 			const mockLogin = stytchClient.magicLinks.email.loginOrCreate as Mock;
 			const error = new StytchError({
@@ -256,7 +289,9 @@ describe("AuthController", () => {
 			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
 		});
 
+		// Should return 400 if password is missing for passwordLogin
 		it("should return 400 if password is missing for passwordLogin", async () => {
+			// Test case to verify that the login method returns a 400 error when the password is missing for passwordLogin
 			req.body = { email: "test@example.com", type: authTypes.passwordLogin };
 			AuthController.login(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
@@ -266,7 +301,9 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should authenticate and create new user on passwordLogin (user not found)
 		it("should authenticate and create new user on passwordLogin (user not found)", async () => {
+			// Test case to verify that the login method authenticates and creates a new user on success when the passwordLogin type is provided and the user is not found
 			req.body = {
 				email: "new@example.com",
 				type: authTypes.passwordLogin,
@@ -301,7 +338,9 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should authenticate and use existing user on passwordLogin
 		it("should authenticate and use existing user on passwordLogin", async () => {
+			// Test case to verify that the login method authenticates and uses an existing user on success when the passwordLogin type is provided
 			req.body = {
 				email: "existing@example.com",
 				type: authTypes.passwordLogin,
@@ -328,7 +367,9 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should handle error from password login authenticate
 		it("should handle error from password login authenticate", async () => {
+			// Test case to verify that the login method handles errors from the password login authenticate
 			req.body = {
 				email: "fail@example.com",
 				type: authTypes.passwordLogin,
@@ -349,7 +390,9 @@ describe("AuthController", () => {
 			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
 		});
 
+		// Should return 400 for unsupported auth type
 		it("should return 400 for unsupported auth type", async () => {
+			// Test case to verify that the login method returns a 400 error when an unsupported auth type is provided
 			req.body = { email: "test@example.com", type: "invalidType" };
 			AuthController.login(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
@@ -360,6 +403,7 @@ describe("AuthController", () => {
 		});
 	});
 
+	// Test resetPassword method
 	describe("resetPassword", () => {
 		let req: Partial<Request> & { body?: Record<string, unknown> };
 		let res: Partial<Response> & { status: Mock; json: Mock };
@@ -370,6 +414,7 @@ describe("AuthController", () => {
 			vi.clearAllMocks();
 		});
 
+		// Should send password reset link on valid email
 		it("should send password reset link on valid email", async () => {
 			req.body = { email: "user@example.com" };
 			(stytchClient.passwords.email.resetStart as Mock).mockResolvedValue({});
@@ -384,6 +429,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return 400 if request body fails validation
 		it("should return 400 if request body fails validation", async () => {
 			req.body = { email: "" };
 			AuthController.resetPassword(req as Request, res as Response);
@@ -411,6 +457,7 @@ describe("AuthController", () => {
 		});
 	});
 
+	// Test authenticate method
 	describe("authenticate", () => {
 		let req: Partial<
 			Request & {
@@ -426,6 +473,7 @@ describe("AuthController", () => {
 			vi.clearAllMocks();
 		});
 
+		// Should authenticate with magic link and create new user
 		it("should authenticate with magic link and create new user", async () => {
 			req.query = {
 				token: "magic-token",
@@ -460,6 +508,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should authenticate with magic link and use existing user
 		it("should authenticate with magic link and use existing user", async () => {
 			req.query = {
 				token: "magic-token",
@@ -486,6 +535,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return 400 if token is missing for magic link
 		it("should return 400 if token is missing for magic link", async () => {
 			req.query = { stytch_token_type: authTypes.magicLink };
 			AuthController.authenticate(req as Request, res as Response);
@@ -494,6 +544,7 @@ describe("AuthController", () => {
 			expect(res.json).toHaveBeenCalledWith({ message: "Token is required" });
 		});
 
+		// Should handle error from stytch magic link authenticate
 		it("should handle error from stytch magic link authenticate", async () => {
 			req.query = {
 				token: "magic-token",
@@ -513,6 +564,7 @@ describe("AuthController", () => {
 			expect(res.json).toHaveBeenCalledWith({ message: "stytch error" });
 		});
 
+		// Should reset password with valid token and body
 		it("should reset password with valid token and body", async () => {
 			req.query = {
 				token: "reset-token",
@@ -532,6 +584,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return 400 if password reset body fails validation
 		it("should return 400 if password reset body fails validation", async () => {
 			req.query = {
 				token: "reset-token",
@@ -544,6 +597,7 @@ describe("AuthController", () => {
 			expect(res.json).toHaveBeenCalledWith({ message: expect.any(String) });
 		});
 
+		// Should handle error from stytch password reset
 		it("should handle error from stytch password reset", async () => {
 			req.query = {
 				token: "reset-token",
@@ -564,6 +618,7 @@ describe("AuthController", () => {
 			expect(res.json).toHaveBeenCalledWith({ message: "stytch error" });
 		});
 
+		// Should return 400 for unsupported token type
 		it("should return 400 for unsupported token type", async () => {
 			req.query = { token: "some-token", stytch_token_type: "unsupported" };
 			AuthController.authenticate(req as Request, res as Response);
@@ -575,6 +630,7 @@ describe("AuthController", () => {
 		});
 	});
 
+	// Test logout method
 	describe("logout", () => {
 		let req: Partial<
 			Request & {
@@ -599,6 +655,7 @@ describe("AuthController", () => {
 			vi.clearAllMocks();
 		});
 
+		// Should logout and clear cookies with valid tokens
 		it("should logout and clear cookies with valid tokens", async () => {
 			req.cookies = { refresh_token: "refreshToken" };
 			req.user = { _id: "u1" };
@@ -617,6 +674,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should use newRefreshToken if tokenRotated is true
 		it("should use newRefreshToken if tokenRotated is true", async () => {
 			req.tokenRotated = true;
 			req.newRefreshToken = "rotatedToken";
@@ -631,6 +689,7 @@ describe("AuthController", () => {
 			);
 		});
 
+		// Should return 401 if no refresh token
 		it("should return 401 if no refresh token", () => {
 			AuthController.logout(req as Request, res as Response);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.code);
@@ -639,6 +698,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return 401 if no user._id
 		it("should return 401 if no user._id", () => {
 			req.cookies = { refresh_token: "refreshToken" };
 			AuthController.logout(req as Request, res as Response);
@@ -648,6 +708,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return 500 if deleteAuthToken fails
 		it("should return 500 if deleteAuthToken fails", async () => {
 			req.cookies = { refresh_token: "refreshToken" };
 			req.user = { _id: "u1" };
@@ -666,6 +727,7 @@ describe("AuthController", () => {
 		});
 	});
 
+	// Tests for logoutAll method
 	describe("logoutAll", () => {
 		let req: Partial<Request & { user?: { _id?: string } }>;
 		let res: Partial<Response> & {
@@ -684,6 +746,7 @@ describe("AuthController", () => {
 			vi.clearAllMocks();
 		});
 
+		// Should logout from all sessions and clear cookies with valid user
 		it("should logout from all sessions and clear cookies with valid user", async () => {
 			req.user = { _id: "u1" };
 			(tokenService.deleteAllAuthTokens as Mock).mockResolvedValue(undefined);
@@ -698,6 +761,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return 401 if no user._id
 		it("should return 401 if no user._id", () => {
 			AuthController.logoutAll(req as Request, res as Response);
 			expect(res.status).toHaveBeenCalledWith(StatusCodes.UNAUTHORIZED.code);
@@ -706,6 +770,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return 500 if deleteAllAuthTokens fails
 		it("should return 500 if deleteAllAuthTokens fails", async () => {
 			req.user = { _id: "u1" };
 			(tokenService.deleteAllAuthTokens as Mock).mockRejectedValue(
@@ -723,6 +788,7 @@ describe("AuthController", () => {
 		});
 	});
 
+	// Tests for changeTrial method
 	describe("changeTrial", () => {
 		let req: Partial<Request & { user?: { _id?: string } }> & {
 			body?: Record<string, unknown>;
@@ -735,6 +801,7 @@ describe("AuthController", () => {
 			vi.clearAllMocks();
 		});
 
+		// Should update API key and set freeTrial to false
 		it("should update API key and set freeTrial to false", async () => {
 			req.body = { api_key: "myKey" };
 			const encrypted = "encrypted";
@@ -757,6 +824,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return 400 if api_key is missing
 		it("should return 400 if api_key is missing", () => {
 			req.body = {};
 			AuthController.changeTrial(req as Request, res as Response);
@@ -764,6 +832,7 @@ describe("AuthController", () => {
 			expect(res.json).toHaveBeenCalledWith({ message: "API key is required" });
 		});
 
+		// Should return 404 if user not found
 		it("should return 404 if user not found", async () => {
 			req.body = { api_key: "myKey" };
 			const encrypted = "encrypted";
@@ -776,6 +845,7 @@ describe("AuthController", () => {
 			expect(res.json).toHaveBeenCalledWith({ message: "User not found" });
 		});
 
+		// Should return 500 if encrypt or findOneAndUpdate fails
 		it("should return 500 if encrypt or findOneAndUpdate fails", async () => {
 			req.body = { api_key: "myKey" };
 			vi.mocked(encrypt).mockRejectedValue(new Error("fail"));
@@ -791,6 +861,7 @@ describe("AuthController", () => {
 		});
 	});
 
+	// Tests for status method
 	describe("status", () => {
 		let req: Partial<Request>;
 		let res: Partial<Response> & { status: Mock; json: Mock };
@@ -800,6 +871,7 @@ describe("AuthController", () => {
 			res = { json: vi.fn(), status: vi.fn().mockReturnThis() };
 		});
 
+		// Should return authenticated true and email when session token is valid
 		it("should return authenticated true and email when session token is valid", async () => {
 			req.cookies = { session_token: "validToken" };
 			vi.spyOn(tokenService, "verifyAccessToken").mockResolvedValue({
@@ -816,6 +888,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return unauthenticated false and email undefined when no tokens
 		it("should return unauthenticated false and email undefined when no tokens", async () => {
 			AuthController.status(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
@@ -826,6 +899,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return authenticated true and email when refresh token is valid
 		it("should return authenticated true and email when refresh token is valid", async () => {
 			req.cookies = { refresh_token: "refreshToken" };
 			vi.spyOn(tokenService, "verifyAccessToken").mockRejectedValue(
@@ -847,6 +921,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return unauthenticated false and email undefined when both session and refresh tokens invalid
 		it("should return unauthenticated false and email undefined when both session and refresh tokens invalid", async () => {
 			req.cookies = { refresh_token: "refreshToken" };
 			vi.spyOn(tokenService, "verifyAccessToken").mockRejectedValue(
@@ -866,6 +941,7 @@ describe("AuthController", () => {
 			});
 		});
 
+		// Should return 401 and unauthenticated if tokenService.verifyAccessToken rejects
 		it("should return 401 and unauthenticated if tokenService.verifyAccessToken rejects", async () => {
 			req.cookies = { session_token: "badToken" };
 			vi.spyOn(tokenService, "verifyAccessToken").mockRejectedValue(
