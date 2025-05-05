@@ -5,16 +5,19 @@ import SettingsPage from "./Settings";
 import type { Mock } from "vitest";
 import { useSettings } from "./useSettings";
 
+// Mock useSettings hook to control the state and actions for the Settings page
 vi.mock("./useSettings", () => ({
 	__esModule: true,
 	useSettings: vi.fn(),
 }));
 
 describe("SettingsPage", () => {
+	// Reset the useSettings mock before each test for isolation
 	beforeEach(() => {
 		(useSettings as Mock).mockReset();
 	});
 
+	// Test: Should render all sections and allow API key input and logout
 	it("renders all sections and allows API key input and logout", () => {
 		const setApiKey = vi.fn();
 		const handleKeySubmit = vi.fn((e) => e.preventDefault());
@@ -34,6 +37,7 @@ describe("SettingsPage", () => {
 				<SettingsPage />
 			</MemoryRouter>
 		);
+		// Check for presence of all headings and links
 		expect(
 			screen.getByRole("heading", { name: /password/i })
 		).toBeInTheDocument();
@@ -47,6 +51,7 @@ describe("SettingsPage", () => {
 			screen.getByRole("link", { name: /reset password/i })
 		).toBeInTheDocument();
 
+		// Simulate API key input and form submission
 		const apiInput = screen.getByPlaceholderText(/sk-/i);
 		fireEvent.change(apiInput, { target: { value: "sk-test" } });
 		expect(setApiKey).toHaveBeenCalledWith("sk-test");
@@ -58,6 +63,7 @@ describe("SettingsPage", () => {
 		fireEvent.submit(apiForm);
 		expect(handleKeySubmit).toHaveBeenCalled();
 
+		// Simulate logout button click
 		const logoutButton = screen.getByRole("button", {
 			name: /log out on all devices/i,
 		});
@@ -65,6 +71,7 @@ describe("SettingsPage", () => {
 		expect(handleLogoutAll).toHaveBeenCalled();
 	});
 
+	// Test: Should show error messages for API key and logout
 	it("shows error messages for API key and logout", () => {
 		(useSettings as Mock).mockReturnValue({
 			apiKey: "sk-test",
@@ -81,6 +88,7 @@ describe("SettingsPage", () => {
 				<SettingsPage />
 			</MemoryRouter>
 		);
+		// Check for error messages
 		expect(screen.getByText(/invalid api key/i)).toBeInTheDocument();
 		expect(screen.getByText(/logout failed/i)).toBeInTheDocument();
 	});

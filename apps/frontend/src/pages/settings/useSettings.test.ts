@@ -4,19 +4,23 @@ import type { Mock } from "vitest";
 import { useFetch } from "../../hooks/useFetch";
 import { useSettings } from "./useSettings";
 
+// Mock react-router-dom for navigation
 vi.mock("react-router-dom", () => ({
 	useNavigate: () => vi.fn(),
 }));
 
+// Mock useFetch to control API call behavior for API key and logout
 vi.mock("../../hooks/useFetch", () => ({
 	useFetch: vi.fn(),
 }));
 
 describe("useSettings", () => {
+	// Reset useFetch mock before each test for isolation
 	beforeEach(() => {
 		(useFetch as Mock).mockReset();
 	});
 
+	// Test: Should initialize with correct default state
 	it("initializes with correct default state", () => {
 		(useFetch as Mock)
 			.mockReturnValueOnce({
@@ -37,6 +41,7 @@ describe("useSettings", () => {
 		expect(result.current.logoutLoading).toBe(false);
 	});
 
+	// Test: Should update apiKey state
 	it("updates apiKey", () => {
 		(useFetch as Mock).mockReturnValue({
 			execute: vi.fn(),
@@ -50,6 +55,7 @@ describe("useSettings", () => {
 		expect(result.current.apiKey).toBe("sk-test");
 	});
 
+	// Test: Should submit API key and navigate on success
 	it("submits API key and navigates on success", async () => {
 		const saveKey = vi.fn().mockResolvedValue({ success: true });
 		const navigate = vi.fn();
@@ -93,6 +99,7 @@ describe("useSettings", () => {
 		expect(navigate).toHaveBeenCalledWith("/");
 	});
 
+	// Test: Should log out everywhere and navigate on success
 	it("logs out everywhere and navigates on success", async () => {
 		const logoutAll = vi.fn().mockResolvedValue({ success: true });
 		const navigate = vi.fn();
