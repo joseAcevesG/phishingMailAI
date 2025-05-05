@@ -4,6 +4,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Password from "./Password";
 import { usePasswordLogin } from "./usePasswordLogin";
 
+// Mock the usePasswordLogin hook to control form state and actions
 vi.mock("./usePasswordLogin", () => ({
 	__esModule: true,
 	usePasswordLogin: vi.fn(),
@@ -12,11 +13,13 @@ vi.mock("./usePasswordLogin", () => ({
 describe("Password", () => {
 	const onAuthenticate = vi.fn();
 
+	// Setup: Clear mocks and reset usePasswordLogin before each test
 	beforeEach(() => {
 		onAuthenticate.mockClear?.();
 		(usePasswordLogin as Mock).mockReset();
 	});
 
+	// Test: Should render form fields and call handlePasswordLogin on submit
 	it("renders form fields and submits login", () => {
 		const handlePasswordLogin = vi.fn((e) => e.preventDefault());
 		(usePasswordLogin as Mock).mockReturnValue({
@@ -39,6 +42,7 @@ describe("Password", () => {
 		expect(handlePasswordLogin).toHaveBeenCalled();
 	});
 
+	// Test: Should display error message when error exists
 	it("displays error message when error exists", () => {
 		(usePasswordLogin as Mock).mockReturnValue({
 			email: "user@example.com",
@@ -53,6 +57,7 @@ describe("Password", () => {
 		expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
 	});
 
+	// Test: Should disable submit button while submitting
 	it("disables submit button while submitting", () => {
 		(usePasswordLogin as Mock).mockReturnValue({
 			email: "user@example.com",

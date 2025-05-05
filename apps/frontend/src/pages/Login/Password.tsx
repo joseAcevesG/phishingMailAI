@@ -7,6 +7,18 @@ interface Props {
 	onAuthenticate: (data: APIAuth) => void;
 }
 
+/**
+ * Form component for password-based login.
+ *
+ * Uses the `usePasswordLogin` hook to handle state and submission of the form.
+ *
+ * @param {Props} props Component props.
+ * @param {function(APIAuth)} props.onAuthenticate Callback function to call when the user is
+ *                                                  authenticated. Receives the user's auth data
+ *                                                  as an argument.
+ *
+ * @returns {JSX.Element} The password login form.
+ */
 const Password: React.FC<Props> = ({ onAuthenticate }) => {
 	const {
 		email,
@@ -20,6 +32,7 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 
 	return (
 		<form className={styles.passwordForm} onSubmit={handlePasswordLogin}>
+			{/* Email input field */}
 			<div className={styles.inputGroup}>
 				<input
 					className={styles.emailInput}
@@ -30,6 +43,7 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 					required
 				/>
 			</div>
+			{/* Password input field */}
 			<div className={styles.inputGroup}>
 				<input
 					className={styles.passwordInput}
@@ -40,7 +54,9 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 					required
 				/>
 			</div>
+			{/* Show error message if login fails */}
 			{error && <div className={styles.error}>{error}</div>}
+			{/* Submit button is disabled while submitting */}
 			<button
 				className={styles.submitBtn}
 				type="submit"

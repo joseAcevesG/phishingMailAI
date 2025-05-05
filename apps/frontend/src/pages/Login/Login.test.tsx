@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { Login } from "./Login";
 
+// Mock ToggleButtonGroup to control login method selection
 vi.mock("../../components/ToggleButtonGroup/ToggleButtonGroup", () => ({
 	__esModule: true,
 	default: ({
@@ -24,6 +25,7 @@ vi.mock("../../components/ToggleButtonGroup/ToggleButtonGroup", () => ({
 	),
 }));
 
+// Mock MagicLink login component
 vi.mock("../../components/magicLink/MagicLink", () => ({
 	__esModule: true,
 	default: ({ buttonText }: { buttonText: string }) => (
@@ -31,6 +33,7 @@ vi.mock("../../components/magicLink/MagicLink", () => ({
 	),
 }));
 
+// Mock Password login component
 vi.mock("./Password", () => ({
 	__esModule: true,
 	default: ({
@@ -44,9 +47,12 @@ vi.mock("./Password", () => ({
 	),
 }));
 
+// Tests for the Login page covering authentication methods and redirect
+
 describe("Login", () => {
 	const onAuthenticate = vi.fn();
 
+	// Test: Should render magic link login by default and allow switching to password
 	it("renders magic link login by default and switches to password", () => {
 		render(
 			<MemoryRouter>
@@ -70,6 +76,7 @@ describe("Login", () => {
 		).toBeInTheDocument();
 	});
 
+	// Test: Should show forgot password link only for password method
 	it("shows forgot password link only for password method", () => {
 		render(
 			<MemoryRouter>
@@ -81,6 +88,7 @@ describe("Login", () => {
 		expect(screen.getByText(/forgot your password/i)).toBeInTheDocument();
 	});
 
+	// Test: Should always show signup link
 	it("shows signup link always", () => {
 		render(
 			<MemoryRouter>
@@ -93,6 +101,7 @@ describe("Login", () => {
 		);
 	});
 
+	// Test: Should redirect to / if already authenticated
 	it("redirects to / if authenticated", () => {
 		render(
 			<MemoryRouter>
@@ -104,6 +113,7 @@ describe("Login", () => {
 		).not.toBeInTheDocument();
 	});
 
+	// Test: Should call onAuthenticate when password login is clicked
 	it("calls onAuthenticate when password login is clicked", () => {
 		render(
 			<MemoryRouter>
