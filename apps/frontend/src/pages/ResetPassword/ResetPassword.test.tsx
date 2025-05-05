@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { ResetPassword } from "./ResetPassword";
 
+// Mock the Reset component to isolate ResetPassword tests from its implementation
 vi.mock("./Reset", () => ({
 	__esModule: true,
 	default: () => (
@@ -12,6 +13,7 @@ vi.mock("./Reset", () => ({
 }));
 
 describe("ResetPassword", () => {
+	// Test: Should render the reset password container, heading, and mocked Reset form
 	it("renders the reset password container, heading, and Reset form", () => {
 		render(<ResetPassword />);
 		expect(

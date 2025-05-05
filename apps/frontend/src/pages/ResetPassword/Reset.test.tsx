@@ -3,16 +3,19 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import PasswordReset from "./Reset";
 import { usePasswordReset } from "./usePasswordReset";
 
+// Mock the usePasswordReset hook to control form state and actions
 vi.mock("./usePasswordReset", () => ({
 	__esModule: true,
 	usePasswordReset: vi.fn(),
 }));
 
 describe("PasswordReset", () => {
+	// Reset the mock before each test for isolation
 	beforeEach(() => {
 		(usePasswordReset as Mock).mockReset();
 	});
 
+	// Test: Should render form fields and call handleSubmit on submit
 	it("renders form fields and submits", () => {
 		const handleSubmit = vi.fn((e) => e.preventDefault());
 		(usePasswordReset as Mock).mockReturnValue({
@@ -40,6 +43,7 @@ describe("PasswordReset", () => {
 		expect(handleSubmit).toHaveBeenCalled();
 	});
 
+	// Test: Should show error message when there is a validation or fetch error
 	it("shows error message when there is a validation or fetch error", () => {
 		(usePasswordReset as Mock).mockReturnValue({
 			password: "foo",
@@ -55,6 +59,7 @@ describe("PasswordReset", () => {
 		expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
 	});
 
+	// Test: Should disable submit button while submitting or when validation error exists
 	it("disables submit button while submitting or when validation error exists", () => {
 		(usePasswordReset as Mock).mockReturnValue({
 			password: "foo",

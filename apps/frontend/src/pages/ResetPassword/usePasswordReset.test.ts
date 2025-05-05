@@ -4,25 +4,30 @@ import { useFetch } from "../../hooks/useFetch";
 import { validateAll } from "../../services/validatePassword";
 import { usePasswordReset } from "./usePasswordReset";
 
+// Mock react-router-dom hooks for navigation and query param extraction
 vi.mock("react-router-dom", () => ({
 	useNavigate: () => vi.fn(),
 	useSearchParams: () => [new URLSearchParams("token=abc")],
 }));
 
+// Mock useFetch to control API call behavior
 vi.mock("../../hooks/useFetch", () => ({
 	useFetch: vi.fn(),
 }));
 
+// Mock validateAll to control password validation logic
 vi.mock("../../services/validatePassword", () => ({
 	validateAll: vi.fn(() => null),
 }));
 
 describe("usePasswordReset", () => {
+	// Reset mocks before each test to ensure test isolation
 	beforeEach(() => {
 		(useFetch as Mock).mockReset();
 		(validateAll as Mock).mockReset();
 	});
 
+	// Test: Should initialize state variables with correct default values
 	it("initializes with correct default state", () => {
 		(useFetch as Mock).mockReturnValue({
 			error: null,
@@ -38,6 +43,7 @@ describe("usePasswordReset", () => {
 		expect(result.current.isSubmitting).toBe(false);
 	});
 
+	// Test: Should update password and confirmPassword state
 	it("updates password and confirmPassword", () => {
 		(useFetch as Mock).mockReturnValue({
 			error: null,
@@ -54,6 +60,7 @@ describe("usePasswordReset", () => {
 		expect(result.current.confirmPassword).toBe("newpass2");
 	});
 
+	// Test: Should validate passwords on change
 	it("validates passwords on change", () => {
 		(useFetch as Mock).mockReturnValue({
 			error: null,
@@ -70,6 +77,7 @@ describe("usePasswordReset", () => {
 		expect(result.current.validationError).toBe("error!");
 	});
 
+	// Test: Should submit and navigate on successful password reset
 	it("submits and navigates on success", async () => {
 		const execute = vi.fn().mockResolvedValue({ success: true });
 		const navigate = vi.fn();
