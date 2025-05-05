@@ -17,6 +17,10 @@ const userSchema = new Schema({
 		type: Number,
 		default: 0,
 	},
+	token_version: {
+		type: Number,
+		default: 0,
+	},
 	analysis: [
 		{
 			_id: { type: String, required: true },

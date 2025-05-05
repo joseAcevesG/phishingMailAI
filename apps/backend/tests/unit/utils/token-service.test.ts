@@ -9,7 +9,7 @@ import * as tokenService from "../../../src/utils/token-service";
 
 // Mock user and token doc for use in tests
 // These mocks represent a user and a refresh token document in the database
-const mockUser = { email: "user@example.com", _id: "u1" };
+const mockUser = { email: "user@example.com", _id: "u1", token_version: 0 };
 const mockTokenDoc = { user: "u1", tokens: ["old"], save: vi.fn() };
 const mockRes = () => ({ cookie: vi.fn() }) as unknown as Response;
 
@@ -50,7 +50,10 @@ describe("token-service util", () => {
 		// This test case covers the happy path where the token is valid and the user exists
 		it("resolves with user if token valid and user exists", async () => {
 			(User.findOne as Mock).mockResolvedValue(mockUser);
-			(createToken.decode as Mock).mockReturnValue({ email: mockUser.email });
+			(createToken.decode as Mock).mockReturnValue({
+				email: mockUser.email,
+				v: mockUser.token_version,
+			});
 			const user = await tokenService.verifyAccessToken("token");
 			expect(User.findOne).toHaveBeenCalledWith({ email: mockUser.email });
 			expect(user).toBe(mockUser);
@@ -69,7 +72,10 @@ describe("token-service util", () => {
 		// This test case covers the scenario where the user is not found
 		it("rejects if user not found", async () => {
 			(User.findOne as Mock).mockResolvedValue(null);
-			(createToken.decode as Mock).mockReturnValue({ email: mockUser.email });
+			(createToken.decode as Mock).mockReturnValue({
+				email: mockUser.email,
+				v: mockUser.token_version,
+			});
 			await expect(tokenService.verifyAccessToken("token")).rejects.toThrow(
 				UnauthorizedError,
 			);
@@ -126,6 +132,7 @@ describe("token-service util", () => {
 			const result = await tokenService.issueAuthTokens(
 				res,
 				mockUser.email,
+				0, // tokenVersion argument
 				"u1" as unknown as Types.ObjectId,
 			);
 			expect(result.accessToken).toBeTypeOf("string");

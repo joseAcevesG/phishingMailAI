@@ -130,8 +130,8 @@ class AnalyzeMailController {
 
 				// Save analysis to user's history
 				req.user?.analysis.push(analysisData);
-				return userModel.findOneAndUpdate(
-					{ _id: req.user?._id },
+				return userModel.findByIdAndUpdate(
+					req.user?._id,
 					{ $set: { analysis: req.user?.analysis } },
 					{ new: true },
 				);
@@ -271,8 +271,8 @@ class AnalyzeMailController {
 		}
 		req.user.analysis = req.user.analysis.filter((mail) => mail._id !== id);
 		userModel
-			.findOneAndUpdate(
-				{ _id: req.user._id },
+			.findByIdAndUpdate(
+				req.user._id,
 				{ $set: { analysis: req.user.analysis } },
 				{ new: true },
 			)

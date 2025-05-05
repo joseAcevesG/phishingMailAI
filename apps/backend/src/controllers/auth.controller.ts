@@ -91,7 +91,7 @@ class AuthController {
 					return user;
 				})
 				.then((user) => {
-					return issueAuthTokens(res, email, user._id);
+					return issueAuthTokens(res, email, user.token_version, user._id);
 				})
 				.then(() => {
 					res.json({ authenticated: true, email });
@@ -199,7 +199,7 @@ class AuthController {
 					return user;
 				})
 				.then((user) => {
-					return issueAuthTokens(res, email, user._id);
+					return issueAuthTokens(res, email, user.token_version, user._id);
 				})
 				.then(() => {
 					res.json({ authenticated: true, email });
@@ -288,7 +288,7 @@ class AuthController {
 					return user;
 				})
 				.then((user) => {
-					return issueAuthTokens(res, email, user._id);
+					return issueAuthTokens(res, email, user.token_version, user._id);
 				})
 				.then(() => {
 					res.json({ authenticated: true, email });
@@ -393,8 +393,13 @@ class AuthController {
 			});
 			return;
 		}
-		// Delete all refresh tokens for user and clear cookies
-		deleteAllAuthTokens(userId)
+		// Increment token_version and delete all refresh tokens for user
+		User.findByIdAndUpdate(
+			userId,
+			{ $inc: { token_version: 1 } },
+			{ new: true },
+		)
+			.then(() => deleteAllAuthTokens(userId))
 			.then(() => {
 				res.clearCookie("session_token").clearCookie("refresh_token").json({
 					message: "Logged out from all sessions",
@@ -434,8 +439,8 @@ class AuthController {
 		// Encrypt and update API key, disable free trial
 		encrypt(api_key)
 			.then((encryptedApiKey: string) => {
-				return User.findOneAndUpdate(
-					{ _id: req.user?._id },
+				return User.findByIdAndUpdate(
+					req.user?._id,
 					{
 						api_key: encryptedApiKey,
 						freeTrial: false,

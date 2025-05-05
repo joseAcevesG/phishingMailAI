@@ -42,7 +42,7 @@ vi.mock("../../../src/utils/token-service", () => ({
 
 // Mock user model to control DB operations
 vi.mock("../../../src/models/user.model", () => ({
-	default: { findOne: vi.fn(), create: vi.fn(), findOneAndUpdate: vi.fn() },
+	default: { findOne: vi.fn(), create: vi.fn(), findByIdAndUpdate: vi.fn() },
 }));
 
 // Mock encrypt utility for API key encryption
@@ -120,6 +120,7 @@ describe("AuthController", () => {
 			(User.findOne as Mock).mockResolvedValue(null);
 			(User.create as Mock).mockResolvedValue({
 				_id: "id1",
+				token_version: 0,
 				email: "new@example.com",
 			});
 			(tokenService.issueAuthTokens as Mock).mockResolvedValue(undefined);
@@ -136,6 +137,7 @@ describe("AuthController", () => {
 			expect(tokenService.issueAuthTokens).toHaveBeenCalledWith(
 				res as Response,
 				"new@example.com",
+				0, // token_version
 				"id1",
 			);
 			expect(res.json).toHaveBeenCalledWith({
@@ -155,7 +157,11 @@ describe("AuthController", () => {
 			(stytchClient.passwords.create as Mock).mockResolvedValue({
 				user: { emails: [{ email: "existing@example.com" }] },
 			});
-			const existingUser = { _id: "u1", email: "existing@example.com" };
+			const existingUser = {
+				_id: "u1",
+				token_version: 0,
+				email: "existing@example.com",
+			};
 			(User.findOne as Mock).mockResolvedValue(existingUser);
 			(tokenService.issueAuthTokens as Mock).mockResolvedValue(undefined);
 
@@ -166,6 +172,7 @@ describe("AuthController", () => {
 			expect(tokenService.issueAuthTokens).toHaveBeenCalledWith(
 				res as Response,
 				"existing@example.com",
+				0, // token_version
 				"u1",
 			);
 			expect(res.json).toHaveBeenCalledWith({
@@ -316,6 +323,7 @@ describe("AuthController", () => {
 			(User.findOne as Mock).mockResolvedValue(null);
 			(User.create as Mock).mockResolvedValue({
 				_id: "id1",
+				token_version: 0,
 				email: "new@example.com",
 			});
 			(tokenService.issueAuthTokens as Mock).mockResolvedValue(undefined);
@@ -330,6 +338,7 @@ describe("AuthController", () => {
 			expect(tokenService.issueAuthTokens).toHaveBeenCalledWith(
 				res as Response,
 				"new@example.com",
+				0, // token_version
 				"id1",
 			);
 			expect(res.json).toHaveBeenCalledWith({
@@ -350,15 +359,21 @@ describe("AuthController", () => {
 			mockAuth.mockResolvedValue({
 				user: { emails: [{ email: "existing@example.com" }] },
 			});
-			const existingUser = { _id: "u1", email: "existing@example.com" };
+			const existingUser = {
+				_id: "u1",
+				email: "existing@example.com",
+				token_version: 0,
+			};
 			(User.findOne as Mock).mockResolvedValue(existingUser);
 			(tokenService.issueAuthTokens as Mock).mockResolvedValue(undefined);
+
 			AuthController.login(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
 			expect(User.create).not.toHaveBeenCalled();
 			expect(tokenService.issueAuthTokens).toHaveBeenCalledWith(
 				res as Response,
 				"existing@example.com",
+				0, // token_version
 				"u1",
 			);
 			expect(res.json).toHaveBeenCalledWith({
@@ -486,6 +501,7 @@ describe("AuthController", () => {
 			(User.create as Mock).mockResolvedValue({
 				_id: "id1",
 				email: "new@example.com",
+				token_version: 0,
 			});
 			(tokenService.issueAuthTokens as Mock).mockResolvedValue(undefined);
 
@@ -500,6 +516,7 @@ describe("AuthController", () => {
 			expect(tokenService.issueAuthTokens).toHaveBeenCalledWith(
 				res as Response,
 				"new@example.com",
+				0, // token_version
 				"id1",
 			);
 			expect(res.json).toHaveBeenCalledWith({
@@ -517,7 +534,11 @@ describe("AuthController", () => {
 			(stytchClient.magicLinks.authenticate as Mock).mockResolvedValue({
 				user: { emails: [{ email: "existing@example.com" }] },
 			});
-			const existingUser = { _id: "u1", email: "existing@example.com" };
+			const existingUser = {
+				_id: "u1",
+				email: "existing@example.com",
+				token_version: 0,
+			};
 			(User.findOne as Mock).mockResolvedValue(existingUser);
 			(tokenService.issueAuthTokens as Mock).mockResolvedValue(undefined);
 
@@ -527,6 +548,7 @@ describe("AuthController", () => {
 			expect(tokenService.issueAuthTokens).toHaveBeenCalledWith(
 				res as Response,
 				"existing@example.com",
+				0, // token_version
 				"u1",
 			);
 			expect(res.json).toHaveBeenCalledWith({
@@ -749,6 +771,7 @@ describe("AuthController", () => {
 		// Should logout from all sessions and clear cookies with valid user
 		it("should logout from all sessions and clear cookies with valid user", async () => {
 			req.user = { _id: "u1" };
+			(User.findByIdAndUpdate as Mock).mockResolvedValue({});
 			(tokenService.deleteAllAuthTokens as Mock).mockResolvedValue(undefined);
 
 			AuthController.logoutAll(req as Request, res as Response);
@@ -773,6 +796,7 @@ describe("AuthController", () => {
 		// Should return 500 if deleteAllAuthTokens fails
 		it("should return 500 if deleteAllAuthTokens fails", async () => {
 			req.user = { _id: "u1" };
+			(User.findByIdAndUpdate as Mock).mockResolvedValue({});
 			(tokenService.deleteAllAuthTokens as Mock).mockRejectedValue(
 				new Error("fail"),
 			);
@@ -806,7 +830,7 @@ describe("AuthController", () => {
 			req.body = { api_key: "myKey" };
 			const encrypted = "encrypted";
 			vi.mocked(encrypt).mockResolvedValue(encrypted);
-			(User.findOneAndUpdate as Mock).mockResolvedValue({
+			(User.findByIdAndUpdate as Mock).mockResolvedValue({
 				_id: "u1",
 				email: "user@example.com",
 			});
@@ -814,8 +838,8 @@ describe("AuthController", () => {
 			AuthController.changeTrial(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
 			expect(vi.mocked(encrypt)).toHaveBeenCalledWith("myKey");
-			expect(User.findOneAndUpdate).toHaveBeenCalledWith(
-				{ _id: "u1" },
+			expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
+				"u1",
 				{ api_key: encrypted, freeTrial: false },
 				{ new: true },
 			);
@@ -837,7 +861,7 @@ describe("AuthController", () => {
 			req.body = { api_key: "myKey" };
 			const encrypted = "encrypted";
 			vi.mocked(encrypt).mockResolvedValue(encrypted);
-			(User.findOneAndUpdate as Mock).mockResolvedValue(null);
+			(User.findByIdAndUpdate as Mock).mockResolvedValue(null);
 
 			AuthController.changeTrial(req as Request, res as Response);
 			await new Promise((r) => setImmediate(r));
@@ -845,8 +869,8 @@ describe("AuthController", () => {
 			expect(res.json).toHaveBeenCalledWith({ message: "User not found" });
 		});
 
-		// Should return 500 if encrypt or findOneAndUpdate fails
-		it("should return 500 if encrypt or findOneAndUpdate fails", async () => {
+		// Should return 500 if encrypt or findByIdAndUpdate fails
+		it("should return 500 if encrypt or findByIdAndUpdate fails", async () => {
 			req.body = { api_key: "myKey" };
 			vi.mocked(encrypt).mockRejectedValue(new Error("fail"));
 

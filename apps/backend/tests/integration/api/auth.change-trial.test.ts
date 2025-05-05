@@ -32,7 +32,7 @@ vi.mock("../../../src/utils/encrypt-string", () => ({
 vi.mock("../../../src/models/user.model", () => ({
 	__esModule: true,
 	default: {
-		findOneAndUpdate: vi.fn(),
+		findByIdAndUpdate: vi.fn(),
 		findById: vi.fn(),
 		findOne: vi.fn(),
 		create: vi.fn(),
@@ -62,7 +62,7 @@ vi.mock("../../../src/models/refresh-token.model", () => ({
 		deleteMany: vi.fn(),
 		updateOne: vi.fn(),
 		updateMany: vi.fn(),
-		findOneAndUpdate: vi.fn(),
+		findByIdAndUpdate: vi.fn(),
 	},
 }));
 
@@ -112,14 +112,14 @@ describe("POST /api/auth/change-trial", () => {
 		// Set up user model mocks to return userMock by default
 		(User.findById as Mock).mockResolvedValue(userMock);
 		(User.findOne as Mock).mockResolvedValue(userMock);
-		(User.findOneAndUpdate as Mock).mockResolvedValue(userMock);
+		(User.findByIdAndUpdate as Mock).mockResolvedValue(userMock);
 		(User.create as Mock).mockResolvedValue(userMock);
 	});
 
 	// Test successful API key update with valid api_key and authenticated user
 	it("updates user api key with valid api_key and authenticated user", async () => {
 		// Simulate successful API key update
-		(User.findOneAndUpdate as Mock).mockResolvedValue(userMock);
+		(User.findByIdAndUpdate as Mock).mockResolvedValue(userMock);
 
 		const res = await request(app)
 			.post("/api/auth/change-trial")
@@ -133,8 +133,8 @@ describe("POST /api/auth/change-trial", () => {
 		// Verify API key update response and encryption
 		expect(res.body).toEqual({ message: "API key updated successfully" });
 		expect(encrypt as Mock).toHaveBeenCalledWith(validApiKey);
-		expect(User.findOneAndUpdate).toHaveBeenCalledWith(
-			{ _id: userId },
+		expect(User.findByIdAndUpdate).toHaveBeenCalledWith(
+			userId,
 			{ api_key: "encryptedApiKeyValue", freeTrial: false },
 			{ new: true },
 		);
@@ -159,7 +159,7 @@ describe("POST /api/auth/change-trial", () => {
 	// Test user not found in DB
 	it("returns 404 if user is not found", async () => {
 		// Simulate user not found in DB
-		(User.findOneAndUpdate as Mock).mockResolvedValue(null);
+		(User.findByIdAndUpdate as Mock).mockResolvedValue(null);
 
 		const res = await request(app)
 			.post("/api/auth/change-trial")
@@ -177,7 +177,7 @@ describe("POST /api/auth/change-trial", () => {
 	// Test DB error during update
 	it("returns 500 if updating user throws", async () => {
 		// Simulate DB error during update
-		(User.findOneAndUpdate as Mock).mockRejectedValueOnce(
+		(User.findByIdAndUpdate as Mock).mockRejectedValueOnce(
 			new Error("DB error"),
 		);
 

@@ -44,7 +44,7 @@ vi.mock("../../../src/models/user.model", () => ({
 			email: "user@example.com",
 			analysis: [],
 		}),
-		findOneAndUpdate: vi.fn().mockImplementation((_query, update) =>
+		findByIdAndUpdate: vi.fn().mockImplementation((_query, update) =>
 			Promise.resolve({
 				...update.$set,
 				_id: "user123",

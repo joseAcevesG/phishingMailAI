@@ -33,7 +33,7 @@ vi.mock("../../../src/config/openai", () => ({
 }));
 // Mock user model to control DB operations
 vi.mock("../../../src/models/user.model", () => ({
-	default: { findOneAndUpdate: vi.fn() },
+	default: { findByIdAndUpdate: vi.fn() },
 }));
 
 // Always return the same ObjectId for deterministic tests
@@ -227,7 +227,7 @@ describe("AnalyzeMailController", () => {
 					},
 				],
 			};
-			(userModel.findOneAndUpdate as Mock).mockResolvedValue(updated);
+			(userModel.findByIdAndUpdate as Mock).mockResolvedValue(updated);
 
 			AnalyzeMailController.create(req, res);
 			await new Promise((r) => setImmediate(r));
@@ -395,11 +395,11 @@ describe("AnalyzeMailController", () => {
 			req.user = runUser;
 			req.params = { id: id1 };
 			const analysis = [{ _id: id1, subject: "s", from: "f", to: "t" }];
-			(userModel.findOneAndUpdate as Mock).mockResolvedValue({ analysis });
+			(userModel.findByIdAndUpdate as Mock).mockResolvedValue({ analysis });
 			AnalyzeMailController.delete(req, res);
 			await new Promise((r) => setImmediate(r));
-			expect(userModel.findOneAndUpdate).toHaveBeenCalledWith(
-				{ _id: "u1" },
+			expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(
+				"u1",
 				{ $set: { analysis: [] } },
 				{ new: true },
 			);
@@ -410,7 +410,7 @@ describe("AnalyzeMailController", () => {
 		it("should return 500 on db error", async () => {
 			req.user = runUser;
 			req.params = { id: id1 };
-			(userModel.findOneAndUpdate as Mock).mockRejectedValue(
+			(userModel.findByIdAndUpdate as Mock).mockRejectedValue(
 				new Error("db error"),
 			);
 			AnalyzeMailController.delete(req, res);

@@ -33,9 +33,15 @@ export function verifyAccessToken(token: string) {
 	if (!data) {
 		return Promise.reject(new UnauthorizedError("Unauthorized"));
 	}
-	const email = (data as JwtPayload).email;
+	const { email, v: tokenVersion } = data as JwtPayload;
 	return User.findOne({ email }).then((user) => {
 		if (!user) throw new UnauthorizedError("Unauthorized");
+		if (
+			typeof tokenVersion !== "number" ||
+			user.token_version !== tokenVersion
+		) {
+			throw new UnauthorizedError("Token is stale. Please login again.");
+		}
 		return user;
 	});
 }
@@ -76,7 +82,10 @@ export function rotateAuthTokens(oldRefreshToken: string, res: Response) {
 			})
 			// set the new refresh token and a new access token on the response object
 			.then(({ user, newRefreshToken }) => {
-				const newAccessToken = createToken({ email: user.email });
+				const newAccessToken = createToken({
+					email: user.email,
+					v: user.token_version,
+				});
 				res.cookie("session_token", newAccessToken, {
 					...cookieOptions,
 					maxAge: ACCESS_TOKEN_EXPIRATION,
@@ -103,9 +112,10 @@ export function rotateAuthTokens(oldRefreshToken: string, res: Response) {
 export function issueAuthTokens(
 	res: Response,
 	email: string,
+	tokenVersion: number,
 	userId: Types.ObjectId,
 ) {
-	const accessToken = createToken({ email });
+	const accessToken = createToken({ email, v: tokenVersion });
 	const refreshToken = crypto.randomBytes(64).toString("hex");
 	return RefreshTokenModel.findOneAndUpdate(
 		{ user: userId },

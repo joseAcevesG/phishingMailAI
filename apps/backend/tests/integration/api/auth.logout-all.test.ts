@@ -47,6 +47,7 @@ vi.mock("../../../src/models/user.model", () => ({
 	__esModule: true,
 	default: {
 		findById: vi.fn(),
+		findByIdAndUpdate: vi.fn(),
 	},
 }));
 
@@ -78,6 +79,10 @@ describe("POST /api/auth/logout-all", () => {
 			email: userEmail,
 		});
 		(User.findById as Mock).mockResolvedValue({
+			_id: userId,
+			email: userEmail,
+		});
+		(User.findByIdAndUpdate as Mock).mockResolvedValue({
 			_id: userId,
 			email: userEmail,
 		});
