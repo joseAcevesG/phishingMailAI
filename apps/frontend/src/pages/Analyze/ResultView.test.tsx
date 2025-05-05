@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { ResultView } from "./ResultView";
 import type { Analysis } from "shared";
 
+// Sample analysis object to be used in tests
 const sampleAnalysis: Analysis = {
 	_id: "abc123",
 	subject: "Suspicious Email",
@@ -13,7 +14,9 @@ const sampleAnalysis: Analysis = {
 	redFlags: ["Urgency", "Unknown sender"],
 };
 
+// Grouping all ResultView tests
 describe("ResultView", () => {
+	// Test that all fields of the analysis are rendered correctly
 	it("renders all analysis fields", () => {
 		render(<ResultView result={sampleAnalysis} onReset={vi.fn()} />);
 		expect(screen.getByText("Analysis Result")).toBeInTheDocument();
@@ -29,6 +32,7 @@ describe("ResultView", () => {
 		expect(screen.getByText("Unknown sender")).toBeInTheDocument();
 	});
 
+	// Test that clicking the button calls the onReset callback
 	it("calls onReset when button is clicked", () => {
 		const onReset = vi.fn();
 		render(<ResultView result={sampleAnalysis} onReset={onReset} />);
@@ -39,6 +43,7 @@ describe("ResultView", () => {
 		expect(onReset).toHaveBeenCalled();
 	});
 
+	// Test that red flags section is not rendered if redFlags is empty
 	it("does not render red flags section if empty", () => {
 		const noRedFlags: Analysis = { ...sampleAnalysis, redFlags: [] };
 		render(<ResultView result={noRedFlags} onReset={vi.fn()} />);

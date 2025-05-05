@@ -6,6 +6,14 @@ interface Props {
 	onReset: () => void;
 }
 
+/**
+ * Displays the analysis result of an email, including subject, sender, recipient,
+ * phishing probability, reasons, and any red flags identified.
+ *
+ * @param {Props} props - The properties object.
+ * @param {Analysis} props.result - The analysis result containing details about the email.
+ * @param {Function} props.onReset - Callback function to reset the analysis view.
+ */
 export const ResultView: React.FC<Props> = ({ result, onReset }) => {
 	return (
 		<div className={styles.resultBox}>
@@ -19,6 +27,7 @@ export const ResultView: React.FC<Props> = ({ result, onReset }) => {
 					{(result.phishingProbability * 100).toFixed(1)}%
 				</p>
 				<p className={styles.description}>{result.reasons}</p>
+				{/* Conditionally render red flags if any exist */}
 				{result.redFlags.length > 0 && (
 					<div className={styles.redFlags}>
 						<h3>Red Flags:</h3>
