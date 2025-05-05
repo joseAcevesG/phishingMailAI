@@ -4,6 +4,7 @@ import { describe, it, expect } from "vitest";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 describe("ProtectedRoute", () => {
+	// If the user is authenticated, render the children
 	it("renders children when authenticated", () => {
 		render(
 			<MemoryRouter>
@@ -15,6 +16,7 @@ describe("ProtectedRoute", () => {
 		expect(screen.getByText("Protected Content")).toBeInTheDocument();
 	});
 
+	// If the user is not authenticated, redirect to /login
 	it("redirects to /login when not authenticated", () => {
 		render(
 			<MemoryRouter initialEntries={["/protected"]}>

@@ -3,8 +3,10 @@ import { describe, it, expect, vi } from "vitest";
 import ToggleButtonGroup from "./ToggleButtonGroup";
 
 describe("ToggleButtonGroup", () => {
+	// Test that the component renders both buttons and highlights the selected one
 	it("renders both buttons and highlights the selected one", () => {
 		const setSelectedMethod = vi.fn();
+		// Render the component with the setSelectedMethod function
 		const { rerender } = render(
 			<ToggleButtonGroup
 				selectedMethod="magic"
@@ -28,8 +30,10 @@ describe("ToggleButtonGroup", () => {
 		expect(magicBtn.className).not.toMatch(/toggleActive/);
 	});
 
+	// Test that the component calls setSelectedMethod with the correct value on click
 	it("calls setSelectedMethod with correct value on click", () => {
 		const setSelectedMethod = vi.fn();
+		// Render the component with the setSelectedMethod function
 		render(
 			<ToggleButtonGroup
 				selectedMethod="magic"

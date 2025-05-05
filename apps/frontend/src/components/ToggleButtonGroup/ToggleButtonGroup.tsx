@@ -5,11 +5,22 @@ interface ToggleButtonGroupProps {
 	setSelectedMethod: React.Dispatch<React.SetStateAction<"magic" | "password">>;
 }
 
+/**
+ * ToggleButtonGroup is a component that renders two toggle buttons
+ * for selecting between "magic" and "password" methods. It visually
+ * highlights the currently selected method and triggers a callback
+ * to update the selected method when a button is clicked.
+ *
+ * @param selectedMethod A string indicating the currently selected method ("magic" or "password").
+ * @param setSelectedMethod A function to update the selected method.
+ */
 const ToggleButtonGroup: React.FC<ToggleButtonGroupProps> = ({
 	selectedMethod,
 	setSelectedMethod,
 }) => (
 	<div className={styles.toggleContainer}>
+		{/* This button is responsible for setting the selectedMethod to "magic". */}
+		{/* It is highlighted if the selectedMethod is "magic". */}
 		<button
 			className={`${styles.toggleButton} ${
 				selectedMethod === "magic" ? styles.toggleActive : ""
@@ -19,6 +30,8 @@ const ToggleButtonGroup: React.FC<ToggleButtonGroupProps> = ({
 		>
 			Magic Link
 		</button>
+		{/* This button is responsible for setting the selectedMethod to "password". */}
+		{/* It is highlighted if the selectedMethod is "password". */}
 		<button
 			className={`${styles.toggleButton} ${
 				selectedMethod === "password" ? styles.toggleActive : ""

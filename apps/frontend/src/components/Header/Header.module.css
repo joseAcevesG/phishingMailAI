@@ -71,6 +71,6 @@
 .userInfoPlaceholder {
 	visibility: hidden;
 	height: 40px;
-	width: 180px; /* Adjust to match userInfo min width */
+	width: 180px;
 	justify-self: end;
 }

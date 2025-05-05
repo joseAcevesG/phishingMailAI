@@ -4,16 +4,20 @@ import type { Mock } from "vitest";
 import { useFetch } from "../../hooks/useFetch";
 import { useMagicLink } from "./useMagicLink";
 
+// Mock the useFetch hook with a mock implementation
 vi.mock("../../hooks/useFetch", () => ({
 	useFetch: vi.fn(),
 }));
 
+// Assign the mock implementation to a variable
 const mockUseFetch = useFetch as unknown as Mock;
 
 describe("useMagicLink", () => {
+	// Mock the execute function for the useFetch hook
 	let executeMock: Mock;
 	beforeEach(() => {
 		executeMock = vi.fn();
+		// Reset the mock implementation for the useFetch hook
 		mockUseFetch.mockReturnValue({
 			data: null,
 			loading: false,
@@ -48,6 +52,7 @@ describe("useMagicLink", () => {
 	});
 
 	it("shows error if fetchError is set", () => {
+		// Set the fetchError property of the mock implementation
 		mockUseFetch.mockReturnValue({
 			data: null,
 			loading: false,
@@ -72,6 +77,7 @@ describe("useMagicLink", () => {
 	});
 
 	it("handleMagicLinkRequest calls execute and disables button on success", async () => {
+		// Set the execute function of the mock implementation to return a resolved promise
 		mockUseFetch.mockReturnValue({
 			data: null,
 			loading: false,
@@ -91,7 +97,9 @@ describe("useMagicLink", () => {
 	});
 
 	it("countdown disables and re-enables button", async () => {
+		// Enable fake timers
 		vi.useFakeTimers();
+		// Set the execute function of the mock implementation to return a resolved promise
 		mockUseFetch.mockReturnValue({
 			data: null,
 			loading: false,
@@ -110,14 +118,17 @@ describe("useMagicLink", () => {
 		expect(result.current.isButtonDisabled).toBe(true);
 		expect(result.current.countdown).toBe(2);
 		act(() => {
+			// Advance the timers by 1000ms
 			vi.advanceTimersByTime(1000);
 		});
 		expect(result.current.countdown).toBe(1);
 		act(() => {
+			// Advance the timers by 1000ms
 			vi.advanceTimersByTime(1000);
 		});
 		expect(result.current.countdown).toBe(2);
 		expect(result.current.isButtonDisabled).toBe(false);
+		// Disable fake timers
 		vi.useRealTimers();
 	});
 });
