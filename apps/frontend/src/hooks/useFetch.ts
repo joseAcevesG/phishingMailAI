@@ -5,6 +5,14 @@ const DEFAULT_HEADERS = {
 	"Content-Type": "application/json",
 };
 
+/**
+ * Custom React hook for making fetch requests.
+ *
+ * @template T - The expected shape of the response data.
+ * @param {FetchConfig} initialConfig - Initial configuration for the fetch request.
+ * @param {boolean} [auto=true] - Whether to automatically execute the request on mount.
+ * @returns {UseFetchReturn<T>} - An object containing the response data, error, loading state, and an execute function to manually trigger the request.
+ */
 export function useFetch<T = unknown>(
 	initialConfig: FetchConfig,
 	auto = true,
@@ -15,6 +23,12 @@ export function useFetch<T = unknown>(
 	const configRef = useRef<FetchConfig>(initialConfig);
 	const controllerRef = useRef<AbortController | null>(null);
 
+	/**
+	 * Manually trigger the fetch request with an optional override configuration.
+	 *
+	 * @param {Partial<FetchConfig>} [overrideConfig] - Optional override configuration for the fetch request.
+	 * @returns {Promise<T | null>} - A promise that resolves with the response data or null if the request is aborted.
+	 */
 	const execute = useCallback(async (overrideConfig?: Partial<FetchConfig>) => {
 		controllerRef.current?.abort();
 		const config = {
@@ -74,6 +88,10 @@ export function useFetch<T = unknown>(
 		}
 	}, []);
 
+	/**
+	 * useEffect hook that automatically executes the fetch request on mount if auto is true.
+	 * It also aborts the request if the component unmounts.
+	 */
 	useEffect(() => {
 		if (auto) {
 			execute();

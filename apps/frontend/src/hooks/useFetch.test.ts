@@ -7,6 +7,7 @@ const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
 describe("useFetch", () => {
+	// This base config is used for all tests
 	const baseConfig: FetchConfig = { url: "/api/test" };
 
 	beforeEach(() => {
@@ -17,6 +18,7 @@ describe("useFetch", () => {
 		vi.clearAllMocks();
 	});
 
+	// Test that the component initializes with loading true if auto is true
 	it("should initialize with loading true if auto is true", async () => {
 		mockFetch.mockResolvedValueOnce({
 			ok: true,
@@ -34,6 +36,7 @@ describe("useFetch", () => {
 		expect(result.current.error).toBeNull();
 	});
 
+	// Test that the component does not auto-fetch if auto is false
 	it("should not auto-fetch if auto is false", async () => {
 		const { result } = renderHook(() =>
 			useFetch<{ foo: string }>(baseConfig, false),
@@ -42,6 +45,7 @@ describe("useFetch", () => {
 		expect(result.current.data).toBeNull();
 	});
 
+	// Test that the component handles fetch errors and sets error message
 	it("should handle fetch errors and set error message", async () => {
 		mockFetch.mockResolvedValueOnce({
 			ok: false,
@@ -59,6 +63,7 @@ describe("useFetch", () => {
 		expect(result.current.data).toBeNull();
 	});
 
+	// Test that the component handles network error and sets generic error message
 	it("should handle network error and set generic error message", async () => {
 		mockFetch.mockRejectedValueOnce(new Error("Network error"));
 		const { result } = renderHook(() =>
@@ -71,6 +76,7 @@ describe("useFetch", () => {
 		expect(result.current.data).toBeNull();
 	});
 
+	// Test that the component supports manual execution via execute()
 	it("should support manual execution via execute()", async () => {
 		mockFetch.mockResolvedValueOnce({
 			ok: true,
@@ -86,6 +92,7 @@ describe("useFetch", () => {
 		expect(result.current.loading).toBe(false);
 	});
 
+	// Test that the component aborts previous request if execute is called again
 	it("should abort previous request if execute is called again", async () => {
 		const abortSpy = vi.spyOn(AbortController.prototype, "abort");
 		mockFetch.mockResolvedValue({
