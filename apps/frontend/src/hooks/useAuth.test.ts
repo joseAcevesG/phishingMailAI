@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { useNavigate } from "react-router-dom";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Mock } from "vitest";
 import type { FetchConfig } from "../types";
 import { useAuth } from "./useAuth";
@@ -26,6 +26,7 @@ describe("useAuth", () => {
 
 	beforeEach(() => {
 		// Reset mocks before each test
+		vi.useFakeTimers();
 		fetchStatusMock = vi.fn();
 		executeLogoutMock = vi.fn();
 		navigateMock = vi.fn();
@@ -53,10 +54,47 @@ describe("useAuth", () => {
 		mockUseNavigate.mockReturnValue(navigateMock);
 	});
 
+	it("calls status check immediately and on interval", async () => {
+		fetchStatusMock.mockResolvedValue({
+			authenticated: true,
+			email: "user@example.com",
+		});
+		await act(async () => {
+			renderHook(() => useAuth());
+		});
+		// Should be called immediately
+		expect(fetchStatusMock).toHaveBeenCalledTimes(1);
+		// Advance timer by 5 minutes
+		await act(async () => {
+			vi.advanceTimersByTime(5 * 60 * 1000);
+			// Wait for next tick
+			await Promise.resolve();
+		});
+		expect(fetchStatusMock).toHaveBeenCalledTimes(2);
+	});
+
+	it("cleans up interval and does not update state after unmount", async () => {
+		fetchStatusMock.mockResolvedValue({
+			authenticated: true,
+			email: "user@example.com",
+		});
+		const { unmount } = renderHook(() => useAuth());
+		await act(async () => {
+			await Promise.resolve();
+		});
+		unmount();
+		// Try to advance timer and ensure no further calls or state updates
+		await act(async () => {
+			vi.advanceTimersByTime(5 * 60 * 1000);
+			await Promise.resolve();
+		});
+		// Should still be called only once (the initial)
+		expect(fetchStatusMock).toHaveBeenCalledTimes(1);
+		// State should not update after unmount
+		// (no error thrown means no setState on unmounted)
+	});
+
 	it("sets loading to false after effect", async () => {
-		// If loading is true, the effect will refetch the status when the component
-		// mounts. This test ensures that loading is set to false after the effect
-		// has completed.
 		let result: ReturnType<typeof renderHook>["result"] = {} as ReturnType<
 			typeof renderHook
 		>["result"];
@@ -69,8 +107,6 @@ describe("useAuth", () => {
 	});
 
 	it("sets authenticated state on successful status fetch", async () => {
-		// If the status fetch is successful, the hook should update the
-		// isAuthenticated state and userEmail.
 		fetchStatusMock.mockResolvedValue({
 			authenticated: true,
 			email: "user@example.com",
@@ -85,8 +121,6 @@ describe("useAuth", () => {
 	});
 
 	it("sets unauthenticated state if status fetch fails", async () => {
-		// If the status fetch fails, the hook should update the isAuthenticated
-		// state and userEmail.
 		fetchStatusMock.mockResolvedValue(null);
 		const { result } = renderHook(() => useAuth());
 		await act(async () => {
@@ -98,8 +132,6 @@ describe("useAuth", () => {
 	});
 
 	it("handleLogout sets unauthenticated state and navigates", async () => {
-		// When the logout button is clicked, the hook should update the
-		// isAuthenticated state and navigate to the login page.
 		executeLogoutMock.mockResolvedValue({});
 		const { result } = renderHook(() => useAuth());
 		await act(async () => {
@@ -111,8 +143,6 @@ describe("useAuth", () => {
 	});
 
 	it("handleAuthenticate updates auth state", () => {
-		// When the handleAuthenticate function is called, the hook should update the
-		// isAuthenticated state and userEmail.
 		const { result, rerender } = renderHook(() => useAuth());
 		act(() => {
 			result.current.handleAuthenticate({
@@ -123,5 +153,10 @@ describe("useAuth", () => {
 		rerender();
 		expect(result.current.isAuthenticated).toBe(true);
 		expect(result.current.userEmail).toBe("foo@bar.com");
+	});
+
+	// Restore timers after all tests
+	afterEach(() => {
+		vi.useRealTimers();
 	});
 });

@@ -72,28 +72,50 @@ export const useAuth = () => {
 		}));
 	}, []);
 
-	/**
-	 * Fetches the authentication status from the API and updates the authentication state
-	 * accordingly. If the status is fetched successfully, the authentication state is updated
-	 * with the `authenticated` and `email` properties from the response. If the status is not
-	 * fetched successfully, the authentication state is set to unauthenticated.
-	 */
+	// Fetches the authentication status from the API and updates the authentication state
+	// every 5 minutes
 	useEffect(() => {
+		let isMounted = true;
+
 		const handleStatus = async () => {
+			if (!isMounted) return;
 			setState((prev) => ({ ...prev, loading: true }));
-			const result = await fetchStatus();
-			if (result) {
-				handleAuthenticate(result);
-			} else {
+
+			try {
+				const result = await fetchStatus();
+				if (result) {
+					handleAuthenticate(result);
+				} else {
+					setState((prev) => ({
+						...prev,
+						isAuthenticated: false,
+						userEmail: null,
+					}));
+				}
+			} catch (err) {
+				console.error("Status check failed", err);
 				setState((prev) => ({
 					...prev,
 					isAuthenticated: false,
 					userEmail: null,
 				}));
+			} finally {
+				if (isMounted) {
+					setState((prev) => ({ ...prev, loading: false }));
+				}
 			}
-			setState((prev) => ({ ...prev, loading: false }));
 		};
+
+		// run immediately once
 		handleStatus();
+
+		// then every 5 minutes
+		const intervalId = setInterval(handleStatus, 5 * 60 * 1000);
+
+		return () => {
+			isMounted = false;
+			clearInterval(intervalId);
+		};
 	}, [fetchStatus, handleAuthenticate]);
 
 	return {
