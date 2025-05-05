@@ -29,7 +29,7 @@ export const SignUp: React.FC<Props> = ({
 	onAuthenticate,
 }) => {
 	const [selectedMethod, setSelectedMethod] = useState<"magic" | "password">(
-		"magic"
+		"magic",
 	);
 
 	// If user is already authenticated, redirect to home page

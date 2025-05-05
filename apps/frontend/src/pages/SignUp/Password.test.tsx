@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { type Mock, describe, expect, it, vi } from "vitest";
 import Password from "./Password";
-import { describe, expect, it, vi, type Mock } from "vitest";
 import * as usePasswordModule from "./usePassword";
 
 // Spy on the usePassword hook to allow mocking its return values
@@ -30,16 +30,16 @@ describe("<Password />", () => {
 		mockUsePassword();
 		render(<Password onAuthenticate={vi.fn()} />);
 		expect(
-			screen.getByPlaceholderText(/enter your email/i)
+			screen.getByPlaceholderText(/enter your email/i),
 		).toBeInTheDocument();
 		expect(
-			screen.getByPlaceholderText(/enter your password/i)
+			screen.getByPlaceholderText(/enter your password/i),
 		).toBeInTheDocument();
 		expect(
-			screen.getByPlaceholderText(/confirm your password/i)
+			screen.getByPlaceholderText(/confirm your password/i),
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole("button", { name: /sign up/i })
+			screen.getByRole("button", { name: /sign up/i }),
 		).toBeInTheDocument();
 	});
 
@@ -81,7 +81,7 @@ describe("<Password />", () => {
 		});
 		render(<Password onAuthenticate={vi.fn()} />);
 		expect(
-			screen.getByRole("button", { name: /signing up.../i })
+			screen.getByRole("button", { name: /signing up.../i }),
 		).toBeDisabled();
 
 		mockUsePassword({

@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi, type Mock } from "vitest";
-import HistoryPage from "./History";
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
 import type { History } from "../../types";
+import HistoryPage from "./History";
 import { useHistoryList } from "./useHistoryList";
 
 // Mock CSS module to avoid style-related errors in tests

@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import Home from "./Home";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
 import ErrorMessages from "../../types/error-messages";
+import Home from "./Home";
 import { useMailAnalysis } from "./useMailAnalysis";
 
 // Mock UploadForm to isolate Home tests from form implementation
@@ -14,7 +14,7 @@ vi.mock("./UploadForm", () => ({
 		onAnalyze: () => void;
 	}) => (
 		<div data-testid="upload-form">
-			<button onClick={onAnalyze} disabled={isUploading} type="button">
+			<button disabled={isUploading} onClick={onAnalyze} type="button">
 				Analyze
 			</button>
 		</div>

@@ -17,8 +17,8 @@ import { Landing } from "./pages/Landing/Landing";
 import { Login } from "./pages/Login/Login";
 import { ResetLink } from "./pages/ResetLink/ResetLink";
 import { ResetPassword } from "./pages/ResetPassword/ResetPassword";
-import SignUp from "./pages/SignUp/SignUp";
 import SettingsPage from "./pages/Settings/Settings";
+import SignUp from "./pages/SignUp/SignUp";
 
 /**
  * The AppContent component renders the main application layout, including the header,

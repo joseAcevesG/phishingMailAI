@@ -9,7 +9,7 @@ describe("Footer", () => {
 		const year = new Date().getFullYear().toString();
 		expect(
 			// Check that the footer contains the current year and copyright text
-			screen.getByText(`© ${year} PhishingMail AI. All rights reserved.`)
+			screen.getByText(`© ${year} PhishingMail AI. All rights reserved.`),
 		).toBeInTheDocument();
 	});
 });

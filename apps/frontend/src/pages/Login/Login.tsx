@@ -26,7 +26,7 @@ interface Props {
  */
 export const Login: React.FC<Props> = ({ isAuthenticated, onAuthenticate }) => {
 	const [selectedMethod, setSelectedMethod] = useState<"magic" | "password">(
-		"magic"
+		"magic",
 	);
 
 	// If the user is already authenticated, redirect to the home page

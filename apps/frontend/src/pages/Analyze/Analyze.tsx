@@ -1,5 +1,5 @@
-import { useAnalyze } from "./useAnalyze";
 import { ResultView } from "./ResultView";
+import { useAnalyze } from "./useAnalyze";
 
 /**
  * Analyze component.

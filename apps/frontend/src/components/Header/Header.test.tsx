@@ -1,13 +1,13 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
+import { describe, expect, it, vi } from "vitest";
 import { Header, type Props } from "./Header";
 
 const renderHeader = (props: Props) =>
 	render(
 		<BrowserRouter>
 			<Header {...props} />
-		</BrowserRouter>
+		</BrowserRouter>,
 	);
 
 describe("Header", () => {
@@ -20,7 +20,7 @@ describe("Header", () => {
 		expect(screen.getByText("History")).toBeInTheDocument();
 		expect(screen.getByText("Settings")).toBeInTheDocument();
 		expect(screen.getByText(/Logged in as/)).toHaveTextContent(
-			"Logged in as user@example.com"
+			"Logged in as user@example.com",
 		);
 		expect(screen.getByRole("button", { name: /logout/i })).toBeInTheDocument();
 	});
@@ -35,7 +35,7 @@ describe("Header", () => {
 		expect(screen.getByText("Sign Up")).toBeInTheDocument();
 		expect(screen.queryByText(/Logged in as/)).not.toBeInTheDocument();
 		expect(
-			screen.queryByRole("button", { name: /logout/i })
+			screen.queryByRole("button", { name: /logout/i }),
 		).not.toBeInTheDocument();
 	});
 

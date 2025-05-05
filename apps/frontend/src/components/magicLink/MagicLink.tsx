@@ -28,8 +28,8 @@ const MagicLink: React.FC<Props> = ({ buttonText, url }) => {
 	return (
 		<form
 			// unique identifier for the form
-			data-testid="magic-link-form"
 			className={styles.magicLinkForm}
+			data-testid="magic-link-form"
 			onSubmit={(e) => {
 				e.preventDefault();
 				handleMagicLinkRequest();

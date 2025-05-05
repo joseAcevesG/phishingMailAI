@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import ToggleButtonGroup from "./ToggleButtonGroup";
 
 describe("ToggleButtonGroup", () => {
@@ -11,7 +11,7 @@ describe("ToggleButtonGroup", () => {
 			<ToggleButtonGroup
 				selectedMethod="magic"
 				setSelectedMethod={setSelectedMethod}
-			/>
+			/>,
 		);
 		const magicBtn = screen.getByRole("button", { name: /magic link/i });
 		const passwordBtn = screen.getByRole("button", { name: /password/i });
@@ -24,7 +24,7 @@ describe("ToggleButtonGroup", () => {
 			<ToggleButtonGroup
 				selectedMethod="password"
 				setSelectedMethod={setSelectedMethod}
-			/>
+			/>,
 		);
 		expect(passwordBtn.className).toMatch(/toggleActive/);
 		expect(magicBtn.className).not.toMatch(/toggleActive/);
@@ -38,7 +38,7 @@ describe("ToggleButtonGroup", () => {
 			<ToggleButtonGroup
 				selectedMethod="magic"
 				setSelectedMethod={setSelectedMethod}
-			/>
+			/>,
 		);
 		fireEvent.click(screen.getByRole("button", { name: /password/i }));
 		expect(setSelectedMethod).toHaveBeenCalledWith("password");

@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import { describe, expect, it, vi } from "vitest";
 import { ResetLink } from "./ResetLink";
 
 // Mock MagicLink component to isolate ResetLink tests from its implementation
@@ -19,17 +19,17 @@ describe("ResetLink", () => {
 		render(
 			<MemoryRouter>
 				<ResetLink />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		expect(
-			screen.getByRole("heading", { name: /reset password/i })
+			screen.getByRole("heading", { name: /reset password/i }),
 		).toBeInTheDocument();
 		expect(
-			screen.getByText(/enter your email address to reset your password/i)
+			screen.getByText(/enter your email address to reset your password/i),
 		).toBeInTheDocument();
 		expect(screen.getByTestId("magic-link-form")).toBeInTheDocument();
 		expect(
-			screen.getByRole("button", { name: /reset password/i })
+			screen.getByRole("button", { name: /reset password/i }),
 		).toBeInTheDocument();
 	});
 });

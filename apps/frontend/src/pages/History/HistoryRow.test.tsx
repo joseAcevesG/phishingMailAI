@@ -1,7 +1,7 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import HistoryRow from "./HistoryRow";
 import type { History } from "../../types";
+import HistoryRow from "./HistoryRow";
 
 // Mock CSS module to avoid style-related errors in tests
 vi.mock("./History.module.css", () => ({
@@ -31,12 +31,12 @@ describe("HistoryRow", () => {
 			<table>
 				<tbody>
 					<HistoryRow
-						item={item}
 						handleDelete={handleDelete}
+						item={item}
 						navigate={navigate}
 					/>
 				</tbody>
-			</table>
+			</table>,
 		);
 		expect(screen.getByText("Test Subject")).toBeInTheDocument();
 		expect(screen.getByText("from@example.com")).toBeInTheDocument();
@@ -54,12 +54,12 @@ describe("HistoryRow", () => {
 			<table>
 				<tbody>
 					<HistoryRow
-						item={item}
 						handleDelete={handleDelete}
+						item={item}
 						navigate={navigate}
 					/>
 				</tbody>
-			</table>
+			</table>,
 		);
 		fireEvent.click(screen.getByRole("button", { name: /delete/i }));
 		expect(handleDelete).toHaveBeenCalledWith("1");
@@ -73,12 +73,12 @@ describe("HistoryRow", () => {
 			<table>
 				<tbody>
 					<HistoryRow
-						item={item}
 						handleDelete={handleDelete}
+						item={item}
 						navigate={navigate}
 					/>
 				</tbody>
-			</table>
+			</table>,
 		);
 		fireEvent.click(screen.getByRole("button", { name: /view/i }));
 		expect(navigate).toHaveBeenCalledWith("/analyze/1");

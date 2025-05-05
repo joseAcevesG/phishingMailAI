@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 import { SignUp } from "./SignUp";
@@ -20,10 +20,10 @@ vi.mock("../../components/ToggleButtonGroup/ToggleButtonGroup", () => ({
 	__esModule: true,
 	default: ({ selectedMethod, setSelectedMethod }: ToggleButtonGroupProps) => (
 		<div data-testid="toggle-group">
-			<button type="button" onClick={() => setSelectedMethod("magic")}>
+			<button onClick={() => setSelectedMethod("magic")} type="button">
 				Magic
 			</button>
-			<button type="button" onClick={() => setSelectedMethod("password")}>
+			<button onClick={() => setSelectedMethod("password")} type="button">
 				Password
 			</button>
 			<span>{selectedMethod}</span>
@@ -34,7 +34,7 @@ vi.mock("../../components/ToggleButtonGroup/ToggleButtonGroup", () => ({
 vi.mock("../../components/magicLink/MagicLink", () => ({
 	__esModule: true,
 	default: (props: MagicLinkProps) => (
-		<button type="button" data-testid="magic-link">
+		<button data-testid="magic-link" type="button">
 			{props.buttonText}
 		</button>
 	),
@@ -50,7 +50,7 @@ describe("<SignUp />", () => {
 	it("renders welcome message and toggle group", () => {
 		render(<SignUp onAuthenticate={vi.fn()} />, { wrapper: MemoryRouter });
 		expect(
-			screen.getByText(/welcome to phishing mail ai/i)
+			screen.getByText(/welcome to phishing mail ai/i),
 		).toBeInTheDocument();
 		expect(screen.getByTestId("toggle-group")).toBeInTheDocument();
 	});
@@ -75,7 +75,7 @@ describe("<SignUp />", () => {
 	it("redirects if isAuthenticated is true", () => {
 		const { container } = render(
 			<SignUp isAuthenticated={true} onAuthenticate={vi.fn()} />,
-			{ wrapper: MemoryRouter }
+			{ wrapper: MemoryRouter },
 		);
 		expect(container.innerHTML).toBe("");
 	});

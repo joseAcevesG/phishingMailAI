@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { MockedFunction } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
 import MagicLink from "./MagicLink";
 
 // Mock the useMagicLink hook
@@ -8,7 +8,7 @@ vi.mock("./useMagicLink", () => ({
 	useMagicLink: vi.fn(),
 }));
 
-import { useMagicLink, type UseMagicLinkReturn } from "./useMagicLink";
+import { type UseMagicLinkReturn, useMagicLink } from "./useMagicLink";
 
 describe("MagicLink", () => {
 	// Mock functions for the useMagicLink return values
@@ -41,7 +41,7 @@ describe("MagicLink", () => {
 		// Check if the input and button are rendered
 		expect(screen.getByPlaceholderText("Enter your email")).toBeInTheDocument();
 		expect(
-			screen.getByRole("button", { name: /send link/i })
+			screen.getByRole("button", { name: /send link/i }),
 		).toBeInTheDocument();
 	});
 
@@ -106,7 +106,7 @@ describe("MagicLink", () => {
 		render(<MagicLink buttonText="Send Link" url="/api/magic-link" />);
 		// Check if the countdown text is shown
 		expect(
-			screen.getByText(/You can resend a magic link in: 42 seconds/)
+			screen.getByText(/You can resend a magic link in: 42 seconds/),
 		).toBeInTheDocument();
 	});
 });

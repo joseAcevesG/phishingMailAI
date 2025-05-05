@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import { describe, expect, it } from "vitest";
 import { Landing } from "./Landing";
 
 // Tests for the Landing page component
@@ -12,13 +12,13 @@ describe("Landing", () => {
 		render(
 			<MemoryRouter>
 				<Landing isAuthenticated={false} />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		expect(screen.getByText(/welcome to phishingMail ai/i)).toBeInTheDocument();
 		expect(screen.getByText(/secure your inbox/i)).toBeInTheDocument();
 		expect(screen.getByRole("link", { name: /get started/i })).toHaveAttribute(
 			"href",
-			"/login"
+			"/login",
 		);
 	});
 
@@ -27,13 +27,13 @@ describe("Landing", () => {
 		render(
 			<MemoryRouter>
 				<Landing isAuthenticated={true} />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		expect(
-			screen.queryByText(/welcome to phishingMail ai/i)
+			screen.queryByText(/welcome to phishingMail ai/i),
 		).not.toBeInTheDocument();
 		expect(
-			screen.queryByRole("link", { name: /get started/i })
+			screen.queryByRole("link", { name: /get started/i }),
 		).not.toBeInTheDocument();
 	});
 });

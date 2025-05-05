@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import { describe, expect, it, vi } from "vitest";
 import { Login } from "./Login";
 
 // Mock ToggleButtonGroup to control login method selection
@@ -14,10 +14,10 @@ vi.mock("../../components/ToggleButtonGroup/ToggleButtonGroup", () => ({
 		setSelectedMethod: (v: string) => void;
 	}) => (
 		<div>
-			<button type="button" onClick={() => setSelectedMethod("magic")}>
+			<button onClick={() => setSelectedMethod("magic")} type="button">
 				Magic
 			</button>
-			<button type="button" onClick={() => setSelectedMethod("password")}>
+			<button onClick={() => setSelectedMethod("password")} type="button">
 				Password
 			</button>
 			<span data-testid="selected-method">{selectedMethod}</span>
@@ -41,7 +41,7 @@ vi.mock("./Password", () => ({
 	}: {
 		onAuthenticate: (data: { token: string }) => void;
 	}) => (
-		<button type="button" onClick={() => onAuthenticate({ token: "test" })}>
+		<button onClick={() => onAuthenticate({ token: "test" })} type="button">
 			Password Login
 		</button>
 	),
@@ -57,22 +57,22 @@ describe("Login", () => {
 		render(
 			<MemoryRouter>
 				<Login isAuthenticated={false} onAuthenticate={onAuthenticate} />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		expect(
-			screen.getByText(/welcome to phishing mail ai/i)
+			screen.getByText(/welcome to phishing mail ai/i),
 		).toBeInTheDocument();
 		expect(screen.getByText(/please log in to continue/i)).toBeInTheDocument();
 		expect(
-			screen.getByRole("button", { name: /login with magic link/i })
+			screen.getByRole("button", { name: /login with magic link/i }),
 		).toBeInTheDocument();
 		fireEvent.click(screen.getByText("Password"));
 		expect(
-			screen.getByRole("button", { name: /password login/i })
+			screen.getByRole("button", { name: /password login/i }),
 		).toBeInTheDocument();
 		fireEvent.click(screen.getByText("Magic"));
 		expect(
-			screen.getByRole("button", { name: /login with magic link/i })
+			screen.getByRole("button", { name: /login with magic link/i }),
 		).toBeInTheDocument();
 	});
 
@@ -81,7 +81,7 @@ describe("Login", () => {
 		render(
 			<MemoryRouter>
 				<Login isAuthenticated={false} onAuthenticate={onAuthenticate} />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		expect(screen.queryByText(/forgot your password/i)).not.toBeInTheDocument();
 		fireEvent.click(screen.getByText("Password"));
@@ -93,11 +93,11 @@ describe("Login", () => {
 		render(
 			<MemoryRouter>
 				<Login isAuthenticated={false} onAuthenticate={onAuthenticate} />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		expect(screen.getByText(/don't have an account/i)).toHaveAttribute(
 			"href",
-			"/signup"
+			"/signup",
 		);
 	});
 
@@ -106,10 +106,10 @@ describe("Login", () => {
 		render(
 			<MemoryRouter>
 				<Login isAuthenticated={true} onAuthenticate={onAuthenticate} />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		expect(
-			screen.queryByText(/welcome to phishing mail ai/i)
+			screen.queryByText(/welcome to phishing mail ai/i),
 		).not.toBeInTheDocument();
 	});
 
@@ -118,7 +118,7 @@ describe("Login", () => {
 		render(
 			<MemoryRouter>
 				<Login isAuthenticated={false} onAuthenticate={onAuthenticate} />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		fireEvent.click(screen.getByText("Password"));
 		fireEvent.click(screen.getByRole("button", { name: /password login/i }));

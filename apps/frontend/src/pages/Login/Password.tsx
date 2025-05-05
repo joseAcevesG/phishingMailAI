@@ -1,7 +1,7 @@
-import { usePasswordLogin } from "./usePasswordLogin";
 import { authTypes } from "shared/auth-types";
 import styles from "../../assets/Password.module.css";
 import type { APIAuth } from "../../types";
+import { usePasswordLogin } from "./usePasswordLogin";
 
 interface Props {
 	onAuthenticate: (data: APIAuth) => void;
@@ -37,10 +37,10 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 				<input
 					className={styles.emailInput}
 					onChange={(e) => setEmail(e.target.value)}
-					value={email}
 					placeholder="Email"
-					type="email"
 					required
+					type="email"
+					value={email}
 				/>
 			</div>
 			{/* Password input field */}
@@ -48,10 +48,10 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 				<input
 					className={styles.passwordInput}
 					onChange={(e) => setPassword(e.target.value)}
-					value={password}
 					placeholder="Password"
-					type="password"
 					required
+					type="password"
+					value={password}
 				/>
 			</div>
 			{/* Show error message if login fails */}
@@ -59,8 +59,8 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 			{/* Submit button is disabled while submitting */}
 			<button
 				className={styles.submitBtn}
-				type="submit"
 				disabled={isSubmitting}
+				type="submit"
 			>
 				{isSubmitting ? "Logging in..." : "Login"}
 			</button>

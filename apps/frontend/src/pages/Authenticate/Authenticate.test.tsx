@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, afterEach, type Mock } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { type Mock, afterEach, describe, expect, it, vi } from "vitest";
 import { Authenticate } from "./Authenticate";
 import { useAuthenticate } from "./useAuthenticate";
 

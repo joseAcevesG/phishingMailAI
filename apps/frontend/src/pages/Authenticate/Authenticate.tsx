@@ -1,6 +1,6 @@
-import { useAuthenticate } from "./useAuthenticate";
 import type { APIAuth } from "../../types";
 import styles from "./Authenticate.module.css";
+import { useAuthenticate } from "./useAuthenticate";
 
 interface Props {
 	onAuthenticate: (data: APIAuth) => void;

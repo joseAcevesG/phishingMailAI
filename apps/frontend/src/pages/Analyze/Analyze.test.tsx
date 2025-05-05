@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import type { Mock } from "vitest";
-import { render, screen, act } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import type { Analysis } from "shared";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { Mock } from "vitest";
 import Analyze from "./Analyze";
 import { useAnalyze } from "./useAnalyze";
 
@@ -23,7 +23,7 @@ vi.mock("./ResultView", () => ({
 	ResultView: ({ onReset, result }: ResultViewProps) => (
 		<div data-testid="result-view">
 			<span>{result ? result.subject : "No result"}</span>
-			<button type="button" onClick={onReset}>
+			<button onClick={onReset} type="button">
 				Reset
 			</button>
 		</div>
@@ -65,9 +65,9 @@ describe("Analyze page", () => {
 		return render(
 			<MemoryRouter initialEntries={["/analyze/123"]}>
 				<Routes>
-					<Route path="/analyze/:id" element={<Analyze />} />
+					<Route element={<Analyze />} path="/analyze/:id" />
 				</Routes>
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 	};
 

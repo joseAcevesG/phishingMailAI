@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import SettingsPage from "./Settings";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Mock } from "vitest";
+import SettingsPage from "./Settings";
 import { useSettings } from "./useSettings";
 
 // Mock useSettings hook to control the state and actions for the Settings page
@@ -35,20 +35,20 @@ describe("SettingsPage", () => {
 		render(
 			<MemoryRouter>
 				<SettingsPage />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		// Check for presence of all headings and links
 		expect(
-			screen.getByRole("heading", { name: /password/i })
+			screen.getByRole("heading", { name: /password/i }),
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole("heading", { name: /openai api key/i })
+			screen.getByRole("heading", { name: /openai api key/i }),
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole("heading", { name: /danger zone/i })
+			screen.getByRole("heading", { name: /danger zone/i }),
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole("link", { name: /reset password/i })
+			screen.getByRole("link", { name: /reset password/i }),
 		).toBeInTheDocument();
 
 		// Simulate API key input and form submission
@@ -86,7 +86,7 @@ describe("SettingsPage", () => {
 		render(
 			<MemoryRouter>
 				<SettingsPage />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		// Check for error messages
 		expect(screen.getByText(/invalid api key/i)).toBeInTheDocument();

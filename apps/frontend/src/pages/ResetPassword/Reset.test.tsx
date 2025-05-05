@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
 import PasswordReset from "./Reset";
 import { usePasswordReset } from "./usePasswordReset";
 
@@ -30,13 +30,13 @@ describe("PasswordReset", () => {
 		});
 		const { container } = render(<PasswordReset />);
 		expect(
-			screen.getByPlaceholderText(/enter your password/i)
+			screen.getByPlaceholderText(/enter your password/i),
 		).toBeInTheDocument();
 		expect(
-			screen.getByPlaceholderText(/confirm your password/i)
+			screen.getByPlaceholderText(/confirm your password/i),
 		).toBeInTheDocument();
 		const form = container.querySelector(
-			"form[data-testid='reset-password-form']"
+			"form[data-testid='reset-password-form']",
 		);
 		expect(form).not.toBeNull();
 		fireEvent.submit(form as HTMLFormElement);
