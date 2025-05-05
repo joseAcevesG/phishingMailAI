@@ -4,6 +4,7 @@ import { useFetch } from "../../hooks/useFetch";
 import type { APIAuth } from "../../types";
 import { useAuthenticate } from "./useAuthenticate";
 
+// Mock useFetch to isolate API logic
 vi.mock("../../hooks/useFetch", () => ({
 	useFetch: vi.fn(),
 }));
@@ -12,17 +13,20 @@ const mockNavigate = vi.fn();
 const mockExecute = vi.fn();
 const mockSearchParams = { toString: vi.fn() };
 
+// Mock react-router-dom hooks for navigation and query params
 vi.mock("react-router-dom", () => ({
 	useNavigate: () => mockNavigate,
 	useSearchParams: () => [mockSearchParams],
 }));
 
 describe("useAuthenticate", () => {
+	// Reset mocks before each test and set default useFetch implementation
 	beforeEach(() => {
 		vi.clearAllMocks();
 		mockUseFetch.mockImplementation(() => ({ execute: mockExecute }));
 	});
 
+	// Test: Should navigate to /login if query string is empty
 	it("navigates to /login if query string is empty", () => {
 		mockSearchParams.toString.mockReturnValue("");
 		const onAuthenticate = vi.fn();
@@ -31,6 +35,7 @@ describe("useAuthenticate", () => {
 		expect(mockExecute).not.toHaveBeenCalled();
 	});
 
+	// Test: Should call execute with correct URL if query string exists
 	it("calls execute with correct url if query string exists", () => {
 		mockSearchParams.toString.mockReturnValue("token=abc");
 		mockExecute.mockResolvedValueOnce({});
@@ -41,6 +46,7 @@ describe("useAuthenticate", () => {
 		});
 	});
 
+	// Test: Should call onAuthenticate callback if result is returned
 	it("calls onAuthenticate if result is returned", async () => {
 		mockSearchParams.toString.mockReturnValue("token=abc");
 		const fakeResult = { user: "test" } as unknown as APIAuth;
@@ -51,6 +57,7 @@ describe("useAuthenticate", () => {
 		expect(onAuthenticate).toHaveBeenCalledWith(fakeResult);
 	});
 
+	// Test: Should navigate to /login if result is falsy
 	it("navigates to /login if result is falsy", async () => {
 		mockSearchParams.toString.mockReturnValue("token=abc");
 		mockExecute.mockResolvedValueOnce(null);
@@ -60,6 +67,7 @@ describe("useAuthenticate", () => {
 		expect(mockNavigate).toHaveBeenCalledWith("/login");
 	});
 
+	// Test: Should navigate to /login on execute error
 	it("navigates to /login on execute error", async () => {
 		mockSearchParams.toString.mockReturnValue("token=abc");
 		mockExecute.mockRejectedValueOnce(new Error("fail"));
