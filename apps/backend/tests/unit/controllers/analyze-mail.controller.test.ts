@@ -2,6 +2,7 @@
 // Uses Vitest and mocks dependencies to test all controller logic and error handling
 import { readFile } from "node:fs/promises";
 import type { Request, Response } from "express";
+import type { Express } from "express";
 import { simpleParser } from "mailparser";
 import { Types } from "mongoose";
 import {
@@ -44,7 +45,7 @@ vi.spyOn(Types, "ObjectId").mockImplementation(
 // Define test types for request and response with optional fields
 // Allows us to inject mocks and simulate Express behavior
 type TestRequest = Request & {
-	file?: { path: string };
+	file?: Express.Multer.File;
 	user?: User;
 	params?: { id: string };
 };
@@ -108,7 +109,17 @@ describe("AnalyzeMailController", () => {
 
 		// Should return 400 if email content is empty
 		it("should return 400 if email content is empty", async () => {
-			req.file = { path: "path" };
+			req.file = {
+				fieldname: "file",
+				originalname: "test.eml",
+				encoding: "7bit",
+				mimetype: "message/rfc822",
+				size: 123,
+				destination: "/tmp",
+				filename: "test.eml",
+				path: "path",
+				buffer: Buffer.from(" "),
+			} as Express.Multer.File;
 			(readFile as Mock).mockResolvedValue(" ");
 			AnalyzeMailController.create(req, res);
 			await new Promise((r) => setImmediate(r));
@@ -121,7 +132,17 @@ describe("AnalyzeMailController", () => {
 
 		// Should return 400 if parsed email has no html
 		it("should return 400 if parsed email has no html", async () => {
-			req.file = { path: "path" };
+			req.file = {
+				fieldname: "file",
+				originalname: "test.eml",
+				encoding: "7bit",
+				mimetype: "message/rfc822",
+				size: 123,
+				destination: "/tmp",
+				filename: "test.eml",
+				path: "path",
+				buffer: Buffer.from(" "),
+			} as Express.Multer.File;
 			(readFile as Mock).mockResolvedValue("raw email");
 			(simpleParser as Mock).mockResolvedValue({
 				html: undefined,
@@ -136,7 +157,17 @@ describe("AnalyzeMailController", () => {
 
 		// Should return 400 if email data is invalid per schema
 		it("should return 400 if email data is invalid per schema", async () => {
-			req.file = { path: "path" };
+			req.file = {
+				fieldname: "file",
+				originalname: "test.eml",
+				encoding: "7bit",
+				mimetype: "message/rfc822",
+				size: 123,
+				destination: "/tmp",
+				filename: "test.eml",
+				path: "path",
+				buffer: Buffer.from(" "),
+			} as Express.Multer.File;
 			(readFile as Mock).mockResolvedValue("raw email");
 			(simpleParser as Mock).mockResolvedValue({
 				html: "<p>hi</p>",
@@ -155,7 +186,17 @@ describe("AnalyzeMailController", () => {
 
 		// Should return analysis on success
 		it("should return analysis on success", async () => {
-			req.file = { path: "path" };
+			req.file = {
+				fieldname: "file",
+				originalname: "test.eml",
+				encoding: "7bit",
+				mimetype: "message/rfc822",
+				size: 123,
+				destination: "/tmp",
+				filename: "test.eml",
+				path: "path",
+				buffer: Buffer.from(" "),
+			} as Express.Multer.File;
 			req.user = runUser;
 			(readFile as Mock).mockResolvedValue("raw email");
 			(simpleParser as Mock).mockResolvedValue({
@@ -195,7 +236,17 @@ describe("AnalyzeMailController", () => {
 
 		// Should return 400 for invalid API key error
 		it("should return 400 for invalid API key error", async () => {
-			req.file = { path: "path" };
+			req.file = {
+				fieldname: "file",
+				originalname: "test.eml",
+				encoding: "7bit",
+				mimetype: "message/rfc822",
+				size: 123,
+				destination: "/tmp",
+				filename: "test.eml",
+				path: "path",
+				buffer: Buffer.from(" "),
+			} as Express.Multer.File;
 			(readFile as Mock).mockResolvedValue("raw");
 			(simpleParser as Mock).mockResolvedValue({
 				html: "<p>1</p>",
@@ -218,7 +269,17 @@ describe("AnalyzeMailController", () => {
 
 		// Should return 500 for other errors
 		it("should return 500 for other errors", async () => {
-			req.file = { path: "p" };
+			req.file = {
+				fieldname: "file",
+				originalname: "test.eml",
+				encoding: "7bit",
+				mimetype: "message/rfc822",
+				size: 123,
+				destination: "/tmp",
+				filename: "test.eml",
+				path: "path",
+				buffer: Buffer.from(" "),
+			} as Express.Multer.File;
 			(readFile as Mock).mockRejectedValue(new Error("foo"));
 			AnalyzeMailController.create(req, res);
 			await new Promise((r) => setImmediate(r));
