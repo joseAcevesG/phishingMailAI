@@ -11,6 +11,7 @@ import {
 } from "vitest";
 import { useUploadForm } from "./useUploadForm";
 
+// Helper to create a synthetic input change event for file inputs
 function createInputChangeEvent(
 	file: File,
 ): React.ChangeEvent<HTMLInputElement> {
@@ -35,6 +36,7 @@ function createInputChangeEvent(
 
 describe("useUploadForm", () => {
 	beforeAll(() => {
+		// Mock DataTransfer for drag-and-drop tests
 		// @ts-expect-error
 		global.DataTransfer = class {
 			files: File[] = [];
@@ -46,6 +48,7 @@ describe("useUploadForm", () => {
 		};
 	});
 	afterAll(() => {
+		// Cleanup DataTransfer mock
 		// @ts-expect-error
 		global.DataTransfer = undefined;
 	});
@@ -54,6 +57,7 @@ describe("useUploadForm", () => {
 		onAnalyze = vi.fn().mockResolvedValue(undefined);
 	});
 
+	// Test: Initial state should be correct
 	it("initial state is correct", () => {
 		const { result } = renderHook(() => useUploadForm(onAnalyze));
 		expect(result.current.file).toBe(null);
@@ -62,6 +66,7 @@ describe("useUploadForm", () => {
 		expect(result.current.inputRef.current).toBe(null);
 	});
 
+	// Test: Should set file and clear error for valid .eml file
 	it("sets file and clears error for valid .eml file", () => {
 		const { result } = renderHook(() => useUploadForm(onAnalyze));
 		const file = new File(["dummy"], "test.eml", { type: "message/rfc822" });
@@ -72,6 +77,7 @@ describe("useUploadForm", () => {
 		expect(result.current.error).toBe(null);
 	});
 
+	// Test: Should set error and clear file for invalid file type
 	it("sets error and clears file for invalid file type", () => {
 		const { result } = renderHook(() => useUploadForm(onAnalyze));
 		const file = new File(["dummy"], "bad.txt", { type: "text/plain" });
@@ -82,6 +88,7 @@ describe("useUploadForm", () => {
 		expect(result.current.error).toMatch(/valid .eml file/i);
 	});
 
+	// Test: Should handle drag over and drag leave events
 	it("handles drag over and drag leave", () => {
 		const { result } = renderHook(() => useUploadForm(onAnalyze));
 		const dragEvent = {
@@ -98,6 +105,7 @@ describe("useUploadForm", () => {
 		expect(result.current.dragActive).toBe(false);
 	});
 
+	// Test: Should handle drop with a valid file
 	it("handles drop with valid file", () => {
 		const { result } = renderHook(() => useUploadForm(onAnalyze));
 		const file = new File(["dummy"], "test.eml", { type: "message/rfc822" });
@@ -116,6 +124,7 @@ describe("useUploadForm", () => {
 		expect(result.current.error).toBe(null);
 	});
 
+	// Test: Should handle drop with an invalid file
 	it("handles drop with invalid file", () => {
 		const { result } = renderHook(() => useUploadForm(onAnalyze));
 		const file = new File(["dummy"], "bad.txt", { type: "text/plain" });
@@ -131,6 +140,7 @@ describe("useUploadForm", () => {
 		expect(result.current.error).toMatch(/valid .eml file/i);
 	});
 
+	// Test: Should call onAnalyze and reset file on successful submit
 	it("calls onAnalyze and resets file on successful submit", async () => {
 		const { result } = renderHook(() => useUploadForm(onAnalyze));
 		const file = new File(["dummy"], "test.eml", { type: "message/rfc822" });
@@ -147,6 +157,7 @@ describe("useUploadForm", () => {
 		expect(result.current.file).toBe(null);
 	});
 
+	// Test: Should set error on analyze failure
 	it("sets error on analyze failure", async () => {
 		const failingAnalyze = vi.fn().mockRejectedValue(new Error("fail!"));
 		const { result } = renderHook(() => useUploadForm(failingAnalyze));

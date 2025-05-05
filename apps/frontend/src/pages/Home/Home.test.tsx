@@ -4,6 +4,7 @@ import Home from "./Home";
 import ErrorMessages from "../../types/error-messages";
 import { useMailAnalysis } from "./useMailAnalysis";
 
+// Mock UploadForm to isolate Home tests from form implementation
 vi.mock("./UploadForm", () => ({
 	UploadForm: ({
 		isUploading,
@@ -20,15 +21,18 @@ vi.mock("./UploadForm", () => ({
 	),
 }));
 
+// Mocks for Home's dependencies and actions
 const mockAnalyzeEmail = vi.fn();
 const mockReset = vi.fn();
 const mockGoToSetApiKey = vi.fn();
 
+// Mock useMailAnalysis to control Home's state and actions
 vi.mock("./useMailAnalysis", () => ({
 	useMailAnalysis: vi.fn(),
 }));
 
 describe("Home", () => {
+	// Reset all mocks and set up default return value before each test
 	beforeEach(() => {
 		vi.clearAllMocks();
 		(useMailAnalysis as Mock).mockReturnValue({
@@ -40,17 +44,20 @@ describe("Home", () => {
 		});
 	});
 
+	// Test: Should render UploadForm when there is no error
 	it("renders UploadForm when no error", () => {
 		render(<Home />);
 		expect(screen.getByTestId("upload-form")).toBeInTheDocument();
 	});
 
+	// Test: Should call analyzeEmail when Analyze button is clicked
 	it("calls analyzeEmail when Analyze button is clicked", () => {
 		render(<Home />);
 		fireEvent.click(screen.getByText("Analyze"));
 		expect(mockAnalyzeEmail).toHaveBeenCalled();
 	});
 
+	// Test: Should render error and Try Again button when error is not API key related
 	it("renders error and Try Again when error is not API key related", () => {
 		(useMailAnalysis as Mock).mockReturnValue({
 			uploading: false,
@@ -67,6 +74,7 @@ describe("Home", () => {
 		expect(mockReset).toHaveBeenCalled();
 	});
 
+	// Test: Should render Set OpenAI Key button when error is FREE_TRIAL_EXPIRED
 	it("renders Set OpenAI Key button when error is FREE_TRIAL_EXPIRED", () => {
 		(useMailAnalysis as Mock).mockReturnValue({
 			uploading: false,
@@ -81,6 +89,7 @@ describe("Home", () => {
 		expect(mockGoToSetApiKey).toHaveBeenCalled();
 	});
 
+	// Test: Should render Set OpenAI Key button when error is INVALID_API_KEY
 	it("renders Set OpenAI Key button when error is INVALID_API_KEY", () => {
 		(useMailAnalysis as Mock).mockReturnValue({
 			uploading: false,

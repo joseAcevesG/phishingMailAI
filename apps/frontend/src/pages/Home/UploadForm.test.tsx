@@ -2,17 +2,20 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { UploadForm } from "./UploadForm";
 
+// Helper to create a mock .eml file for testing file input
 function createFile(name = "test.eml", type = "message/rfc822") {
 	return new File(["dummy content"], name, { type });
 }
 
 describe("UploadForm", () => {
+	// Mock callback for form submission
 	const mockOnAnalyze = vi.fn().mockResolvedValue(undefined);
 
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
 
+	// Test: Should render upload form and analyze button
 	it("renders upload form and button", () => {
 		render(<UploadForm onAnalyze={mockOnAnalyze} isUploading={false} />);
 		expect(screen.getByText(/upload email for analysis/i)).toBeInTheDocument();
@@ -21,12 +24,14 @@ describe("UploadForm", () => {
 		).toBeInTheDocument();
 	});
 
+	// Test: Should disable submit button when no file is selected
 	it("disables submit when no file is selected", () => {
 		render(<UploadForm onAnalyze={mockOnAnalyze} isUploading={false} />);
 		const button = screen.getByRole("button", { name: /analyze email/i });
 		expect(button).toBeDisabled();
 	});
 
+	// Test: Should show file name and enable submit when a valid file is selected
 	it("shows file name when selected and enables submit", async () => {
 		render(<UploadForm onAnalyze={mockOnAnalyze} isUploading={false} />);
 		const input = screen.getByLabelText(/choose .eml file/i);
@@ -37,6 +42,7 @@ describe("UploadForm", () => {
 		expect(button).not.toBeDisabled();
 	});
 
+	// Test: Should show error for invalid file type
 	it("shows error for invalid file type", async () => {
 		render(<UploadForm onAnalyze={mockOnAnalyze} isUploading={false} />);
 		const input = screen.getByLabelText(/choose .eml file/i);
@@ -47,6 +53,7 @@ describe("UploadForm", () => {
 		).toBeInTheDocument();
 	});
 
+	// Test: Should call onAnalyze with selected file on submit
 	it("calls onAnalyze with selected file on submit", async () => {
 		render(<UploadForm onAnalyze={mockOnAnalyze} isUploading={false} />);
 		const input = screen.getByLabelText(/choose .eml file/i);
@@ -59,6 +66,7 @@ describe("UploadForm", () => {
 		expect(mockOnAnalyze).toHaveBeenCalledWith(file);
 	});
 
+	// Test: Should show loading state on submit
 	it("shows loading state on submit", () => {
 		render(<UploadForm onAnalyze={mockOnAnalyze} isUploading={true} />);
 		expect(screen.getByRole("button", { name: /analyzing/i })).toBeDisabled();
