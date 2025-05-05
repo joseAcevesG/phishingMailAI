@@ -1,9 +1,12 @@
+// Integration tests for POST /api/auth/signup endpoint
+// Uses Vitest, Supertest, and mocks Stytch, token service, and user model for signup flows
 import { StytchError } from "stytch";
 import request from "supertest";
 import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
 import { stytchClient } from "../../../src/config/stytch";
 import app from "../../../src/index";
 
+// Mock Stytch and its error for signup scenarios
 vi.mock("stytch", () => {
 	class StytchError extends Error {
 		error_type: string;
@@ -30,6 +33,7 @@ vi.mock("stytch", () => {
 	};
 });
 
+// Mock stytchClient used in the app
 vi.mock("../../../src/config/stytch", () => ({
 	stytchClient: {
 		passwords: {
@@ -41,11 +45,13 @@ vi.mock("../../../src/config/stytch", () => ({
 	},
 }));
 
+// Mock token service for issuing and verifying tokens
 vi.mock("../../../src/utils/token-service", () => ({
 	verifyAccessToken: vi.fn(),
 	issueAuthTokens: vi.fn().mockResolvedValue(undefined),
 }));
 
+// Mock user model for DB lookups and user creation
 vi.mock("../../../src/models/user.model", () => ({
 	__esModule: true,
 	default: {
@@ -56,14 +62,19 @@ vi.mock("../../../src/models/user.model", () => ({
 	},
 }));
 
+// Test suite for POST /api/auth/signup
+// Covers successful signup, missing fields, duplicate email, unsupported type, and invalid body
+
 describe("POST /api/auth/signup", () => {
 	const validEmail = "testuser@example.com";
 	const validPassword = "thisIsAPassword123!";
 
+	// Clear all mocks before each test to ensure isolation
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
 
+	// Test case: Register new user with valid credentials
 	it("registers a new user with valid credentials", async () => {
 		const res = await request(app)
 			.post("/api/auth/signup")
@@ -77,6 +88,7 @@ describe("POST /api/auth/signup", () => {
 		expect(res.body).toEqual({ authenticated: true, email: validEmail });
 	});
 
+	// Test case: Missing password
 	it("returns 400 if password is missing", async () => {
 		const res = await request(app)
 			.post("/api/auth/signup")
@@ -86,6 +98,7 @@ describe("POST /api/auth/signup", () => {
 		expect(res.body).toHaveProperty("message", "Password is required");
 	});
 
+	// Test case: Duplicate email error from Stytch
 	it("returns 400 if email already exists", async () => {
 		(stytchClient.passwords.create as Mock).mockRejectedValueOnce(
 			new StytchError({
@@ -112,6 +125,7 @@ describe("POST /api/auth/signup", () => {
 		);
 	});
 
+	// Test case: Unsupported auth type
 	it("returns 400 for unsupported auth type", async () => {
 		const res = await request(app)
 			.post("/api/auth/signup")
@@ -124,6 +138,7 @@ describe("POST /api/auth/signup", () => {
 		);
 	});
 
+	// Test case: Invalid request body
 	it("returns 400 for invalid body", async () => {
 		const res = await request(app)
 			.post("/api/auth/signup")

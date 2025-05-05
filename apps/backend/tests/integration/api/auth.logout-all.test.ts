@@ -1,15 +1,20 @@
+// Integration tests for POST /api/auth/logout-all endpoint
+// Uses Vitest, Supertest, and mocks authentication, token service, user model, and Stytch dependencies
 import request from "supertest";
 import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
 import app from "../../../src/index";
 import User from "../../../src/models/user.model";
 import * as tokenService from "../../../src/utils/token-service";
 
+// Controls authentication state for mock
 let shouldAuthenticate = true;
 
+// Mock authentication middleware to simulate authenticated/unauthenticated requests
 vi.mock("../../../src/middleware/auth", () => ({
 	__esModule: true,
 	default: (_req, _res, next) => {
 		if (shouldAuthenticate) {
+			// Attach a fake user object to the request
 			_req.user = { _id: "user123", email: "user@example.com" };
 			next();
 		} else {
@@ -21,6 +26,7 @@ vi.mock("../../../src/middleware/auth", () => ({
 	},
 }));
 
+// Mock token service to simulate token verification and deletion
 vi.mock("../../../src/utils/token-service", () => ({
 	verifyAccessToken: vi.fn(),
 	deleteAllAuthTokens: vi.fn().mockResolvedValue(undefined),
@@ -36,6 +42,7 @@ vi.mock("../../../src/utils/token-service", () => ({
 	}),
 }));
 
+// Mock user model for DB lookups
 vi.mock("../../../src/models/user.model", () => ({
 	__esModule: true,
 	default: {
@@ -43,6 +50,7 @@ vi.mock("../../../src/models/user.model", () => ({
 	},
 }));
 
+// Mock Stytch client to avoid external API calls
 vi.mock("stytch", () => ({
 	__esModule: true,
 	default: {
@@ -53,6 +61,9 @@ vi.mock("stytch", () => ({
 	},
 }));
 
+// Test suite for POST /api/auth/logout-all
+// Covers successful logout, unauthenticated user, and DB error scenarios
+
 describe("POST /api/auth/logout-all", () => {
 	const fakeSession = "validSessionToken";
 	const userId = "user123";
@@ -61,6 +72,7 @@ describe("POST /api/auth/logout-all", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		shouldAuthenticate = true;
+		// Mock token verification and user lookup
 		(tokenService.verifyAccessToken as Mock).mockResolvedValue({
 			_id: userId,
 			email: userEmail,
@@ -72,6 +84,7 @@ describe("POST /api/auth/logout-all", () => {
 	});
 
 	it("logs out user from all sessions and clears cookies with valid session_token", async () => {
+		// Simulate successful logout from all sessions
 		const res = await request(app)
 			.post("/api/auth/logout-all")
 			.set("Cookie", [
@@ -80,6 +93,7 @@ describe("POST /api/auth/logout-all", () => {
 			])
 			.expect(200);
 
+		// Verify response and that cookies are cleared
 		expect(res.body).toEqual({ message: "Logged out from all sessions" });
 		const cookies = res.headers["set-cookie"];
 		const cookiesArr = Array.isArray(cookies) ? cookies : [cookies];
@@ -94,6 +108,7 @@ describe("POST /api/auth/logout-all", () => {
 	});
 
 	it("returns 401 if user is not authenticated", async () => {
+		// Simulate unauthenticated user
 		shouldAuthenticate = false;
 		(tokenService.verifyAccessToken as Mock).mockRejectedValueOnce(
 			new Error("Invalid token"),
@@ -103,6 +118,7 @@ describe("POST /api/auth/logout-all", () => {
 	});
 
 	it("returns 500 if deleteAllAuthTokens throws", async () => {
+		// Simulate DB error during logout
 		(tokenService.deleteAllAuthTokens as Mock).mockRejectedValueOnce(
 			new Error("DB error"),
 		);

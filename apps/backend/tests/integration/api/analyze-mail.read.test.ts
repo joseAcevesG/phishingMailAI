@@ -1,13 +1,18 @@
+// Integration tests for GET /api/analyze-mail endpoint
+// Uses Vitest, Supertest, and mocks authentication, free-trial, user model, and Stytch dependencies
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import app from "../../../src/index";
 
+// Controls authentication state for mock
 let shouldAuthenticate = true;
 
+// Mock authentication middleware to simulate authenticated/unauthenticated requests
 vi.mock("../../../src/middlewares/auth", () => ({
 	__esModule: true,
 	default: (_req, _res, next) => {
 		if (shouldAuthenticate) {
+			// Attach a fake user object with sample analysis data
 			_req.user = {
 				_id: "user123",
 				email: "user@example.com",
@@ -36,11 +41,13 @@ vi.mock("../../../src/middlewares/auth", () => ({
 	},
 }));
 
+// Mock free-trial middleware as a no-op
 vi.mock("../../../src/middlewares/free-trail", () => ({
 	__esModule: true,
 	default: (_req, _res, next) => next(),
 }));
 
+// Mock user model methods for database operations
 vi.mock("../../../src/models/user.model", () => ({
 	__esModule: true,
 	default: {
@@ -65,6 +72,7 @@ vi.mock("../../../src/models/user.model", () => ({
 	},
 }));
 
+// Mock Stytch client to avoid external API calls
 vi.mock("stytch", () => ({
 	__esModule: true,
 	default: {
@@ -75,15 +83,21 @@ vi.mock("stytch", () => ({
 	},
 }));
 
+// Fake session token for simulating authenticated requests
 const fakeSession = "validSessionToken";
+
+// Test suite for GET /api/analyze-mail
+// Covers success and unauthorized scenarios
 
 describe("GET /api/analyze-mail", () => {
 	beforeEach(() => {
+		// Reset mocks and authentication state before each test
 		vi.clearAllMocks();
 		shouldAuthenticate = true;
 	});
 
 	it("returns 200 and the user's analysis array when authenticated", async () => {
+		// Attempt to get all analysis as an authenticated user
 		const res = await request(app)
 			.get("/api/analyze-mail")
 			.set("Cookie", [`session_token=${fakeSession}`]);
@@ -105,6 +119,7 @@ describe("GET /api/analyze-mail", () => {
 	});
 
 	it("returns 401 if user is not authenticated", async () => {
+		// Simulate unauthenticated user
 		shouldAuthenticate = false;
 		const res = await request(app).get("/api/analyze-mail");
 		expect(res.status).toBe(401);
