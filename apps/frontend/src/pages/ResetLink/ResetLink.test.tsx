@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { ResetLink } from "./ResetLink";
 
+// Mock MagicLink component to isolate ResetLink tests from its implementation
 vi.mock("../../components/magicLink/MagicLink", () => ({
 	__esModule: true,
 	default: ({ buttonText }: { buttonText: string }) => (
@@ -13,10 +14,11 @@ vi.mock("../../components/magicLink/MagicLink", () => ({
 }));
 
 describe("ResetLink", () => {
+	// Test: Should render the reset password form when not authenticated
 	it("renders reset password form when not authenticated", () => {
 		render(
 			<MemoryRouter>
-				<ResetLink isAuthenticated={false} />
+				<ResetLink />
 			</MemoryRouter>
 		);
 		expect(
@@ -29,17 +31,5 @@ describe("ResetLink", () => {
 		expect(
 			screen.getByRole("button", { name: /reset password/i })
 		).toBeInTheDocument();
-	});
-
-	it("redirects to / if authenticated", () => {
-		render(
-			<MemoryRouter>
-				<ResetLink isAuthenticated={true} />
-			</MemoryRouter>
-		);
-		expect(screen.queryByText(/reset password/i)).not.toBeInTheDocument();
-		expect(
-			screen.queryByRole("button", { name: /reset password/i })
-		).not.toBeInTheDocument();
 	});
 });

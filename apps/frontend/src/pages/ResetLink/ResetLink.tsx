@@ -1,16 +1,10 @@
-import { Navigate } from "react-router-dom";
 import MagicLink from "../../components/magicLink/MagicLink";
 import styles from "./ResetLink.module.css";
 
-interface Props {
-	isAuthenticated?: boolean;
-}
-
-export const ResetLink: React.FC<Props> = ({ isAuthenticated }) => {
-	if (isAuthenticated) {
-		return <Navigate replace to="/" />;
-	}
-
+/**
+ * ResetLink component renders a form for users to request a password reset link.
+ */
+export const ResetLink: React.FC = () => {
 	return (
 		<div className={styles.loginContainer} id="login">
 			<div className={styles.loginBox}>
