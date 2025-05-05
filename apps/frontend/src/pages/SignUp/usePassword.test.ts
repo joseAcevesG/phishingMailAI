@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { APIAuth } from "../../types";
 import { usePassword } from "./usePassword";
 
+// Mocks for navigation, fetch, and password validation
 const mocks: {
 	mockNavigate: ReturnType<typeof vi.fn>;
 	mockExecute: ReturnType<typeof vi.fn>;
@@ -13,9 +14,11 @@ const mocks: {
 	mockValidateAll: vi.fn(),
 };
 
+// Mock react-router-dom's useNavigate
 vi.mock("react-router-dom", () => ({
 	useNavigate: () => mocks.mockNavigate,
 }));
+// Mock useFetch to control API call behavior
 vi.mock("../../hooks/useFetch", () => ({
 	useFetch: () => ({
 		execute: mocks.mockExecute,
@@ -23,6 +26,7 @@ vi.mock("../../hooks/useFetch", () => ({
 		loading: false,
 	}),
 }));
+// Mock validateAll to control password validation logic
 vi.mock("../../services/validatePassword", () => ({
 	validateAll: (...args: unknown[]) => mocks.mockValidateAll(...args),
 }));
@@ -30,6 +34,7 @@ vi.mock("../../services/validatePassword", () => ({
 const onAuthenticate = vi.fn();
 
 describe("usePassword", () => {
+	// Reset all mocks before each test for isolation
 	beforeEach(() => {
 		for (const fn of Object.values(mocks)) {
 			fn.mockReset();
@@ -37,6 +42,7 @@ describe("usePassword", () => {
 		onAuthenticate.mockReset();
 	});
 
+	// Test: Should initialize with empty fields and default states
 	it("should initialize with empty fields and default states", () => {
 		const { result } = renderHook(() => usePassword({ onAuthenticate }));
 		expect(result.current.email).toBe("");
@@ -46,6 +52,7 @@ describe("usePassword", () => {
 		expect(result.current.loading).toBe(false);
 	});
 
+	// Test: Should update email, password, and confirmPassword
 	it("should update email, password, and confirmPassword", () => {
 		const { result } = renderHook(() => usePassword({ onAuthenticate }));
 		act(() => result.current.setEmail("test@example.com"));
@@ -56,6 +63,7 @@ describe("usePassword", () => {
 		expect(result.current.confirmPassword).toBe("pw1");
 	});
 
+	// Test: Should validate passwords on change
 	it("should validate passwords on change", () => {
 		mocks.mockValidateAll.mockReturnValue("Passwords do not match");
 		const { result } = renderHook(() => usePassword({ onAuthenticate }));
@@ -68,6 +76,7 @@ describe("usePassword", () => {
 		});
 	});
 
+	// Test: Should call execute and handle success on submit
 	it("should call execute and handle success on submit", async () => {
 		const fakeAuth: APIAuth = { authenticated: true, email: "e" };
 		mocks.mockExecute.mockResolvedValue(fakeAuth);
@@ -90,6 +99,7 @@ describe("usePassword", () => {
 		expect(mocks.mockNavigate).toHaveBeenCalledWith("/");
 	});
 
+	// Test: Should set error if signup fails
 	it("should set error if signup fails", async () => {
 		mocks.mockExecute.mockResolvedValue(undefined);
 		const { result } = renderHook(() => usePassword({ onAuthenticate }));

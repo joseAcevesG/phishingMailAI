@@ -3,8 +3,10 @@ import Password from "./Password";
 import { describe, expect, it, vi, type Mock } from "vitest";
 import * as usePasswordModule from "./usePassword";
 
+// Spy on the usePassword hook to allow mocking its return values
 vi.spyOn(usePasswordModule, "usePassword");
 
+// Helper to mock usePassword hook with default and override state
 const mockUsePassword = (overrides = {}) => {
 	const defaultState = {
 		email: "",
@@ -23,6 +25,7 @@ const mockUsePassword = (overrides = {}) => {
 };
 
 describe("<Password />", () => {
+	// Test: Should render all input fields and button
 	it("renders all input fields and button", () => {
 		mockUsePassword();
 		render(<Password onAuthenticate={vi.fn()} />);
@@ -40,6 +43,7 @@ describe("<Password />", () => {
 		).toBeInTheDocument();
 	});
 
+	// Test: Should call setEmail, setPassword, setConfirmPassword on input change
 	it("calls setEmail, setPassword, setConfirmPassword on input change", () => {
 		const setEmail = vi.fn();
 		const setPassword = vi.fn();
@@ -60,12 +64,14 @@ describe("<Password />", () => {
 		expect(setConfirmPassword).toHaveBeenCalledWith("pw");
 	});
 
+	// Test: Should show error message if error is present
 	it("shows error message if error is present", () => {
 		mockUsePassword({ error: "Passwords do not match" });
 		render(<Password onAuthenticate={vi.fn()} />);
 		expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
 	});
 
+	// Test: Should disable button if loading or fields are empty or error exists
 	it("disables button if loading or fields are empty or error exists", () => {
 		mockUsePassword({
 			loading: true,
@@ -100,6 +106,7 @@ describe("<Password />", () => {
 		unmount2();
 	});
 
+	// Test: Should call handlePasswordSignUp on form submit
 	it("calls handlePasswordSignUp on form submit", () => {
 		const handlePasswordSignUp = vi.fn((e) => e.preventDefault());
 		mockUsePassword({
