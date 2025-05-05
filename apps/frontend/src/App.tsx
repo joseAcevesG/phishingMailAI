@@ -20,7 +20,18 @@ import { ResetPassword } from "./pages/ResetPassword/ResetPassword";
 import SignUp from "./pages/SignUp/SignUp";
 import SettingsPage from "./pages/Settings/Settings";
 
+/**
+ * The AppContent component renders the main application layout, including the header,
+ * footer, and all routes defined within the application. It manages authentication
+ * state to conditionally render protected routes and redirects unauthenticated users
+ * to the appropriate pages.
+ *
+ * It uses the `useAuth` hook to handle authentication logic, including login, signup,
+ * and user authentication, and displays a loading state while authentication status
+ * is being determined.
+ */
 const AppContent: React.FC = () => {
+	// Destructure authentication state and handlers from useAuth
 	const {
 		isAuthenticated,
 		userEmail,
@@ -29,6 +40,7 @@ const AppContent: React.FC = () => {
 		handleAuthenticate,
 	} = useAuth();
 
+	// If authentication state is still loading, show a loading spinner/message
 	if (loading) {
 		return (
 			<div className={styles.loading}>
@@ -38,11 +50,13 @@ const AppContent: React.FC = () => {
 	}
 
 	return (
+		// Main application container
 		<div className={styles.appContainer}>
+			{/* Header displays user email and logout button if authenticated */}
 			{<Header onLogout={handleLogout} userEmail={userEmail} />}
 			<main className={styles.mainContent}>
 				<Routes>
-					{/* root route */}
+					{/* Root route: shows Home if authenticated, Landing otherwise */}
 					<Route
 						element={
 							isAuthenticated ? (
@@ -55,9 +69,9 @@ const AppContent: React.FC = () => {
 						}
 						path="/"
 					/>
-					{/* reset password route */}
+					{/* Reset password link route (for requesting password reset) */}
 					<Route element={<ResetLink />} path="/reset-password-link" />
-					{/* analyze route */}
+					{/* Analyze route: protected, requires authentication */}
 					<Route
 						element={
 							<ProtectedRoute isAuthenticated={isAuthenticated}>
@@ -66,7 +80,7 @@ const AppContent: React.FC = () => {
 						}
 						path="/analyze/:id"
 					/>
-					{/* settings route */}
+					{/* Settings route: protected, requires authentication */}
 					<Route
 						element={
 							<ProtectedRoute isAuthenticated={isAuthenticated}>
@@ -75,7 +89,7 @@ const AppContent: React.FC = () => {
 						}
 						path="/settings"
 					/>
-					{/* history route */}
+					{/* History route: protected, requires authentication */}
 					<Route
 						element={
 							<ProtectedRoute isAuthenticated={isAuthenticated}>
@@ -84,7 +98,7 @@ const AppContent: React.FC = () => {
 						}
 						path="/history"
 					/>
-					{/* login route */}
+					{/* Login route: redirects to root if already authenticated, otherwise shows Login */}
 					<Route
 						element={
 							isAuthenticated ? (
@@ -95,7 +109,7 @@ const AppContent: React.FC = () => {
 						}
 						path="/login"
 					/>
-					{/* signup route */}
+					{/* Signup route: redirects to root if already authenticated, otherwise shows SignUp */}
 					<Route
 						element={
 							isAuthenticated ? (
@@ -106,7 +120,7 @@ const AppContent: React.FC = () => {
 						}
 						path="/signup"
 					/>
-					{/* authenticate route */}
+					{/* Authenticate route: redirects to root if already authenticated, otherwise shows Authenticate */}
 					<Route
 						element={
 							isAuthenticated ? (
@@ -117,10 +131,11 @@ const AppContent: React.FC = () => {
 						}
 						path="/authenticate"
 					/>
-					{/* reset password route */}
+					{/* Reset password route (for actually resetting password) */}
 					<Route element={<ResetPassword />} path="/reset-password" />
 				</Routes>
 			</main>
+			{/* Footer always shown */}
 			<Footer />
 		</div>
 	);

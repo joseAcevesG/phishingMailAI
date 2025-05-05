@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import App from "./App";
 import { useAuth } from "./hooks/useAuth";
 
+// Mock all major page and layout components to isolate routing and layout logic
 vi.mock("./components/Header/Header", () => ({
 	Header: () => <div data-testid="header" />,
 }));
@@ -51,6 +52,7 @@ vi.mock("./hooks/useAuth", () => ({
 
 const mockUseAuth = useAuth as unknown as Mock;
 
+// Helper to set up the mocked useAuth return value for each test
 function setupAuthMock(overrides: Partial<ReturnType<typeof useAuth>>) {
 	mockUseAuth.mockReturnValue({
 		isAuthenticated: false,
@@ -62,13 +64,18 @@ function setupAuthMock(overrides: Partial<ReturnType<typeof useAuth>>) {
 	});
 }
 
+// Test suite for routing and layout of the App component
+// Each test sets up the authentication state and simulates navigation
+
 describe("App routing and layout", () => {
+	// Test: Should show loading state when auth is loading
 	it("renders loading state", () => {
 		setupAuthMock({ loading: true });
 		render(<App />);
 		expect(screen.getByText(/loading/i)).toBeInTheDocument();
 	});
 
+	// Test: Should render header and footer on all pages
 	it("renders header and footer", () => {
 		setupAuthMock({});
 		render(<App />);
@@ -76,6 +83,7 @@ describe("App routing and layout", () => {
 		expect(screen.getByTestId("footer")).toBeInTheDocument();
 	});
 
+	// Test: Should show Landing page on root route if not authenticated
 	it("shows Landing on root route if not authenticated", () => {
 		setupAuthMock({ isAuthenticated: false });
 		window.history.pushState({}, "", "/");
@@ -83,6 +91,7 @@ describe("App routing and layout", () => {
 		expect(screen.getByTestId("landing")).toBeInTheDocument();
 	});
 
+	// Test: Should show Home page on root route if authenticated
 	it("shows Home on root route if authenticated", () => {
 		setupAuthMock({ isAuthenticated: true });
 		window.history.pushState({}, "", "/");
@@ -90,6 +99,7 @@ describe("App routing and layout", () => {
 		expect(screen.getByTestId("home")).toBeInTheDocument();
 	});
 
+	// Test: Should show Login page on /login if not authenticated
 	it("shows Login on /login if not authenticated", () => {
 		setupAuthMock({ isAuthenticated: false });
 		window.history.pushState({}, "", "/login");
@@ -97,6 +107,7 @@ describe("App routing and layout", () => {
 		expect(screen.getByTestId("login")).toBeInTheDocument();
 	});
 
+	// Test: Should redirect to root on /login if authenticated
 	it("redirects to root on /login if authenticated", () => {
 		setupAuthMock({ isAuthenticated: true });
 		window.history.pushState({}, "", "/login");
@@ -104,6 +115,7 @@ describe("App routing and layout", () => {
 		expect(screen.getByTestId("home")).toBeInTheDocument();
 	});
 
+	// Test: Should show SignUp page on /signup if not authenticated
 	it("shows SignUp on /signup if not authenticated", () => {
 		setupAuthMock({ isAuthenticated: false });
 		window.history.pushState({}, "", "/signup");
@@ -111,6 +123,7 @@ describe("App routing and layout", () => {
 		expect(screen.getByTestId("signup")).toBeInTheDocument();
 	});
 
+	// Test: Should show Settings page on /settings if authenticated
 	it("shows SettingsPage on /settings if authenticated", () => {
 		setupAuthMock({ isAuthenticated: true });
 		window.history.pushState({}, "", "/settings");
@@ -118,6 +131,7 @@ describe("App routing and layout", () => {
 		expect(screen.getByTestId("settings")).toBeInTheDocument();
 	});
 
+	// Test: Should show History page on /history if authenticated
 	it("shows HistoryPage on /history if authenticated", () => {
 		setupAuthMock({ isAuthenticated: true });
 		window.history.pushState({}, "", "/history");
@@ -125,6 +139,7 @@ describe("App routing and layout", () => {
 		expect(screen.getByTestId("history")).toBeInTheDocument();
 	});
 
+	// Test: Should show Analyze page on /analyze/:id if authenticated
 	it("shows Analyze on /analyze/:id if authenticated", () => {
 		setupAuthMock({ isAuthenticated: true });
 		window.history.pushState({}, "", "/analyze/123");
@@ -132,6 +147,7 @@ describe("App routing and layout", () => {
 		expect(screen.getByTestId("analyze")).toBeInTheDocument();
 	});
 
+	// Test: Should show ResetLink page on /reset-password-link
 	it("shows ResetLink on /reset-password-link", () => {
 		setupAuthMock({});
 		window.history.pushState({}, "", "/reset-password-link");
@@ -139,6 +155,7 @@ describe("App routing and layout", () => {
 		expect(screen.getByTestId("reset-link")).toBeInTheDocument();
 	});
 
+	// Test: Should show ResetPassword page on /reset-password
 	it("shows ResetPassword on /reset-password", () => {
 		setupAuthMock({});
 		window.history.pushState({}, "", "/reset-password");
