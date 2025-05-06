@@ -1,5 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import * as authHandler from "../services/authHandler";
 import type { FetchConfig } from "../types";
 import { useFetch } from "./useFetch";
 
@@ -107,5 +108,49 @@ describe("useFetch", () => {
 		});
 		expect(abortSpy).toHaveBeenCalled();
 		abortSpy.mockRestore();
+	});
+
+	// Test 401 response with onUnauthorized
+	it("should call onUnauthorized if response is 401 and onUnauthorized is provided", async () => {
+		const onUnauthorized = vi.fn();
+		mockFetch.mockResolvedValueOnce({
+			ok: false,
+			status: 401,
+			json: async () => ({}),
+		});
+		const { result } = renderHook(() => useFetch(baseConfig, false));
+		await act(async () => {
+			const res = await result.current.execute({ onUnauthorized });
+			expect(res).toBeNull();
+		});
+		expect(onUnauthorized).toHaveBeenCalled();
+	});
+
+	// Test 401 response without onUnauthorized
+	it("should call alert and getOnUnauthorized if response is 401 and onUnauthorized is not provided", async () => {
+		const originalAlert = global.alert;
+		const alertMock = vi.fn();
+		global.alert = alertMock;
+		// Mock getOnUnauthorized
+		const getOnUnauthorizedMock = vi.fn();
+		vi.spyOn(authHandler, "getOnUnauthorized").mockReturnValue(
+			getOnUnauthorizedMock,
+		);
+
+		mockFetch.mockResolvedValueOnce({
+			ok: false,
+			status: 401,
+			json: async () => ({}),
+		});
+		const { result } = renderHook(() => useFetch(baseConfig, false));
+		await act(async () => {
+			const res = await result.current.execute();
+			expect(res).toBeNull();
+		});
+		expect(alertMock).toHaveBeenCalledWith(
+			"your session has expired.\nPlease log in again.",
+		);
+		expect(getOnUnauthorizedMock).toHaveBeenCalled();
+		global.alert = originalAlert;
 	});
 });

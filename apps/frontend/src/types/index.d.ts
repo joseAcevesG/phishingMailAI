@@ -15,10 +15,9 @@ export interface APIMessage {
 	message: string;
 }
 
-export interface APIAuth {
-	authenticated: boolean;
-	email?: string;
-}
+export type APIAuth =
+	| { authenticated: true; email: string }
+	| { authenticated: false };
 
 export interface FetchConfig {
 	url: string;
@@ -26,6 +25,7 @@ export interface FetchConfig {
 	headers?: HeadersInit;
 	body?: unknown;
 	credentials?: RequestCredentials;
+	onUnauthorized?: () => void;
 }
 
 export interface UseFetchReturn<T> {
@@ -34,3 +34,7 @@ export interface UseFetchReturn<T> {
 	loading: boolean;
 	execute: (configOverride?: Partial<FetchConfig>) => Promise<T | null>;
 }
+
+export type AuthContextType = AuthState & {
+	validateStatus: (data: APIAuth) => void;
+};

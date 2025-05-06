@@ -1,53 +1,73 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { describe, expect, it, vi } from "vitest";
-import { Header, type Props } from "./Header";
+import { describe, expect, it, vi, beforeEach, type Mock } from "vitest";
+import { Header } from "./Header";
+import { useHeaderAuth } from "./useHeaderAuth";
 
-const renderHeader = (props: Props) =>
+// Mock the custom hook
+vi.mock("./useHeaderAuth", () => ({
+	useHeaderAuth: vi.fn(),
+}));
+
+const mockedUseHeaderAuth = useHeaderAuth as unknown as Mock;
+
+const renderHeader = () =>
 	render(
 		<BrowserRouter>
-			<Header {...props} />
-		</BrowserRouter>,
+			<Header />
+		</BrowserRouter>
 	);
 
 describe("Header", () => {
-	it("renders navigation links for authenticated user", () => {
-		// Render the Header component with a user email and an onLogout function.
-		renderHeader({ userEmail: "user@example.com", onLogout: vi.fn() });
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
 
-		// Expect the navigation links to be present in the document.
+	it("renders navigation links for authenticated user", () => {
+		mockedUseHeaderAuth.mockReturnValue({
+			userEmail: "user@example.com",
+			handleLogout: vi.fn(),
+		});
+
+		renderHeader();
+
 		expect(screen.getByText("Home")).toBeInTheDocument();
 		expect(screen.getByText("History")).toBeInTheDocument();
 		expect(screen.getByText("Settings")).toBeInTheDocument();
 		expect(screen.getByText(/Logged in as/)).toHaveTextContent(
-			"Logged in as user@example.com",
+			"Logged in as user@example.com"
 		);
 		expect(screen.getByRole("button", { name: /logout/i })).toBeInTheDocument();
 	});
 
 	it("renders navigation links for unauthenticated user", () => {
-		// Render the Header component with no user email and an onLogout function.
-		renderHeader({ userEmail: null, onLogout: vi.fn() });
+		mockedUseHeaderAuth.mockReturnValue({
+			userEmail: null,
+			handleLogout: vi.fn(),
+		});
 
-		// Expect the navigation links to be present in the document.
+		renderHeader();
+
 		expect(screen.getByText("Landing Page")).toBeInTheDocument();
 		expect(screen.getByText("Login")).toBeInTheDocument();
 		expect(screen.getByText("Sign Up")).toBeInTheDocument();
 		expect(screen.queryByText(/Logged in as/)).not.toBeInTheDocument();
 		expect(
-			screen.queryByRole("button", { name: /logout/i }),
+			screen.queryByRole("button", { name: /logout/i })
 		).not.toBeInTheDocument();
 	});
 
-	it("calls onLogout when logout button is clicked", () => {
-		const onLogout = vi.fn();
+	it("calls handleLogout when logout button is clicked", async () => {
+		const handleLogout = vi.fn();
+		mockedUseHeaderAuth.mockReturnValue({
+			userEmail: "user@example.com",
+			handleLogout,
+		});
 
-		// Render the Header component with a user email and the mock onLogout function.
-		renderHeader({ userEmail: "user@example.com", onLogout });
+		renderHeader();
 		const logoutButton = screen.getByRole("button", { name: /logout/i });
 
-		// Simulate a click event on the logout button.
-		fireEvent.click(logoutButton);
-		expect(onLogout).toHaveBeenCalledTimes(1);
+		await fireEvent.click(logoutButton);
+		expect(handleLogout).toHaveBeenCalledTimes(1);
 	});
 });

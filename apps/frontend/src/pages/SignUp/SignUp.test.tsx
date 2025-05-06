@@ -48,16 +48,16 @@ vi.mock("./Password", () => ({
 describe("<SignUp />", () => {
 	// Test: Should render welcome message and toggle group
 	it("renders welcome message and toggle group", () => {
-		render(<SignUp onAuthenticate={vi.fn()} />, { wrapper: MemoryRouter });
+		render(<SignUp />, { wrapper: MemoryRouter });
 		expect(
-			screen.getByText(/welcome to phishing mail ai/i),
+			screen.getByText(/welcome to phishing mail ai/i)
 		).toBeInTheDocument();
 		expect(screen.getByTestId("toggle-group")).toBeInTheDocument();
 	});
 
 	// Test: Should show MagicLink by default and switch to Password on toggle
 	it("shows MagicLink by default and switches to Password on toggle", () => {
-		render(<SignUp onAuthenticate={vi.fn()} />, { wrapper: MemoryRouter });
+		render(<SignUp />, { wrapper: MemoryRouter });
 		expect(screen.getByTestId("magic-link")).toBeInTheDocument();
 		fireEvent.click(screen.getByText("Password"));
 		expect(screen.getByTestId("password-form")).toBeInTheDocument();
@@ -67,16 +67,7 @@ describe("<SignUp />", () => {
 
 	// Test: Should show login link for existing users
 	it("shows login link", () => {
-		render(<SignUp onAuthenticate={vi.fn()} />, { wrapper: MemoryRouter });
+		render(<SignUp />, { wrapper: MemoryRouter });
 		expect(screen.getByText(/already have an account/i)).toBeInTheDocument();
-	});
-
-	// Test: Should redirect if isAuthenticated is true
-	it("redirects if isAuthenticated is true", () => {
-		const { container } = render(
-			<SignUp isAuthenticated={true} onAuthenticate={vi.fn()} />,
-			{ wrapper: MemoryRouter },
-		);
-		expect(container.innerHTML).toBe("");
 	});
 });

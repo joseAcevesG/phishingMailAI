@@ -28,18 +28,18 @@ describe("<Password />", () => {
 	// Test: Should render all input fields and button
 	it("renders all input fields and button", () => {
 		mockUsePassword();
-		render(<Password onAuthenticate={vi.fn()} />);
+		render(<Password />);
 		expect(
-			screen.getByPlaceholderText(/enter your email/i),
+			screen.getByPlaceholderText(/enter your email/i)
 		).toBeInTheDocument();
 		expect(
-			screen.getByPlaceholderText(/enter your password/i),
+			screen.getByPlaceholderText(/enter your password/i)
 		).toBeInTheDocument();
 		expect(
-			screen.getByPlaceholderText(/confirm your password/i),
+			screen.getByPlaceholderText(/confirm your password/i)
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole("button", { name: /sign up/i }),
+			screen.getByRole("button", { name: /sign up/i })
 		).toBeInTheDocument();
 	});
 
@@ -49,7 +49,7 @@ describe("<Password />", () => {
 		const setPassword = vi.fn();
 		const setConfirmPassword = vi.fn();
 		mockUsePassword({ setEmail, setPassword, setConfirmPassword });
-		render(<Password onAuthenticate={vi.fn()} />);
+		render(<Password />);
 		fireEvent.change(screen.getByPlaceholderText(/enter your email/i), {
 			target: { value: "test@example.com" },
 		});
@@ -67,7 +67,7 @@ describe("<Password />", () => {
 	// Test: Should show error message if error is present
 	it("shows error message if error is present", () => {
 		mockUsePassword({ error: "Passwords do not match" });
-		render(<Password onAuthenticate={vi.fn()} />);
+		render(<Password />);
 		expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
 	});
 
@@ -79,9 +79,9 @@ describe("<Password />", () => {
 			password: "b",
 			confirmPassword: "c",
 		});
-		render(<Password onAuthenticate={vi.fn()} />);
+		render(<Password />);
 		expect(
-			screen.getByRole("button", { name: /signing up.../i }),
+			screen.getByRole("button", { name: /signing up.../i })
 		).toBeDisabled();
 
 		mockUsePassword({
@@ -90,7 +90,7 @@ describe("<Password />", () => {
 			password: "b",
 			confirmPassword: "c",
 		});
-		const { unmount } = render(<Password onAuthenticate={vi.fn()} />);
+		const { unmount } = render(<Password />);
 		expect(screen.getByRole("button", { name: /sign up/i })).toBeDisabled();
 		unmount();
 
@@ -101,7 +101,7 @@ describe("<Password />", () => {
 			confirmPassword: "c",
 			error: "err",
 		});
-		const { unmount: unmount2 } = render(<Password onAuthenticate={vi.fn()} />);
+		const { unmount: unmount2 } = render(<Password />);
 		expect(screen.getByRole("button", { name: /sign up/i })).toBeDisabled();
 		unmount2();
 	});
@@ -115,7 +115,7 @@ describe("<Password />", () => {
 			password: "b",
 			confirmPassword: "c",
 		});
-		render(<Password onAuthenticate={vi.fn()} />);
+		render(<Password />);
 		const form = document.querySelector("form");
 		fireEvent.submit(form as Element);
 		expect(handlePasswordSignUp).toHaveBeenCalled();

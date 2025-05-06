@@ -1,10 +1,6 @@
 import { Link } from "react-router-dom";
+import { useHeaderAuth } from "./useHeaderAuth";
 import styles from "./Header.module.css";
-
-export interface Props {
-	userEmail: string | null;
-	onLogout: () => void;
-}
 
 /**
  * Renders the main header component.
@@ -14,10 +10,10 @@ export interface Props {
  * If a user is logged in, it also displays the email address and a
  * Logout button.
  *
- * @param {{ userEmail: string | null, onLogout: () => void }} props
  * @returns {ReactElement}
  */
-export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
+export const Header: React.FC = () => {
+	const { userEmail, handleLogout } = useHeaderAuth();
 	return (
 		<header className={styles.header}>
 			{/* The logo of the application */}
@@ -67,7 +63,7 @@ export const Header: React.FC<Props> = ({ userEmail, onLogout }) => {
 					{/* Show a logout button */}
 					<button
 						className={styles.logoutButton}
-						onClick={onLogout}
+						onClick={handleLogout}
 						type="button"
 					>
 						Logout

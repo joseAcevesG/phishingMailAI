@@ -8,12 +8,13 @@ import styles from "./App.module.css";
 import Footer from "./components/Footer/Footer";
 import { Header } from "./components/Header/Header";
 import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
 import { useAuth } from "./hooks/useAuth";
 import Analyze from "./pages/Analyze/Analyze";
 import { Authenticate } from "./pages/Authenticate/Authenticate";
 import HistoryPage from "./pages/History/History";
 import Home from "./pages/Home/Home";
-import { Landing } from "./pages/Landing/Landing";
+import Landing from "./pages/Landing/Landing";
 import { Login } from "./pages/Login/Login";
 import { ResetLink } from "./pages/ResetLink/ResetLink";
 import { ResetPassword } from "./pages/ResetPassword/ResetPassword";
@@ -32,13 +33,7 @@ import SignUp from "./pages/SignUp/SignUp";
  */
 const AppContent: React.FC = () => {
 	// Destructure authentication state and handlers from useAuth
-	const {
-		isAuthenticated,
-		userEmail,
-		loading,
-		handleLogout,
-		handleAuthenticate,
-	} = useAuth();
+	const { loading, isAuthenticated } = useAuth();
 
 	// If authentication state is still loading, show a loading spinner/message
 	if (loading) {
@@ -53,18 +48,18 @@ const AppContent: React.FC = () => {
 		// Main application container
 		<div className={styles.appContainer}>
 			{/* Header displays user email and logout button if authenticated */}
-			{<Header onLogout={handleLogout} userEmail={userEmail} />}
+			<Header />
 			<main className={styles.mainContent}>
 				<Routes>
 					{/* Root route: shows Home if authenticated, Landing otherwise */}
 					<Route
 						element={
 							isAuthenticated ? (
-								<ProtectedRoute isAuthenticated={isAuthenticated}>
+								<ProtectedRoute>
 									<Home />
 								</ProtectedRoute>
 							) : (
-								<Landing isAuthenticated={isAuthenticated} />
+								<Landing />
 							)
 						}
 						path="/"
@@ -74,7 +69,7 @@ const AppContent: React.FC = () => {
 					{/* Analyze route: protected, requires authentication */}
 					<Route
 						element={
-							<ProtectedRoute isAuthenticated={isAuthenticated}>
+							<ProtectedRoute>
 								<Analyze />
 							</ProtectedRoute>
 						}
@@ -83,8 +78,8 @@ const AppContent: React.FC = () => {
 					{/* Settings route: protected, requires authentication */}
 					<Route
 						element={
-							<ProtectedRoute isAuthenticated={isAuthenticated}>
-								<SettingsPage onAuthenticate={handleAuthenticate} />
+							<ProtectedRoute>
+								<SettingsPage />
 							</ProtectedRoute>
 						}
 						path="/settings"
@@ -92,7 +87,7 @@ const AppContent: React.FC = () => {
 					{/* History route: protected, requires authentication */}
 					<Route
 						element={
-							<ProtectedRoute isAuthenticated={isAuthenticated}>
+							<ProtectedRoute>
 								<HistoryPage />
 							</ProtectedRoute>
 						}
@@ -100,34 +95,18 @@ const AppContent: React.FC = () => {
 					/>
 					{/* Login route: redirects to root if already authenticated, otherwise shows Login */}
 					<Route
-						element={
-							isAuthenticated ? (
-								<Navigate replace to="/" />
-							) : (
-								<Login onAuthenticate={handleAuthenticate} />
-							)
-						}
+						element={isAuthenticated ? <Navigate replace to="/" /> : <Login />}
 						path="/login"
 					/>
 					{/* Signup route: redirects to root if already authenticated, otherwise shows SignUp */}
 					<Route
-						element={
-							isAuthenticated ? (
-								<Navigate replace to="/" />
-							) : (
-								<SignUp onAuthenticate={handleAuthenticate} />
-							)
-						}
+						element={isAuthenticated ? <Navigate replace to="/" /> : <SignUp />}
 						path="/signup"
 					/>
 					{/* Authenticate route: redirects to root if already authenticated, otherwise shows Authenticate */}
 					<Route
 						element={
-							isAuthenticated ? (
-								<Navigate replace to="/" />
-							) : (
-								<Authenticate onAuthenticate={handleAuthenticate} />
-							)
+							isAuthenticated ? <Navigate replace to="/" /> : <Authenticate />
 						}
 						path="/authenticate"
 					/>
@@ -144,7 +123,9 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
 	return (
 		<Router>
-			<AppContent />
+			<AuthProvider>
+				<AppContent />
+			</AuthProvider>
 		</Router>
 	);
 };

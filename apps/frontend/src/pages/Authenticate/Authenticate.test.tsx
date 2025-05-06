@@ -1,14 +1,14 @@
 import { render, screen } from "@testing-library/react";
-import { type Mock, afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, type Mock, vi } from "vitest";
 import { Authenticate } from "./Authenticate";
 import { useAuthenticate } from "./useAuthenticate";
 
-// Mock the useAuthenticate hook to isolate component logic from authentication logic
+// Mock the useAuthenticate hook
 vi.mock("./useAuthenticate", () => ({
 	useAuthenticate: vi.fn(),
 }));
 // Cast the mocked hook for easier assertions
-const mockUseAuthenticate = useAuthenticate as unknown as Mock;
+const mockUseAuthenticate = useAuthenticate as Mock;
 
 describe("Authenticate", () => {
 	// Clear all mocks after each test to prevent state leakage
@@ -18,14 +18,12 @@ describe("Authenticate", () => {
 
 	// Test: Should render the authenticating message
 	it("renders the authenticating message", () => {
-		render(<Authenticate onAuthenticate={vi.fn()} />);
-		expect(screen.getByText(/authenticating/i)).toBeInTheDocument();
+		render(<Authenticate />);
+		expect(screen.getByText(/Authenticating.../i)).toBeInTheDocument();
 	});
 
-	// Test: Should call useAuthenticate with the onAuthenticate callback
-	it("calls useAuthenticate with onAuthenticate", () => {
-		const onAuthenticate = vi.fn();
-		render(<Authenticate onAuthenticate={onAuthenticate} />);
-		expect(mockUseAuthenticate).toHaveBeenCalledWith(onAuthenticate);
+	it("calls useAuthenticate with no arguments", () => {
+		render(<Authenticate />);
+		expect(mockUseAuthenticate).toHaveBeenCalledWith();
 	});
 });

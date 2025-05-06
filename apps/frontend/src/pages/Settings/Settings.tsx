@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import styles from "./settings.module.css";
 import { useSettings } from "./useSettings";
-import type { APIAuth } from "../../types";
 
 /**
  * Renders the settings page, which includes sections for resetting
@@ -13,10 +12,7 @@ import type { APIAuth } from "../../types";
  * that occur during these processes and provides feedback on loading
  * states.
  */
-interface Props {
-	onAuthenticate: (data: APIAuth) => void;
-}
-const SettingsPage: React.FC<Props> = ({ onAuthenticate }) => {
+const SettingsPage: React.FC = () => {
 	const {
 		apiKey,
 		setApiKey,
@@ -26,7 +22,7 @@ const SettingsPage: React.FC<Props> = ({ onAuthenticate }) => {
 		logoutError,
 		logoutLoading,
 		handleLogoutAll,
-	} = useSettings(onAuthenticate);
+	} = useSettings();
 
 	return (
 		<div className={styles.container}>

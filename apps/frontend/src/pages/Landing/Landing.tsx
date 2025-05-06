@@ -1,25 +1,17 @@
 "use client";
 
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "./Landing.module.css";
 
-interface Props {
-	isAuthenticated: boolean;
-}
 /**
  * The landing page component, shown when the user is not authenticated.
  *
  * Redirects the user to the home page if they are already authenticated.
  *
- * @param isAuthenticated - Whether the user is authenticated or not.
  * @returns The landing page React component.
  */
-export const Landing: React.FC<Props> = ({ isAuthenticated }) => {
-	if (isAuthenticated) {
-		// If the user is already authenticated, redirect them to the home page
-		return <Navigate replace to="/" />;
-	}
 
+const Landing: React.FC = () => {
 	return (
 		<div className={styles.landingContainer}>
 			<div className={styles.landingContent}>
@@ -42,3 +34,5 @@ export const Landing: React.FC<Props> = ({ isAuthenticated }) => {
 		</div>
 	);
 };
+
+export default Landing;

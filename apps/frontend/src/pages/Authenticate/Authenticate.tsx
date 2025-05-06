@@ -1,10 +1,5 @@
-import type { APIAuth } from "../../types";
 import styles from "./Authenticate.module.css";
 import { useAuthenticate } from "./useAuthenticate";
-
-interface Props {
-	onAuthenticate: (data: APIAuth) => void;
-}
 
 /**
  * Page component for authenticating the user.
@@ -14,15 +9,11 @@ interface Props {
  * authentication hook and rendering a message to indicate
  * that the user is being authenticated.
  *
- * @param {{ onAuthenticate: (data: APIAuth) => void }} props
- *   The props object, containing the `onAuthenticate` function
- *   which is used to handle the authentication result.
- *
  * @returns A JSX element representing the Authenticate page.
  */
-export const Authenticate: React.FC<Props> = ({ onAuthenticate }) => {
+export const Authenticate: React.FC = () => {
 	// Use the useAuthenticate hook to authenticate the user
-	useAuthenticate(onAuthenticate);
+	useAuthenticate();
 
 	return (
 		<div className={styles.authenticateContainer}>

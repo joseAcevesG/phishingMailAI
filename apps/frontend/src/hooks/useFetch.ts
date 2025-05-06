@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { getOnUnauthorized } from "../services/authHandler";
 import type { FetchConfig, UseFetchReturn } from "../types";
 
 const DEFAULT_HEADERS = {
@@ -37,7 +38,14 @@ export function useFetch<T = unknown>(
 			headers: { ...DEFAULT_HEADERS, ...overrideConfig?.headers },
 		};
 		configRef.current = config;
-		const { url, method = "GET", headers, body, credentials } = config;
+		const {
+			url,
+			method = "GET",
+			headers,
+			body,
+			credentials,
+			onUnauthorized,
+		} = config;
 		const finalHeaders =
 			body instanceof FormData
 				? Object.fromEntries(
@@ -68,6 +76,14 @@ export function useFetch<T = unknown>(
 					signal: controllerRef.current.signal,
 				},
 			);
+			if (response.status === 401) {
+				if (onUnauthorized) onUnauthorized();
+				else {
+					alert("your session has expired.\nPlease log in again.");
+					getOnUnauthorized()?.();
+				}
+				return null;
+			}
 			if (!response.ok) {
 				const errorData = await response.json().catch(() => null);
 				const message =

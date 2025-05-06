@@ -1,19 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authTypes } from "shared/auth-types";
+import { useAuth } from "../../hooks/useAuth";
 import { useFetch } from "../../hooks/useFetch";
 import { validateAll } from "../../services/validatePassword";
 import type { APIAuth } from "../../types";
 
-interface Props {
-	onAuthenticate: (data: APIAuth) => void;
-}
-
 /**
  * Handles password signup functionality for the signup page.
- *
- * @param onAuthenticate A function that will be called with the
- *   authentication data if the signup is successful
  *
  * @returns An object with the following properties:
  *   - `email`: The email address of the user to sign up
@@ -26,12 +20,13 @@ interface Props {
  *   - `loading`: A boolean indicating whether the signup is in progress
  *   - `handlePasswordSignUp`: A function to handle the signup form submission
  */
-export function usePassword({ onAuthenticate }: Props) {
+export function usePassword() {
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 	const [confirmPassword, setConfirmPassword] = useState<string>("");
 	const [error, setError] = useState<string | null>(null);
 	const navigate = useNavigate();
+	const { validateStatus } = useAuth();
 
 	// useFetch hook for making signup API requests
 	const {
@@ -69,7 +64,7 @@ export function usePassword({ onAuthenticate }: Props) {
 			body: { email, password, type: authTypes.passwordLogin },
 		});
 		if (result) {
-			onAuthenticate(result);
+			validateStatus(result);
 			navigate("/");
 		} else {
 			setError(fetchError || "Signup failed. Please try again.");

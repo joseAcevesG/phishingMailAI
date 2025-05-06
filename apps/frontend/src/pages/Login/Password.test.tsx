@@ -1,75 +1,76 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Mock } from "vitest";
-import Password from "./Password";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { usePasswordLogin } from "./usePasswordLogin";
+import Password from "./Password";
 
-// Mock the usePasswordLogin hook to control form state and actions
+// Mock usePasswordLogin to control the hook's state and handlers
 vi.mock("./usePasswordLogin", () => ({
-	__esModule: true,
 	usePasswordLogin: vi.fn(),
 }));
 
-describe("Password", () => {
-	const onAuthenticate = vi.fn();
+const mockSetEmail = vi.fn();
+const mockSetPassword = vi.fn();
+const mockHandlePasswordLogin = vi.fn((e) => e.preventDefault());
 
-	// Setup: Clear mocks and reset usePasswordLogin before each test
+function setupPasswordHook({
+	email = "",
+	password = "",
+	error = "",
+	isSubmitting = false,
+} = {}) {
+	(usePasswordLogin as Mock).mockReturnValue({
+		email,
+		setEmail: mockSetEmail,
+		password,
+		setPassword: mockSetPassword,
+		error,
+		isSubmitting,
+		handlePasswordLogin: mockHandlePasswordLogin,
+	});
+}
+
+describe("Password", () => {
 	beforeEach(() => {
-		onAuthenticate.mockClear?.();
-		(usePasswordLogin as Mock).mockReset();
+		vi.clearAllMocks();
 	});
 
-	// Test: Should render form fields and call handlePasswordLogin on submit
-	it("renders form fields and submits login", () => {
-		const handlePasswordLogin = vi.fn((e) => e.preventDefault());
-		(usePasswordLogin as Mock).mockReturnValue({
-			email: "",
-			setEmail: vi.fn(),
-			password: "",
-			setPassword: vi.fn(),
-			error: null,
-			isSubmitting: false,
-			handlePasswordLogin,
-		});
-		const { container } = render(<Password onAuthenticate={onAuthenticate} />);
+	it("renders email and password inputs and submit button", () => {
+		setupPasswordHook();
+		render(<Password />);
 		expect(screen.getByPlaceholderText(/email/i)).toBeInTheDocument();
 		expect(screen.getByPlaceholderText(/password/i)).toBeInTheDocument();
-		const form = container.querySelector("form");
-		if (!form) {
-			throw new Error("Form not found");
-		}
-		fireEvent.submit(form);
-		expect(handlePasswordLogin).toHaveBeenCalled();
+		expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
 	});
 
-	// Test: Should display error message when error exists
-	it("displays error message when error exists", () => {
-		(usePasswordLogin as Mock).mockReturnValue({
-			email: "user@example.com",
-			setEmail: vi.fn(),
-			password: "secret",
-			setPassword: vi.fn(),
-			error: "Invalid credentials",
-			isSubmitting: false,
-			handlePasswordLogin: vi.fn(),
+	it("calls setEmail and setPassword on input change", () => {
+		setupPasswordHook();
+		render(<Password />);
+		fireEvent.change(screen.getByPlaceholderText(/email/i), {
+			target: { value: "foo@bar.com" },
 		});
-		render(<Password onAuthenticate={onAuthenticate} />);
-		expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
+		expect(mockSetEmail).toHaveBeenCalledWith("foo@bar.com");
+		fireEvent.change(screen.getByPlaceholderText(/password/i), {
+			target: { value: "secret" },
+		});
+		expect(mockSetPassword).toHaveBeenCalledWith("secret");
 	});
 
-	// Test: Should disable submit button while submitting
-	it("disables submit button while submitting", () => {
-		(usePasswordLogin as Mock).mockReturnValue({
-			email: "user@example.com",
-			setEmail: vi.fn(),
-			password: "secret",
-			setPassword: vi.fn(),
-			error: null,
-			isSubmitting: true,
-			handlePasswordLogin: vi.fn(),
-		});
-		render(<Password onAuthenticate={onAuthenticate} />);
-		const button = screen.getByRole("button", { name: /logging in/i });
-		expect(button).toBeDisabled();
+	it("calls handlePasswordLogin on form submit", () => {
+		setupPasswordHook();
+		render(<Password />);
+		fireEvent.submit(screen.getByTestId("password-form"));
+		expect(mockHandlePasswordLogin).toHaveBeenCalled();
+	});
+
+	it("shows error message if error is present", () => {
+		setupPasswordHook({ error: "Invalid credentials" });
+		render(<Password />);
+		expect(screen.getByText("Invalid credentials")).toBeInTheDocument();
+	});
+
+	it("disables submit button when submitting", () => {
+		setupPasswordHook({ isSubmitting: true });
+		render(<Password />);
+		expect(screen.getByRole("button", { name: /logging in/i })).toBeDisabled();
 	});
 });

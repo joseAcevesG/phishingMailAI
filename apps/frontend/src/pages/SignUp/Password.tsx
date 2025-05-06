@@ -1,22 +1,12 @@
 import styles from "../../assets/Password.module.css";
-import type { APIAuth } from "../../types";
 import { usePassword } from "./usePassword";
-
-interface Props {
-	onAuthenticate: (data: APIAuth) => void;
-}
 
 /**
  * Password component renders a form for users to sign up with an email and password.
  *
- * @param {Props} props Component props.
- * @param {function(APIAuth)} props.onAuthenticate Callback function to call when the user is
- *                                                  authenticated. Receives the user's auth data
- *                                                  as an argument.
- *
  * @returns {JSX.Element} The password sign up form.
  */
-const Password: React.FC<Props> = ({ onAuthenticate }) => {
+const Password: React.FC = () => {
 	const {
 		email,
 		setEmail,
@@ -27,7 +17,7 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 		error,
 		loading,
 		handlePasswordSignUp,
-	} = usePassword({ onAuthenticate });
+	} = usePassword();
 
 	return (
 		<form className={styles.passwordForm} onSubmit={handlePasswordSignUp}>

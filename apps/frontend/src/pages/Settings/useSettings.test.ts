@@ -1,128 +1,118 @@
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Mock } from "vitest";
-import { useFetch } from "../../hooks/useFetch";
 import { useSettings } from "./useSettings";
 
-// Mock react-router-dom for navigation
-vi.mock("react-router-dom", () => ({
-	useNavigate: () => vi.fn(),
+// Mock dependencies
+const mockSaveKey = vi.fn();
+const mockLogoutAll = vi.fn();
+const mockValidateStatus = vi.fn();
+const mockNavigate = vi.fn();
+
+vi.mock("../../hooks/useFetch", () => ({
+	useFetch: (config: { url: string; method: string }) => {
+		if (config.url === "/api/auth/change-trial") {
+			return {
+				error: null,
+				loading: false,
+				execute: mockSaveKey,
+			};
+		}
+		if (config.url === "/api/auth/logout-all") {
+			return {
+				error: null,
+				loading: false,
+				execute: mockLogoutAll,
+			};
+		}
+		return {};
+	},
 }));
 
-// Mock useFetch to control API call behavior for API key and logout
-vi.mock("../../hooks/useFetch", () => ({
-	useFetch: vi.fn(),
+vi.mock("../../hooks/useAuth", () => ({
+	useAuth: () => ({
+		validateStatus: mockValidateStatus,
+	}),
+}));
+
+vi.mock("react-router-dom", () => ({
+	useNavigate: () => mockNavigate,
 }));
 
 describe("useSettings", () => {
-	// Reset useFetch mock before each test for isolation
 	beforeEach(() => {
-		(useFetch as Mock).mockReset();
+		mockSaveKey.mockReset();
+		mockLogoutAll.mockReset();
+		mockValidateStatus.mockReset();
+		mockNavigate.mockReset();
 	});
 
-	// Test: Should initialize with correct default state
-	it("initializes with correct default state", () => {
-		(useFetch as Mock)
-			.mockReturnValueOnce({
-				execute: vi.fn(),
-				error: null,
-				loading: false,
-			})
-			.mockReturnValueOnce({
-				execute: vi.fn(),
-				error: null,
-				loading: false,
-			});
-		const { result } = renderHook(() => useSettings(vi.fn()));
+	it("should initialize state and handlers", () => {
+		const { result } = renderHook(() => useSettings());
 		expect(result.current.apiKey).toBe("");
+		expect(typeof result.current.setApiKey).toBe("function");
 		expect(result.current.keyError).toBeNull();
 		expect(result.current.keyLoading).toBe(false);
+		expect(typeof result.current.handleKeySubmit).toBe("function");
 		expect(result.current.logoutError).toBeNull();
 		expect(result.current.logoutLoading).toBe(false);
+		expect(typeof result.current.handleLogoutAll).toBe("function");
 	});
 
-	// Test: Should update apiKey state
-	it("updates apiKey", () => {
-		(useFetch as Mock).mockReturnValue({
-			execute: vi.fn(),
-			error: null,
-			loading: false,
-		});
-		const { result } = renderHook(() => useSettings(vi.fn()));
+	it("should update apiKey state", () => {
+		const { result } = renderHook(() => useSettings());
 		act(() => {
-			result.current.setApiKey("sk-test");
+			result.current.setApiKey("my-api-key");
 		});
-		expect(result.current.apiKey).toBe("sk-test");
+		expect(result.current.apiKey).toBe("my-api-key");
 	});
 
-	// Test: Should submit API key and navigate on success
-	it("submits API key and navigates on success", async () => {
-		const saveKey = vi.fn().mockResolvedValue({ success: true });
-		const navigate = vi.fn();
-		(useFetch as Mock)
-			.mockReturnValueOnce({
-				execute: saveKey,
-				error: null,
-				loading: false,
-			})
-			.mockReturnValueOnce({
-				execute: vi.fn(),
-				error: null,
-				loading: false,
-			});
-		const routerDom = await import("react-router-dom");
-		(
-			routerDom as unknown as { useNavigate: () => typeof navigate }
-		).useNavigate = () => navigate;
-		(useFetch as Mock)
-			.mockReturnValueOnce({
-				execute: saveKey,
-				error: null,
-				loading: false,
-			})
-			.mockReturnValueOnce({
-				execute: vi.fn(),
-				error: null,
-				loading: false,
-			});
-		const { result } = renderHook(() => useSettings(vi.fn()));
+	it("should call saveKey and navigate on successful key submit", async () => {
+		const fakeEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
+		mockSaveKey.mockResolvedValue({ message: "ok" });
+		const { result } = renderHook(() => useSettings());
 		act(() => {
-			result.current.setApiKey("sk-test");
+			result.current.setApiKey("my-api-key");
 		});
-		const fakeEvent = {
-			preventDefault: () => {},
-		} as unknown as React.FormEvent<HTMLFormElement>;
 		await act(async () => {
 			await result.current.handleKeySubmit(fakeEvent);
 		});
-		expect(saveKey).toHaveBeenCalledWith({ body: { api_key: "sk-test" } });
-		expect(navigate).toHaveBeenCalledWith("/");
+		expect(mockSaveKey).toHaveBeenCalledWith({
+			body: { api_key: "my-api-key" },
+		});
+		expect(mockNavigate).toHaveBeenCalledWith("/");
 	});
 
-	// Test: Should log out everywhere and navigate on success
-	it("logs out everywhere and navigates on success", async () => {
-		const logoutAll = vi.fn().mockResolvedValue({ success: true });
-		const navigate = vi.fn();
-		(useFetch as Mock)
-			.mockReturnValueOnce({
-				execute: vi.fn(),
-				error: null,
-				loading: false,
-			})
-			.mockReturnValueOnce({
-				execute: logoutAll,
-				error: null,
-				loading: false,
-			});
-		const routerDom = await import("react-router-dom");
-		(
-			routerDom as unknown as { useNavigate: () => typeof navigate }
-		).useNavigate = () => navigate;
-		const { result } = renderHook(() => useSettings(vi.fn()));
+	it("should not navigate if saveKey fails", async () => {
+		const fakeEvent = { preventDefault: vi.fn() } as unknown as React.FormEvent;
+		mockSaveKey.mockResolvedValue(null);
+		const { result } = renderHook(() => useSettings());
+		act(() => {
+			result.current.setApiKey("bad-key");
+		});
+		await act(async () => {
+			await result.current.handleKeySubmit(fakeEvent);
+		});
+		expect(mockNavigate).not.toHaveBeenCalled();
+	});
+
+	it("should call logoutAll, validateStatus, and navigate on successful logout", async () => {
+		mockLogoutAll.mockResolvedValue({ message: "logged out" });
+		const { result } = renderHook(() => useSettings());
 		await act(async () => {
 			await result.current.handleLogoutAll();
 		});
-		expect(logoutAll).toHaveBeenCalled();
-		expect(navigate).toHaveBeenCalledWith("/login");
+		expect(mockLogoutAll).toHaveBeenCalled();
+		expect(mockValidateStatus).toHaveBeenCalledWith({ authenticated: false });
+		expect(mockNavigate).toHaveBeenCalledWith("/login");
+	});
+
+	it("should not validateStatus or navigate if logoutAll fails", async () => {
+		mockLogoutAll.mockResolvedValue(null);
+		const { result } = renderHook(() => useSettings());
+		await act(async () => {
+			await result.current.handleLogoutAll();
+		});
+		expect(mockValidateStatus).not.toHaveBeenCalled();
+		expect(mockNavigate).not.toHaveBeenCalled();
 	});
 });

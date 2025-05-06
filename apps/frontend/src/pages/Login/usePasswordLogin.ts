@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 import { useFetch } from "../../hooks/useFetch";
 import type { APIAuth } from "../../types";
 
 export interface UsePasswordLoginOptions {
-	onAuthenticate: (data: APIAuth) => void;
 	authType: string;
 }
 
@@ -26,12 +26,10 @@ export interface UsePasswordLoginOptions {
  *   - `isSubmitting`: A boolean indicating whether the login is in progress
  *   - `handlePasswordLogin`: A function to handle the login form submission
  */
-export function usePasswordLogin({
-	onAuthenticate,
-	authType,
-}: UsePasswordLoginOptions) {
+export function usePasswordLogin({ authType }: UsePasswordLoginOptions) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const { validateStatus } = useAuth();
 	// Fetch hook for handling API requests
 	const {
 		error,
@@ -61,7 +59,7 @@ export function usePasswordLogin({
 			body: { email, password, type: authType },
 		});
 		if (result) {
-			onAuthenticate(result);
+			validateStatus(result);
 			navigate("/");
 		}
 	};

@@ -3,125 +3,79 @@ import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 import { Login } from "./Login";
 
-// Mock ToggleButtonGroup to control login method selection
+// Mock the child components to isolate Login logic
 vi.mock("../../components/ToggleButtonGroup/ToggleButtonGroup", () => ({
-	__esModule: true,
 	default: ({
 		selectedMethod,
 		setSelectedMethod,
 	}: {
-		selectedMethod: string;
-		setSelectedMethod: (v: string) => void;
+		selectedMethod: "magic" | "password";
+		setSelectedMethod: (method: "magic" | "password") => void;
 	}) => (
 		<div>
-			<button onClick={() => setSelectedMethod("magic")} type="button">
+			<button type="button" onClick={() => setSelectedMethod("magic")}>
 				Magic
 			</button>
-			<button onClick={() => setSelectedMethod("password")} type="button">
+			<button type="button" onClick={() => setSelectedMethod("password")}>
 				Password
 			</button>
-			<span data-testid="selected-method">{selectedMethod}</span>
+			<span>Current: {selectedMethod}</span>
 		</div>
 	),
 }));
-
-// Mock MagicLink login component
 vi.mock("../../components/magicLink/MagicLink", () => ({
-	__esModule: true,
-	default: ({ buttonText }: { buttonText: string }) => (
-		<button type="button">{buttonText}</button>
-	),
+	default: () => <div>MagicLinkMock</div>,
 }));
-
-// Mock Password login component
 vi.mock("./Password", () => ({
-	__esModule: true,
-	default: ({
-		onAuthenticate,
-	}: {
-		onAuthenticate: (data: { token: string }) => void;
-	}) => (
-		<button onClick={() => onAuthenticate({ token: "test" })} type="button">
-			Password Login
-		</button>
-	),
+	default: () => <div>PasswordMock</div>,
 }));
-
-// Tests for the Login page covering authentication methods and redirect
 
 describe("Login", () => {
-	const onAuthenticate = vi.fn();
-
-	// Test: Should render magic link login by default and allow switching to password
-	it("renders magic link login by default and switches to password", () => {
+	it("renders heading, prompt, toggle, and signup link", () => {
 		render(
 			<MemoryRouter>
-				<Login isAuthenticated={false} onAuthenticate={onAuthenticate} />
-			</MemoryRouter>,
+				<Login />
+			</MemoryRouter>
 		);
 		expect(
-			screen.getByText(/welcome to phishing mail ai/i),
+			screen.getByRole("heading", { name: /welcome to phishing mail ai/i })
 		).toBeInTheDocument();
 		expect(screen.getByText(/please log in to continue/i)).toBeInTheDocument();
+		expect(screen.getByText("MagicLinkMock")).toBeInTheDocument();
 		expect(
-			screen.getByRole("button", { name: /login with magic link/i }),
+			screen.getByRole("link", { name: /don't have an account/i })
 		).toBeInTheDocument();
-		fireEvent.click(screen.getByText("Password"));
-		expect(
-			screen.getByRole("button", { name: /password login/i }),
-		).toBeInTheDocument();
-		fireEvent.click(screen.getByText("Magic"));
-		expect(
-			screen.getByRole("button", { name: /login with magic link/i }),
-		).toBeInTheDocument();
-	});
-
-	// Test: Should show forgot password link only for password method
-	it("shows forgot password link only for password method", () => {
-		render(
-			<MemoryRouter>
-				<Login isAuthenticated={false} onAuthenticate={onAuthenticate} />
-			</MemoryRouter>,
-		);
+		// Password reset link should not be visible initially
 		expect(screen.queryByText(/forgot your password/i)).not.toBeInTheDocument();
+	});
+
+	it("shows Password component and reset link when password method is selected", () => {
+		render(
+			<MemoryRouter>
+				<Login />
+			</MemoryRouter>
+		);
+		// Switch to password method
 		fireEvent.click(screen.getByText("Password"));
-		expect(screen.getByText(/forgot your password/i)).toBeInTheDocument();
-	});
-
-	// Test: Should always show signup link
-	it("shows signup link always", () => {
-		render(
-			<MemoryRouter>
-				<Login isAuthenticated={false} onAuthenticate={onAuthenticate} />
-			</MemoryRouter>,
-		);
-		expect(screen.getByText(/don't have an account/i)).toHaveAttribute(
-			"href",
-			"/signup",
-		);
-	});
-
-	// Test: Should redirect to / if already authenticated
-	it("redirects to / if authenticated", () => {
-		render(
-			<MemoryRouter>
-				<Login isAuthenticated={true} onAuthenticate={onAuthenticate} />
-			</MemoryRouter>,
-		);
+		expect(screen.getByText("PasswordMock")).toBeInTheDocument();
 		expect(
-			screen.queryByText(/welcome to phishing mail ai/i),
-		).not.toBeInTheDocument();
+			screen.getByRole("link", { name: /forgot your password/i })
+		).toBeInTheDocument();
+		// MagicLink should not be visible
+		expect(screen.queryByText("MagicLinkMock")).not.toBeInTheDocument();
 	});
 
-	// Test: Should call onAuthenticate when password login is clicked
-	it("calls onAuthenticate when password login is clicked", () => {
+	it("shows MagicLink component and hides reset link when magic method is selected", () => {
 		render(
 			<MemoryRouter>
-				<Login isAuthenticated={false} onAuthenticate={onAuthenticate} />
-			</MemoryRouter>,
+				<Login />
+			</MemoryRouter>
 		);
+		// Switch to password then back to magic
 		fireEvent.click(screen.getByText("Password"));
-		fireEvent.click(screen.getByRole("button", { name: /password login/i }));
-		expect(onAuthenticate).toHaveBeenCalledWith({ token: "test" });
+		fireEvent.click(screen.getByText("Magic"));
+		expect(screen.getByText("MagicLinkMock")).toBeInTheDocument();
+		expect(screen.queryByText(/forgot your password/i)).not.toBeInTheDocument();
+		expect(screen.queryByText("PasswordMock")).not.toBeInTheDocument();
 	});
 });

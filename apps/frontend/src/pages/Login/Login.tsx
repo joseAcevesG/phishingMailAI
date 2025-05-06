@@ -1,15 +1,9 @@
 import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ToggleButtonGroup from "../../components/ToggleButtonGroup/ToggleButtonGroup";
 import MagicLink from "../../components/magicLink/MagicLink";
-import type { APIAuth } from "../../types";
 import styles from "./Login.module.css";
 import Password from "./Password";
-
-interface Props {
-	isAuthenticated?: boolean;
-	onAuthenticate: (data: APIAuth) => void;
-}
 
 /**
  * Login component for authenticating users.
@@ -21,18 +15,11 @@ interface Props {
  * it redirects to the home page. It also includes navigation links
  * for password reset and account signup.
  *
- * @param {boolean} isAuthenticated - Indicates if the user is already authenticated.
- * @param {(data: APIAuth) => void} onAuthenticate - Callback function to handle authentication.
  */
-export const Login: React.FC<Props> = ({ isAuthenticated, onAuthenticate }) => {
+export const Login: React.FC = () => {
 	const [selectedMethod, setSelectedMethod] = useState<"magic" | "password">(
 		"magic",
 	);
-
-	// If the user is already authenticated, redirect to the home page
-	if (isAuthenticated) {
-		return <Navigate replace to="/" />;
-	}
 
 	return (
 		<div className={styles.loginContainer} id="login">
@@ -51,7 +38,7 @@ export const Login: React.FC<Props> = ({ isAuthenticated, onAuthenticate }) => {
 						url={"/api/auth/login"}
 					/>
 				) : (
-					<Password onAuthenticate={onAuthenticate} />
+					<Password />
 				)}
 				<div className={styles.linkContainer}>
 					{/* Show password reset link only for password login method */}

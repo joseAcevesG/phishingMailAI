@@ -1,25 +1,15 @@
 import { authTypes } from "shared/auth-types";
 import styles from "../../assets/Password.module.css";
-import type { APIAuth } from "../../types";
 import { usePasswordLogin } from "./usePasswordLogin";
-
-interface Props {
-	onAuthenticate: (data: APIAuth) => void;
-}
 
 /**
  * Form component for password-based login.
  *
  * Uses the `usePasswordLogin` hook to handle state and submission of the form.
  *
- * @param {Props} props Component props.
- * @param {function(APIAuth)} props.onAuthenticate Callback function to call when the user is
- *                                                  authenticated. Receives the user's auth data
- *                                                  as an argument.
- *
  * @returns {JSX.Element} The password login form.
  */
-const Password: React.FC<Props> = ({ onAuthenticate }) => {
+const Password: React.FC = () => {
 	const {
 		email,
 		setEmail,
@@ -28,13 +18,18 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 		error,
 		isSubmitting,
 		handlePasswordLogin,
-	} = usePasswordLogin({ onAuthenticate, authType: authTypes.passwordLogin });
+	} = usePasswordLogin({ authType: authTypes.passwordLogin });
 
 	return (
-		<form className={styles.passwordForm} onSubmit={handlePasswordLogin}>
+		<form
+			className={styles.passwordForm}
+			onSubmit={handlePasswordLogin}
+			data-testid="password-form"
+		>
 			{/* Email input field */}
 			<div className={styles.inputGroup}>
 				<input
+					name="email"
 					className={styles.emailInput}
 					onChange={(e) => setEmail(e.target.value)}
 					placeholder="Email"
@@ -46,6 +41,7 @@ const Password: React.FC<Props> = ({ onAuthenticate }) => {
 			{/* Password input field */}
 			<div className={styles.inputGroup}>
 				<input
+					name="password"
 					className={styles.passwordInput}
 					onChange={(e) => setPassword(e.target.value)}
 					placeholder="Password"

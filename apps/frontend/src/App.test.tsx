@@ -28,7 +28,7 @@ vi.mock("./pages/Home/Home", () => ({
 	default: () => <div data-testid="home" />,
 }));
 vi.mock("./pages/Landing/Landing", () => ({
-	Landing: () => <div data-testid="landing" />,
+	default: () => <div data-testid="landing" />,
 }));
 vi.mock("./pages/Login/Login", () => ({
 	Login: () => <div data-testid="login" />,
@@ -99,6 +99,22 @@ describe("App routing and layout", () => {
 		expect(screen.getByTestId("home")).toBeInTheDocument();
 	});
 
+	// Test: Should show Authenticate page on /authenticate if not authenticated
+	it("shows Authenticate on /authenticate if not authenticated", () => {
+		setupAuthMock({ isAuthenticated: false });
+		window.history.pushState({}, "", "/authenticate");
+		render(<App />);
+		expect(screen.getByTestId("authenticate")).toBeInTheDocument();
+	});
+
+	// Test: Should redirect to root on /authenticate if authenticated
+	it("redirects to root on /authenticate if authenticated", () => {
+		setupAuthMock({ isAuthenticated: true });
+		window.history.pushState({}, "", "/authenticate");
+		render(<App />);
+		expect(screen.getByTestId("home")).toBeInTheDocument();
+	});
+
 	// Test: Should show Login page on /login if not authenticated
 	it("shows Login on /login if not authenticated", () => {
 		setupAuthMock({ isAuthenticated: false });
@@ -121,6 +137,14 @@ describe("App routing and layout", () => {
 		window.history.pushState({}, "", "/signup");
 		render(<App />);
 		expect(screen.getByTestId("signup")).toBeInTheDocument();
+	});
+
+	// Test: Should redirect to root on /signup if authenticated
+	it("redirects to root on /signup if authenticated", () => {
+		setupAuthMock({ isAuthenticated: true });
+		window.history.pushState({}, "", "/signup");
+		render(<App />);
+		expect(screen.getByTestId("home")).toBeInTheDocument();
 	});
 
 	// Test: Should show Settings page on /settings if authenticated

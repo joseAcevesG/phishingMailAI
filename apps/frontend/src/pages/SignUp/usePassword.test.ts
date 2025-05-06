@@ -18,6 +18,10 @@ const mocks: {
 vi.mock("react-router-dom", () => ({
 	useNavigate: () => mocks.mockNavigate,
 }));
+// Mock useAuth to prevent AuthProvider error
+vi.mock("../../hooks/useAuth", () => ({
+	useAuth: () => ({ validateStatus: vi.fn() }),
+}));
 // Mock useFetch to control API call behavior
 vi.mock("../../hooks/useFetch", () => ({
 	useFetch: () => ({
@@ -31,20 +35,17 @@ vi.mock("../../services/validatePassword", () => ({
 	validateAll: (...args: unknown[]) => mocks.mockValidateAll(...args),
 }));
 
-const onAuthenticate = vi.fn();
-
 describe("usePassword", () => {
 	// Reset all mocks before each test for isolation
 	beforeEach(() => {
 		for (const fn of Object.values(mocks)) {
 			fn.mockReset();
 		}
-		onAuthenticate.mockReset();
 	});
 
 	// Test: Should initialize with empty fields and default states
 	it("should initialize with empty fields and default states", () => {
-		const { result } = renderHook(() => usePassword({ onAuthenticate }));
+		const { result } = renderHook(() => usePassword());
 		expect(result.current.email).toBe("");
 		expect(result.current.password).toBe("");
 		expect(result.current.confirmPassword).toBe("");
@@ -54,7 +55,7 @@ describe("usePassword", () => {
 
 	// Test: Should update email, password, and confirmPassword
 	it("should update email, password, and confirmPassword", () => {
-		const { result } = renderHook(() => usePassword({ onAuthenticate }));
+		const { result } = renderHook(() => usePassword());
 		act(() => result.current.setEmail("test@example.com"));
 		act(() => result.current.setPassword("pw1"));
 		act(() => result.current.setConfirmPassword("pw1"));
@@ -66,7 +67,7 @@ describe("usePassword", () => {
 	// Test: Should validate passwords on change
 	it("should validate passwords on change", () => {
 		mocks.mockValidateAll.mockReturnValue("Passwords do not match");
-		const { result } = renderHook(() => usePassword({ onAuthenticate }));
+		const { result } = renderHook(() => usePassword());
 		act(() => result.current.setPassword("a"));
 		act(() => result.current.setConfirmPassword("b"));
 		expect(mocks.mockValidateAll).toHaveBeenCalledWith("a", "b");
@@ -80,7 +81,7 @@ describe("usePassword", () => {
 	it("should call execute and handle success on submit", async () => {
 		const fakeAuth: APIAuth = { authenticated: true, email: "e" };
 		mocks.mockExecute.mockResolvedValue(fakeAuth);
-		const { result } = renderHook(() => usePassword({ onAuthenticate }));
+		const { result } = renderHook(() => usePassword());
 		act(() => {
 			result.current.setEmail("e");
 			result.current.setPassword("pw");
@@ -95,14 +96,13 @@ describe("usePassword", () => {
 		expect(mocks.mockExecute).toHaveBeenCalledWith({
 			body: { email: "e", password: "pw", type: expect.any(String) },
 		});
-		expect(onAuthenticate).toHaveBeenCalledWith(fakeAuth);
 		expect(mocks.mockNavigate).toHaveBeenCalledWith("/");
 	});
 
 	// Test: Should set error if signup fails
 	it("should set error if signup fails", async () => {
 		mocks.mockExecute.mockResolvedValue(undefined);
-		const { result } = renderHook(() => usePassword({ onAuthenticate }));
+		const { result } = renderHook(() => usePassword());
 		act(() => {
 			result.current.setEmail("e");
 			result.current.setPassword("pw");

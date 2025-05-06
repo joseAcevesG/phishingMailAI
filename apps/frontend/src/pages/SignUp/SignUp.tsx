@@ -1,15 +1,9 @@
 import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ToggleButtonGroup from "../../components/ToggleButtonGroup/ToggleButtonGroup";
 import MagicLink from "../../components/magicLink/MagicLink";
-import type { APIAuth } from "../../types";
 import Password from "./Password";
 import styles from "./SignUp.module.css";
-
-interface Props {
-	isAuthenticated?: boolean;
-	onAuthenticate: (data: APIAuth) => void;
-}
 
 /**
  * SignUp component for user registration.
@@ -20,22 +14,11 @@ interface Props {
  * options for each method. If the user is already authenticated,
  * it redirects to the home page. It also includes navigation links
  * for login.
- *
- * @param {boolean} isAuthenticated - Indicates if the user is already authenticated.
- * @param {(data: APIAuth) => void} onAuthenticate - Callback function to handle authentication.
  */
-export const SignUp: React.FC<Props> = ({
-	isAuthenticated,
-	onAuthenticate,
-}) => {
+export const SignUp: React.FC = () => {
 	const [selectedMethod, setSelectedMethod] = useState<"magic" | "password">(
 		"magic",
 	);
-
-	// If user is already authenticated, redirect to home page
-	if (isAuthenticated) {
-		return <Navigate replace to="/" />;
-	}
 
 	return (
 		<div className={styles.signupContainer} id="signup">
@@ -54,7 +37,7 @@ export const SignUp: React.FC<Props> = ({
 						url={"/api/auth/login"}
 					/>
 				) : (
-					<Password onAuthenticate={onAuthenticate} />
+					<Password />
 				)}
 				{/* Navigation link for users who already have an account */}
 				<Link className={styles.link} to="/login">
