@@ -8,10 +8,12 @@ vi.mock("./usePasswordLogin", () => ({
 	usePasswordLogin: vi.fn(),
 }));
 
+// Create mock functions for the hook's setters and handlers
 const mockSetEmail = vi.fn();
 const mockSetPassword = vi.fn();
 const mockHandlePasswordLogin = vi.fn((e) => e.preventDefault());
 
+// Helper function to set up the mocked hook return values for each test
 function setupPasswordHook({
 	email = "",
 	password = "",
@@ -29,7 +31,11 @@ function setupPasswordHook({
 	});
 }
 
+// Test suite for the Password component
+// Each test uses the mocked hook to isolate component behavior
+
 describe("Password", () => {
+	// Reset all mocks before each test to avoid cross-test pollution
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});

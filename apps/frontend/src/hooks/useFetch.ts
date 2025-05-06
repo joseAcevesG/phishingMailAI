@@ -31,7 +31,9 @@ export function useFetch<T = unknown>(
 	 * @returns {Promise<T | null>} - A promise that resolves with the response data or null if the request is aborted.
 	 */
 	const execute = useCallback(async (overrideConfig?: Partial<FetchConfig>) => {
+		// Abort any ongoing fetch before starting a new one
 		controllerRef.current?.abort();
+		// Merge default config, current config, and any override config for this request
 		const config = {
 			...configRef.current,
 			...overrideConfig,
@@ -46,6 +48,8 @@ export function useFetch<T = unknown>(
 			credentials,
 			onUnauthorized,
 		} = config;
+
+		// If sending FormData, remove content-type so browser sets it correctly
 		const finalHeaders =
 			body instanceof FormData
 				? Object.fromEntries(
@@ -54,11 +58,14 @@ export function useFetch<T = unknown>(
 						),
 					)
 				: headers;
+
+		// Create a new AbortController for the current request
 		controllerRef.current = new AbortController();
 		setLoading(true);
 		setError(null);
 
 		try {
+			// For GET requests with a body, serialize body as query params
 			const response = await fetch(
 				method === "GET" && body
 					? `${url}?${new URLSearchParams(body as Record<string, string>).toString()}`
@@ -76,6 +83,7 @@ export function useFetch<T = unknown>(
 					signal: controllerRef.current.signal,
 				},
 			);
+			// Handle unauthorized (401) responses
 			if (response.status === 401) {
 				if (onUnauthorized) onUnauthorized();
 				else {
@@ -84,6 +92,7 @@ export function useFetch<T = unknown>(
 				}
 				return null;
 			}
+			// Handle non-OK responses (other errors)
 			if (!response.ok) {
 				const errorData = await response.json().catch(() => null);
 				const message =
@@ -92,22 +101,23 @@ export function useFetch<T = unknown>(
 						: errorData?.message || response.statusText;
 				throw new Error(message);
 			}
+			// Parse response JSON as result, set data state
 			const result: T = await response.json().catch(() => null);
 			setData(result);
 			return result;
 		} catch (err: unknown) {
+			// Ignore abort errors (user navigated away, etc.)
 			if (err instanceof DOMException && err.name === "AbortError") return null;
+			// Set error state for all other errors
 			setError(err instanceof Error ? err.message : "Request failed");
 			return null;
 		} finally {
+			// Always stop loading state
 			setLoading(false);
 		}
 	}, []);
 
-	/**
-	 * useEffect hook that automatically executes the fetch request on mount if auto is true.
-	 * It also aborts the request if the component unmounts.
-	 */
+	// automatically execute the fetch request on mount if auto is true
 	useEffect(() => {
 		if (auto) {
 			execute();

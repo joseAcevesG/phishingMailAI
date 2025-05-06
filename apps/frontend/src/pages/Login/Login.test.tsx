@@ -23,14 +23,17 @@ vi.mock("../../components/ToggleButtonGroup/ToggleButtonGroup", () => ({
 		</div>
 	),
 }));
+// Mock the child components to isolate Login logic
 vi.mock("../../components/magicLink/MagicLink", () => ({
 	default: () => <div>MagicLinkMock</div>,
 }));
+// Mock the child components to isolate Login logic
 vi.mock("./Password", () => ({
 	default: () => <div>PasswordMock</div>,
 }));
 
 describe("Login", () => {
+	// Test: Renders heading, prompt, toggle, and signup link
 	it("renders heading, prompt, toggle, and signup link", () => {
 		render(
 			<MemoryRouter>
@@ -49,6 +52,7 @@ describe("Login", () => {
 		expect(screen.queryByText(/forgot your password/i)).not.toBeInTheDocument();
 	});
 
+	// Test: Shows Password component and reset link when password method is selected
 	it("shows Password component and reset link when password method is selected", () => {
 		render(
 			<MemoryRouter>
@@ -65,6 +69,7 @@ describe("Login", () => {
 		expect(screen.queryByText("MagicLinkMock")).not.toBeInTheDocument();
 	});
 
+	// Test: Shows MagicLink component and hides reset link when magic method is selected
 	it("shows MagicLink component and hides reset link when magic method is selected", () => {
 		render(
 			<MemoryRouter>

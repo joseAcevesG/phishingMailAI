@@ -11,12 +11,24 @@ import { useFetch } from "../hooks/useFetch";
 import type { APIAuth, AuthContextType, AuthState } from "../types";
 import { setOnUnauthorized } from "../services/authHandler";
 
-// Create context
+// context for authentication state
 export const AuthContext = createContext<AuthContextType | undefined>(
 	undefined
 );
 
-// Provider component wraps your app
+/**
+ * The AuthProvider component provides authentication state and
+ * login/logout functionality to the entire app. It wraps the
+ * application in the AuthContext and periodically checks the
+ * user's authentication status with the backend.
+ *
+ * Children of the AuthProvider will have access to the
+ * authentication state and the validateStatus function.
+ *
+ * @param {ReactNode} children The children of the component.
+ *
+ * @returns {JSX.Element} The AuthProvider component.
+ */
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [state, setState] = useState<AuthState>({
 		isAuthenticated: true,

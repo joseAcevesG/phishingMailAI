@@ -22,6 +22,7 @@ describe("Authenticate", () => {
 		expect(screen.getByText(/Authenticating.../i)).toBeInTheDocument();
 	});
 
+	// Test: Should call useAuthenticate with no arguments
 	it("calls useAuthenticate with no arguments", () => {
 		render(<Authenticate />);
 		expect(mockUseAuthenticate).toHaveBeenCalledWith();

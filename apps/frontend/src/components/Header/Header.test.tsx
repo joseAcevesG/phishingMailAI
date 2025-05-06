@@ -4,13 +4,15 @@ import { describe, expect, it, vi, beforeEach, type Mock } from "vitest";
 import Header from "./Header";
 import { useHeaderAuth } from "./useHeaderAuth";
 
-// Mock the custom hook
+// Mock the custom hook to control authentication state in tests
 vi.mock("./useHeaderAuth", () => ({
 	useHeaderAuth: vi.fn(),
 }));
 
+// Cast the mocked hook for type safety and easier usage
 const mockedUseHeaderAuth = useHeaderAuth as unknown as Mock;
 
+// Helper to render Header within router context
 const renderHeader = () =>
 	render(
 		<BrowserRouter>
@@ -18,12 +20,16 @@ const renderHeader = () =>
 		</BrowserRouter>
 	);
 
+// Group Header tests
 describe("Header", () => {
+	// Reset mocks before each test to ensure isolation
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
 
+	// Test: Should render navigation links for authenticated user
 	it("renders navigation links for authenticated user", () => {
+		// Simulate authenticated user
 		mockedUseHeaderAuth.mockReturnValue({
 			userEmail: "user@example.com",
 			handleLogout: vi.fn(),
@@ -40,7 +46,9 @@ describe("Header", () => {
 		expect(screen.getByRole("button", { name: /logout/i })).toBeInTheDocument();
 	});
 
+	// Test: Should render navigation links for unauthenticated user
 	it("renders navigation links for unauthenticated user", () => {
+		// Simulate unauthenticated user
 		mockedUseHeaderAuth.mockReturnValue({
 			userEmail: null,
 			handleLogout: vi.fn(),
@@ -57,7 +65,9 @@ describe("Header", () => {
 		).not.toBeInTheDocument();
 	});
 
+	// Test: Should call handleLogout when logout button is clicked
 	it("calls handleLogout when logout button is clicked", async () => {
+		// Simulate authenticated user with a mock logout handler
 		const handleLogout = vi.fn();
 		mockedUseHeaderAuth.mockReturnValue({
 			userEmail: "user@example.com",
@@ -67,6 +77,7 @@ describe("Header", () => {
 		renderHeader();
 		const logoutButton = screen.getByRole("button", { name: /logout/i });
 
+		// Simulate user clicking the logout button
 		await fireEvent.click(logoutButton);
 		expect(handleLogout).toHaveBeenCalledTimes(1);
 	});
