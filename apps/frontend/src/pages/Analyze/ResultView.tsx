@@ -14,7 +14,7 @@ interface Props {
  * @param {Analysis} props.result - The analysis result containing details about the email.
  * @param {Function} props.onReset - Callback function to reset the analysis view.
  */
-export const ResultView: React.FC<Props> = ({ result, onReset }) => {
+const ResultView: React.FC<Props> = ({ result, onReset }) => {
 	return (
 		<div className={styles.resultBox}>
 			<h2>Analysis Result</h2>
@@ -45,3 +45,5 @@ export const ResultView: React.FC<Props> = ({ result, onReset }) => {
 		</div>
 	);
 };
+
+export default ResultView;

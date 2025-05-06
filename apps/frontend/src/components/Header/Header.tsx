@@ -12,7 +12,7 @@ import styles from "./Header.module.css";
  *
  * @returns {ReactElement}
  */
-export const Header: React.FC = () => {
+const Header: React.FC = () => {
 	const { userEmail, handleLogout } = useHeaderAuth();
 	return (
 		<header className={styles.header}>
@@ -76,3 +76,5 @@ export const Header: React.FC = () => {
 		</header>
 	);
 };
+
+export default Header;

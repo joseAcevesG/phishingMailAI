@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import type { Analysis } from "shared";
 import { describe, expect, it, vi } from "vitest";
-import { ResultView } from "./ResultView";
+import ResultView from "./ResultView";
 
 // Sample analysis object to be used in tests
 const sampleAnalysis: Analysis = {
@@ -25,7 +25,7 @@ describe("ResultView", () => {
 		expect(screen.getByText(/victim@example.com/)).toBeInTheDocument();
 		expect(screen.getByText(/85.0%/)).toBeInTheDocument();
 		expect(
-			screen.getByText(/Contains suspicious links and urgent language./),
+			screen.getByText(/Contains suspicious links and urgent language./)
 		).toBeInTheDocument();
 		expect(screen.getByText("Red Flags:")).toBeInTheDocument();
 		expect(screen.getByText("Urgency")).toBeInTheDocument();

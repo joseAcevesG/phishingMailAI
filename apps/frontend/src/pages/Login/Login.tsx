@@ -16,9 +16,9 @@ import Password from "./Password";
  * for password reset and account signup.
  *
  */
-export const Login: React.FC = () => {
+const Login: React.FC = () => {
 	const [selectedMethod, setSelectedMethod] = useState<"magic" | "password">(
-		"magic",
+		"magic"
 	);
 
 	return (
@@ -56,3 +56,5 @@ export const Login: React.FC = () => {
 		</div>
 	);
 };
+
+export default Login;

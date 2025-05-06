@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
-import { SignUp } from "./SignUp";
+import SignUp from "./SignUp";
 
 // Type definitions for mocked components
 // (These help TypeScript understand the props for the mocks)

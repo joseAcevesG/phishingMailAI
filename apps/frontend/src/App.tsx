@@ -6,18 +6,18 @@ import {
 } from "react-router-dom";
 import styles from "./App.module.css";
 import Footer from "./components/Footer/Footer";
-import { Header } from "./components/Header/Header";
-import { ProtectedRoute } from "./components/ProtectedRoute/ProtectedRoute";
+import Header from "./components/Header/Header";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import { useAuth } from "./hooks/useAuth";
 import Analyze from "./pages/Analyze/Analyze";
-import { Authenticate } from "./pages/Authenticate/Authenticate";
+import Authenticate from "./pages/Authenticate/Authenticate";
 import HistoryPage from "./pages/History/History";
 import Home from "./pages/Home/Home";
 import Landing from "./pages/Landing/Landing";
-import { Login } from "./pages/Login/Login";
-import { ResetLink } from "./pages/ResetLink/ResetLink";
-import { ResetPassword } from "./pages/ResetPassword/ResetPassword";
+import Login from "./pages/Login/Login";
+import ResetLink from "./pages/ResetLink/ResetLink";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import SettingsPage from "./pages/Settings/Settings";
 import SignUp from "./pages/SignUp/SignUp";
 

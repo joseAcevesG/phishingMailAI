@@ -4,7 +4,7 @@ import styles from "./ResetLink.module.css";
 /**
  * ResetLink component renders a form for users to request a password reset link.
  */
-export const ResetLink: React.FC = () => {
+const ResetLink: React.FC = () => {
 	return (
 		<div className={styles.loginContainer} id="login">
 			<div className={styles.loginBox}>
@@ -18,3 +18,5 @@ export const ResetLink: React.FC = () => {
 		</div>
 	);
 };
+
+export default ResetLink;

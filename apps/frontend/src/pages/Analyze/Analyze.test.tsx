@@ -20,7 +20,7 @@ type ResultViewProps = {
 
 // Mock the ResultView component
 vi.mock("./ResultView", () => ({
-	ResultView: ({ onReset, result }: ResultViewProps) => (
+	default: ({ onReset, result }: ResultViewProps) => (
 		<div data-testid="result-view">
 			<span>{result ? result.subject : "No result"}</span>
 			<button onClick={onReset} type="button">
@@ -67,7 +67,7 @@ describe("Analyze page", () => {
 				<Routes>
 					<Route element={<Analyze />} path="/analyze/:id" />
 				</Routes>
-			</MemoryRouter>,
+			</MemoryRouter>
 		);
 	};
 

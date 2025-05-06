@@ -1,6 +1,6 @@
 import ErrorMessages from "../../types/error-messages";
 import styles from "./Home.module.css";
-import { UploadForm } from "./UploadForm";
+import UploadForm from "./UploadForm";
 import { useMailAnalysis } from "./useMailAnalysis";
 
 /**

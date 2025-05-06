@@ -1,4 +1,4 @@
-import { ResultView } from "./ResultView";
+import ResultView from "./ResultView";
 import { useAnalyze } from "./useAnalyze";
 
 /**

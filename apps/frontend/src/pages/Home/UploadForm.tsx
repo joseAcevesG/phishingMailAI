@@ -18,7 +18,7 @@ interface Props {
  * a submit button, and an error message if the user selects an invalid file.
  * The card also has drag-and-drop support.
  */
-export const UploadForm: React.FC<Props> = ({ onAnalyze, isUploading }) => {
+const UploadForm: React.FC<Props> = ({ onAnalyze, isUploading }) => {
 	const {
 		file,
 		error,
@@ -79,3 +79,5 @@ export const UploadForm: React.FC<Props> = ({ onAnalyze, isUploading }) => {
 		</div>
 	);
 };
+
+export default UploadForm;

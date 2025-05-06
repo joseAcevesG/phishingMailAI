@@ -15,9 +15,9 @@ import styles from "./SignUp.module.css";
  * it redirects to the home page. It also includes navigation links
  * for login.
  */
-export const SignUp: React.FC = () => {
+const SignUp: React.FC = () => {
 	const [selectedMethod, setSelectedMethod] = useState<"magic" | "password">(
-		"magic",
+		"magic"
 	);
 
 	return (

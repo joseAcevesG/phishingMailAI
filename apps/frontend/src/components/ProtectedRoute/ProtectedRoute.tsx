@@ -13,7 +13,7 @@ interface Props {
  * @param children The component to render if the user is authenticated
  * @returns A React component
  */
-export const ProtectedRoute: React.FC<Props> = ({ children }) => {
+const ProtectedRoute: React.FC<Props> = ({ children }) => {
 	// If the user is not authenticated, redirect them to the login page
 	// This is a client-side redirect, so it won't trigger a full page reload
 	// and the user will be returned to the originally requested page after
@@ -26,3 +26,5 @@ export const ProtectedRoute: React.FC<Props> = ({ children }) => {
 	// If the user is authenticated, just render the requested component
 	return <>{children}</>;
 };
+
+export default ProtectedRoute;

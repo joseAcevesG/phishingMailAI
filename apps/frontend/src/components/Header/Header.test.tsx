@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { describe, expect, it, vi, beforeEach, type Mock } from "vitest";
-import { Header } from "./Header";
+import Header from "./Header";
 import { useHeaderAuth } from "./useHeaderAuth";
 
 // Mock the custom hook

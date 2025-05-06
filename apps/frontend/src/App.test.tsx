@@ -5,21 +5,19 @@ import { useAuth } from "./hooks/useAuth";
 
 // Mock all major page and layout components to isolate routing and layout logic
 vi.mock("./components/Header/Header", () => ({
-	Header: () => <div data-testid="header" />,
+	default: () => <div data-testid="header" />,
 }));
 vi.mock("./components/Footer/Footer", () => ({
 	default: () => <div data-testid="footer" />,
 }));
 vi.mock("./components/ProtectedRoute/ProtectedRoute", () => ({
-	ProtectedRoute: ({ children }: { children: React.ReactNode }) => (
-		<>{children}</>
-	),
+	default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 vi.mock("./pages/Analyze/Analyze", () => ({
 	default: () => <div data-testid="analyze" />,
 }));
 vi.mock("./pages/Authenticate/Authenticate", () => ({
-	Authenticate: () => <div data-testid="authenticate" />,
+	default: () => <div data-testid="authenticate" />,
 }));
 vi.mock("./pages/History/History", () => ({
 	default: () => <div data-testid="history" />,
@@ -31,13 +29,13 @@ vi.mock("./pages/Landing/Landing", () => ({
 	default: () => <div data-testid="landing" />,
 }));
 vi.mock("./pages/Login/Login", () => ({
-	Login: () => <div data-testid="login" />,
+	default: () => <div data-testid="login" />,
 }));
 vi.mock("./pages/ResetLink/ResetLink", () => ({
-	ResetLink: () => <div data-testid="reset-link" />,
+	default: () => <div data-testid="reset-link" />,
 }));
 vi.mock("./pages/ResetPassword/ResetPassword", () => ({
-	ResetPassword: () => <div data-testid="reset-password" />,
+	default: () => <div data-testid="reset-password" />,
 }));
 vi.mock("./pages/SignUp/SignUp", () => ({
 	default: () => <div data-testid="signup" />,

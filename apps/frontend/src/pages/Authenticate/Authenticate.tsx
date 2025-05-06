@@ -11,7 +11,7 @@ import { useAuthenticate } from "./useAuthenticate";
  *
  * @returns A JSX element representing the Authenticate page.
  */
-export const Authenticate: React.FC = () => {
+const Authenticate: React.FC = () => {
 	// Use the useAuthenticate hook to authenticate the user
 	useAuthenticate();
 
@@ -21,3 +21,5 @@ export const Authenticate: React.FC = () => {
 		</div>
 	);
 };
+
+export default Authenticate;

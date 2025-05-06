@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { UploadForm } from "./UploadForm";
+import UploadForm from "./UploadForm";
 
 // Helper to create a mock .eml file for testing file input
 function createFile(name = "test.eml", type = "message/rfc822") {
@@ -20,7 +20,7 @@ describe("UploadForm", () => {
 		render(<UploadForm isUploading={false} onAnalyze={mockOnAnalyze} />);
 		expect(screen.getByText(/upload email for analysis/i)).toBeInTheDocument();
 		expect(
-			screen.getByRole("button", { name: /analyze email/i }),
+			screen.getByRole("button", { name: /analyze email/i })
 		).toBeInTheDocument();
 	});
 
@@ -49,7 +49,7 @@ describe("UploadForm", () => {
 		const invalidFile = createFile("not-an-email.txt", "text/plain");
 		await fireEvent.change(input, { target: { files: [invalidFile] } });
 		expect(
-			screen.getByText(/please select a valid .eml file/i),
+			screen.getByText(/please select a valid .eml file/i)
 		).toBeInTheDocument();
 	});
 

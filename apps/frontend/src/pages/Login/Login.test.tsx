@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
-import { Login } from "./Login";
+import Login from "./Login";
 
 // Mock the child components to isolate Login logic
 vi.mock("../../components/ToggleButtonGroup/ToggleButtonGroup", () => ({

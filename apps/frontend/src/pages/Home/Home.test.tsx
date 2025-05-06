@@ -6,7 +6,7 @@ import { useMailAnalysis } from "./useMailAnalysis";
 
 // Mock UploadForm to isolate Home tests from form implementation
 vi.mock("./UploadForm", () => ({
-	UploadForm: ({
+	default: ({
 		isUploading,
 		onAnalyze,
 	}: {
