@@ -1,106 +1,126 @@
 # 📱 Phishing Mail Detector - Frontend Documentation
 
-## Project Overview
+## 🔍 Overview
 
-This frontend is a modern React single-page application (SPA) built with TypeScript and vanilla CSS for a clean, minimal design. The app features a custom authentication system using Stytch's magic links, managed through HTTP-only cookies for security. Core functionality is organized into reusable components including an `UploadForm` for .eml file submissions and a `ResultView` for displaying phishing analysis results. The codebase follows best practices with centralized type definitions, a custom `useAuth` hook for authentication state management, and consolidated global styles in `index.css`. The application provides a seamless user experience with features like timed magic link resending, proper error handling, and protected routes managed through React Router.
+This frontend is a modern, responsive React single-page application (SPA) written in TypeScript and styled with vanilla CSS. It communicates securely with the backend via HTTP-only cookies and integrates Stytch for passwordless authentication using magic links.
 
-## Development Setup
+**Key Features:**
+
+- Authentication via Stytch magic links
+- `.eml` file upload with phishing detection results via GPT-4o
+- Reusable components (`UploadForm`, `ResultView`, etc.)
+- Protected routes with React Router
+- Timed resend logic and clean error handling
+- Global styling via `index.css`
+
+## 🚀 Tech Stack
+
+- **Framework:** React (Vite)
+- **Language:** TypeScript
+- **Auth:** Stytch
+- **Styles:** Vanilla CSS
+- **Tooling:** pnpm, Biome
+
+## ⚖️ Try the App
+
+- Deployed at: [https://phishingmailai.onrender.com](https://phishingmailai.onrender.com)
+- Key routes:
+
+  - `/` – Upload page
+  - `/auth` – Login and magic link flow
+  - `/result` – Phishing analysis result
+
+## ⚙️ Setup & Installation
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- pnpm (package manager)
-- MongoDB (local or cloud instance)
-- Stytch account for authentication
-- OpenAI API key to use the GPT-4o model
+- Node.js (v18+)
+- pnpm
+- Backend service running (see backend README)
 
 ### Why pnpm?
 
-pnpm is a fast, disk space efficient, and secure package manager that provides a more efficient way to manage dependencies in a monorepo. It uses a single global store for all dependencies, which reduces the amount of disk space used and speeds up the installation process. pnpm also provides features like deduplication and zero-installs, which can improve the performance of your development workflow.
+`pnpm` offers fast installs, workspace support, and disk efficiency. Great for managing monorepo projects.
 
-Also, this project uses pnpm workspace, which allows you to manage dependencies across multiple packages in a monorepo. for more information, check the [pnpm workspace documentation](https://pnpm.io/workspaces).
+> Learn more: [https://pnpm.io/workspaces](https://pnpm.io/workspaces)
 
-### Environment Setup
+### 📂 Environment Setup
 
-1. Clone the repository:
+1. Clone the repo and install dependencies:
 
-   ```bash
-   https://github.com/joseAcevesG/phishingMailAI.git
-   cd phishingMailAI
-   ```
+```bash
+git clone https://github.com/joseAcevesG/phishingMailAI.git
+cd phishingMailAI
+pnpm install
+```
 
-2. **Important:** Install dependencies:
+2. Confirm backend is running. If it's using a custom port, edit `vite.config.ts`:
 
-   ```bash
-   pnpm install
-   ```
+```ts
+target: "http://localhost:PORT",
+```
 
-3. Make sure that the backend is running
+## ⚡ Run Dev Server
 
-   If you have the backend running in another port, you need to change the target in `vite.config.ts`:
+```bash
+pnpm run dev:frontend
+```
 
-   ```ts
-   target: "http://localhost:PORT",
-   ```
+- on frontend directory
 
-### Running the Application
+```bash
+pnpm run dev
+```
 
-- Start the application:
+Supports hot reload out of the box via Vite.
 
-  ```bash
-  pnpm run dev
-  ```
+## 📊 Dev Notes
 
-### Linter, formatter, and type checker
+- State management is handled locally via context (`AuthContext`)
+- All core types are centralized under `types/`
+- Pages and routes are guarded via context-aware logic
+- File upload handled securely and sent to backend for analysis
 
-This project uses biome for linting and formatting.
+## ✂️ Lint & Format
 
-- To **fix** fixable errors and **show details** of not fixable errors you can use:
+Uses **Biome** for fast, reliable formatting and linting.
 
-  - Check (format and lint):
+- Check, lint, format:
 
-    ```bash
-    pnpm run check
-    ```
+```bash
+pnpm run check:frontend
+pnpm run lint:frontend
+pnpm run format:frontend
+```
 
-  - Format:
+- Quick fixes:
 
-    ```bash
-    pnpm run format
-    ```
+```bash
+pnpm run check:frontend
+```
 
-  - Lint:
+- Detailed check, lint, format:
 
-    ```bash
-    pnpm run lint
-    ```
+```bash
+pnpm run check:detailed:frontend
+pnpm run lint:detailed:frontend
+pnpm run format:detailed:frontend
+```
 
-- To **show details** of errors you can use:
+- on frontend directory : frontend not need to run check, lint, format
 
-  - Check (format and lint):
+```bash
+pnpm run check
+pnpm run lint
+pnpm run format
+```
 
-    ```bash
-    pnpm run check:detailed
-    ```
+## ⚖️ Build (Prod)
 
-  - Lint:
+```bash
+pnpm run build:frontend
+```
 
-    ```bash
-    pnpm run lint:detailed
-    ```
+---
 
-  - Format:
-
-    ```bash
-    pnpm run format:detailed
-    ```
-
-### Development Notes
-
-- Frontend is built with React + Vite
-- This application support hot-reloading for development
-- Use `.eml` files for testing email analysis
-
-## Try the App
-
-The React SPA is deployed at <https://phishingmailai.onrender.com> and includes the following routes:
+> The frontend is minimal by design and structured for scalability, accessibility, and security.

@@ -1,136 +1,123 @@
 # 📱 Phishing Mail Detector - Monorepo Documentation
 
-## Project Overview
+## 🔍 Overview
 
-This monorepo hosts a full-stack application comprising a React single-page application (SPA) for the frontend and a Node.js (Express) backend built using an MVC folder structure.
+Phishing attacks are rapidly evolving, using AI-generated messages to deceive even the most vigilant users. This full-stack application offers a robust and user-friendly solution for detecting phishing emails. Built with a React single-page application (SPA) and an Express (Node.js) backend structured using MVC principles, it provides secure authentication, safe file handling, and AI-powered analysis using GPT-4o.
 
-The app tackles a critical challenge in today’s digital landscape: phishing detection. With phishing attacks growing increasingly sophisticated—often leveraging AI techniques to craft deceptive messages—it has become harder to distinguish genuine communication from malicious attempts. Our solution integrates robust user authentication (via Stytch magic links), secure file uploads (accepting only `.eml` files), and advanced phishing analysis powered by GPT-4o to assess the likelihood of an email being a phishing attempt. By combining secure backend processes with a clean, minimalistic frontend, this application offers a comprehensive and user-friendly tool to help mitigate phishing risks.
+**Key Features:**
 
-## Development Setup
+- Magic link authentication via Stytch
+- Secure `.eml` file uploads
+- GPT-4o powered phishing detection
+- Modular monorepo structure using `pnpm` workspaces
+
+## ⚖️ Try It Out
+
+- **Frontend:** [https://phishingmailai.onrender.com](https://phishingmailai.onrender.com)
+- **API Endpoint:** [https://phishingmailai.onrender.com/api](https://phishingmailai.onrender.com/api)
+- **API Docs:** [https://phishingmailai.onrender.com/api/docs](https://phishingmailai.onrender.com/api/docs)
+
+## 🚀 Tech Stack
+
+- **Frontend:** React (Vite)
+- **Backend:** Node.js (Express), MongoDB
+- **Authentication:** Stytch Magic Links and password login
+- **AI Analysis:** OpenAI GPT-4o
+- **Package Manager:** pnpm
+
+## ⚙️ Development Setup
 
 ### Prerequisites
 
 - Node.js (v18 or higher)
-- pnpm (package manager)
-- MongoDB (local or cloud instance)
-- Stytch account for authentication
-- OpenAI API key to use the GPT-4o model
+- pnpm
+- MongoDB (local or Atlas)
+- Stytch account ([https://stytch.com](https://stytch.com))
+- OpenAI API key ([https://openai.com](https://openai.com))
 
 ### Why pnpm?
 
-pnpm is a fast, disk space efficient, and secure package manager that provides a more efficient way to manage dependencies in a monorepo. It uses a single global store for all dependencies, which reduces the amount of disk space used and speeds up the installation process. pnpm also provides features like deduplication and zero-installs, which can improve the performance of your development workflow.
+`pnpm` ensures fast, space-efficient dependency management. Its workspace feature is ideal for monorepos, enabling better deduplication and project isolation.
 
-Also, this project uses pnpm workspace, which allows you to manage dependencies across multiple packages in a monorepo. for more information, check the [pnpm workspace documentation](https://pnpm.io/workspaces).
+> Learn more: [https://pnpm.io/workspaces](https://pnpm.io/workspaces)
 
-### Environment Setup
+### 📂 Environment Variables
 
-1. Clone the repository:
+Create a `.env` file in `/apps/backend` with the following:
 
-   ```bash
-   https://github.com/joseAcevesG/phishingMailAI.git
-   cd phishingMailAI
-   ```
+```
+PORT=                 #default 3000
+FREE_TRIAL_LIMIT=     #default 3
+STYTCH_PROJECT_ID=    #required
+STYTCH_SECRET=        #required
+SECRET_KEY=           #required
+SALT=                 #required
+TOKEN_KEY=            #required
+DB_URL=               #required
+OPENAI_API_KEY=       #required
+```
 
-2. Install dependencies:
+### ⚡ Installation
 
-   ```bash
-   pnpm install
-   ```
+```bash
+git clone https://github.com/joseAcevesG/phishingMailAI.git
+cd phishingMailAI
+pnpm install
+```
 
-3. Set up environment variables:
+## 🚪 Scripts
 
-   - Create `.env` files in `/apps/backend` :
+### Start Applications
 
-   ```
-   PORT= (number of the port to use, this is optional, by default 3000)
-   FREE_TRIAL_LIMIT= (number of free trials a user can have, this is optional, by default 3)
-   STYTCH_PROJECT_ID= (string of the project id on Stytch)
-   STYTCH_SECRET= (string of the secret key on Stytch)
-   SECRET_KEY= (string of the secret key to encrypt data)
-   SALT= (string of the salt to encrypt data)
-   TOKEN_KEY= (string of the token key for JWT)
-   DB_URL= (string of the MongoDB database url)
-   OPENAI_API_KEY= (string of the OpenAI API key)
-   ```
+```bash
+pnpm run dev             # Starts both frontend and backend
+pnpm run dev:backend     # Starts backend only
+pnpm run dev:frontend    # Starts frontend only
+```
 
-### Running the Application
+### 🔧 Build
 
-- Start both applications:
+```bash
+pnpm run build              # Builds both apps
+pnpm run build:backend      # Backend only
+pnpm run build:frontend     # Frontend only
+```
 
-  ```bash
-  pnpm run dev
-  ```
+### ✂️ Lint & Format
 
-- Start backend:
+Uses **Biome** for fast, modern formatting and linting:
 
-  ```bash
-  pnpm run dev:backend
-  ```
+- All-in-one check:
 
-- Start frontend:
+```bash
+pnpm run check
+pnpm run check:detailed   # explain issues with out fix them
+```
 
-  ```bash
-  pnpm run dev:frontend
-  ```
+- Format only:
 
-### Linter, formatter, and type checker
+```bash
+pnpm run format
+pnpm run format:detailed # explain issues with out fix them
+```
 
-This project uses biome for linting and formatting.
+- Lint only:
 
-- To **fix** fixable errors and **show details** of not fixable errors you can use:
+```bash
+pnpm run lint
+pnpm run lint:detailed   # explain issues with out fix them
+```
 
-  - Check (format and lint):
+- Scope to frontend/backend:
 
-    ```bash
-    pnpm run check
-    ```
+```bash
+pnpm run check:detailed:backend
+pnpm run check:detailed:frontend
+```
 
-  - Format:
+## 📊 Architecture Notes
 
-    ```bash
-    pnpm run format
-    ```
-
-  - Lint:
-
-    ```bash
-    pnpm run lint
-    ```
-
-- To **show details** of errors you can use:
-
-  - Check (format and lint):
-
-    ```bash
-    pnpm run check:detailed
-    ```
-
-  - Lint:
-
-    ```bash
-    pnpm run lint:detailed
-    ```
-
-  - Format:
-
-    ```bash
-    pnpm run format:detailed
-    ```
-
-- To run the biome on the front end or the back end add `:backend` or `:frontend` to the command:
-
-  ```bash
-  pnpm run check:detailed:backend
-  pnpm run check:detailed:frontend
-  ```
-
-### Development Notes
-
-- The backend runs on Express and uses MongoDB for data storage
-- Frontend is built with React + Vite
-- Both applications support hot-reloading for development
-- Use `.eml` files for testing email analysis
-
-## Try the App
-
-The app is deployed at <https://phishingmailai.onrender.com>, and this video shows it off <https://res.cloudinary.com/dbdvgci4w/video/upload/v1743474875/FishingMail_eqesvg.mov>
+- **Backend:** Express with MVC, serves static frontend build in production
+- **Frontend:** React (Vite) SPA, minimal UI, secure upload form
+- **Security:** Stytch handles auth, backend validates uploads, all tokens encrypted with `SECRET_KEY` and `SALT`
+- **AI:** GPT-4o used to score likelihood of phishing from `.eml` contents
