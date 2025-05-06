@@ -48,7 +48,7 @@ export const useAuth = () => {
 	 */
 	const handleLogout = useCallback(async () => {
 		const result = await executeLogout();
-		if (result !== null) {
+		if (result) {
 			setState((prev) => ({
 				...prev,
 				isAuthenticated: false,
@@ -68,7 +68,7 @@ export const useAuth = () => {
 		setState((prev) => ({
 			...prev,
 			isAuthenticated: data.authenticated,
-			userEmail: data.email,
+			userEmail: data.email ?? null,
 		}));
 	}, []);
 

@@ -84,7 +84,7 @@ const AppContent: React.FC = () => {
 					<Route
 						element={
 							<ProtectedRoute isAuthenticated={isAuthenticated}>
-								<SettingsPage />
+								<SettingsPage onAuthenticate={handleAuthenticate} />
 							</ProtectedRoute>
 						}
 						path="/settings"

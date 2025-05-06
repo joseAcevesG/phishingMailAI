@@ -17,7 +17,7 @@ export interface APIMessage {
 
 export interface APIAuth {
 	authenticated: boolean;
-	email: string;
+	email?: string;
 }
 
 export interface FetchConfig {

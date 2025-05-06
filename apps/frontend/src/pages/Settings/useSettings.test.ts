@@ -33,7 +33,7 @@ describe("useSettings", () => {
 				error: null,
 				loading: false,
 			});
-		const { result } = renderHook(() => useSettings());
+		const { result } = renderHook(() => useSettings(vi.fn()));
 		expect(result.current.apiKey).toBe("");
 		expect(result.current.keyError).toBeNull();
 		expect(result.current.keyLoading).toBe(false);
@@ -48,7 +48,7 @@ describe("useSettings", () => {
 			error: null,
 			loading: false,
 		});
-		const { result } = renderHook(() => useSettings());
+		const { result } = renderHook(() => useSettings(vi.fn()));
 		act(() => {
 			result.current.setApiKey("sk-test");
 		});
@@ -85,7 +85,7 @@ describe("useSettings", () => {
 				error: null,
 				loading: false,
 			});
-		const { result } = renderHook(() => useSettings());
+		const { result } = renderHook(() => useSettings(vi.fn()));
 		act(() => {
 			result.current.setApiKey("sk-test");
 		});
@@ -118,7 +118,7 @@ describe("useSettings", () => {
 		(
 			routerDom as unknown as { useNavigate: () => typeof navigate }
 		).useNavigate = () => navigate;
-		const { result } = renderHook(() => useSettings());
+		const { result } = renderHook(() => useSettings(vi.fn()));
 		await act(async () => {
 			await result.current.handleLogoutAll();
 		});

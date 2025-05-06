@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFetch } from "../../hooks/useFetch";
-import type { APIMessage } from "../../types";
+import type { APIAuth, APIMessage } from "../../types";
 
 /**
  * A custom hook that manages settings for API key and logout functionality.
@@ -18,7 +18,7 @@ import type { APIMessage } from "../../types";
  *
  * The hook uses `useFetch` for API requests and `useNavigate` for navigation.
  */
-export function useSettings() {
+export function useSettings(onAuthenticate: (data: APIAuth) => void) {
 	const [apiKey, setApiKey] = useState("");
 	const navigate = useNavigate();
 
@@ -63,7 +63,12 @@ export function useSettings() {
 	 */
 	const handleLogoutAll = async () => {
 		const res = await logoutAll();
-		if (res) navigate("/login");
+		if (res) {
+			onAuthenticate({
+				authenticated: false,
+			});
+			navigate("/login");
+		}
 	};
 
 	return {
