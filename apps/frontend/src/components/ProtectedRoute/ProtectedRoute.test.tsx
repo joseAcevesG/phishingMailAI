@@ -1,9 +1,9 @@
 // Import testing utilities and dependencies
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it, vi, beforeEach, type Mock } from "vitest";
-import ProtectedRoute from "./ProtectedRoute";
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
 import { useAuth } from "../../hooks/useAuth";
+import ProtectedRoute from "./ProtectedRoute";
 
 // Mock the useAuth hook to control authentication state in tests
 vi.mock("../../hooks/useAuth", () => ({ useAuth: vi.fn() }));
@@ -27,7 +27,7 @@ describe("ProtectedRoute", () => {
 				<ProtectedRoute>
 					<div>Protected Content</div>
 				</ProtectedRoute>
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		expect(screen.getByText("Protected Content")).toBeInTheDocument();
 	});
@@ -41,7 +41,7 @@ describe("ProtectedRoute", () => {
 				<ProtectedRoute>
 					<div>Protected Content</div>
 				</ProtectedRoute>
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		expect(screen.queryByText("Protected Content")).not.toBeInTheDocument();
 	});

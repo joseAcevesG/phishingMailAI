@@ -19,17 +19,17 @@ describe("ResetLink", () => {
 		render(
 			<MemoryRouter>
 				<ResetLink />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		expect(
-			screen.getByRole("heading", { name: /reset password/i })
+			screen.getByRole("heading", { name: /reset password/i }),
 		).toBeInTheDocument();
 		expect(
-			screen.getByText(/enter your email address to reset your password/i)
+			screen.getByText(/enter your email address to reset your password/i),
 		).toBeInTheDocument();
 		expect(screen.getByTestId("magic-link-form")).toBeInTheDocument();
 		expect(
-			screen.getByRole("button", { name: /reset password/i })
+			screen.getByRole("button", { name: /reset password/i }),
 		).toBeInTheDocument();
 	});
 });

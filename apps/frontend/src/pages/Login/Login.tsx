@@ -18,7 +18,7 @@ import Password from "./Password";
  */
 const Login: React.FC = () => {
 	const [selectedMethod, setSelectedMethod] = useState<"magic" | "password">(
-		"magic"
+		"magic",
 	);
 
 	return (

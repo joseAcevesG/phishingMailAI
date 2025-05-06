@@ -67,7 +67,7 @@ describe("Analyze page", () => {
 				<Routes>
 					<Route element={<Analyze />} path="/analyze/:id" />
 				</Routes>
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 	};
 

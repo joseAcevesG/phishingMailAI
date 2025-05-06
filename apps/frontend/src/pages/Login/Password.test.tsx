@@ -1,7 +1,7 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
-import { usePasswordLogin } from "./usePasswordLogin";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
 import Password from "./Password";
+import { usePasswordLogin } from "./usePasswordLogin";
 
 // Mock usePasswordLogin to control the hook's state and handlers
 vi.mock("./usePasswordLogin", () => ({

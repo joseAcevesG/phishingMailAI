@@ -17,11 +17,11 @@ describe("ResetPassword", () => {
 	it("renders the reset password container, heading, and Reset form", () => {
 		render(<ResetPassword />);
 		expect(
-			screen.getByRole("heading", { name: /reset password/i })
+			screen.getByRole("heading", { name: /reset password/i }),
 		).toBeInTheDocument();
 		expect(screen.getByTestId("reset-password-form-mock")).toBeInTheDocument();
 		expect(
-			screen.getByRole("button", { name: /mock reset button/i })
+			screen.getByRole("button", { name: /mock reset button/i }),
 		).toBeInTheDocument();
 	});
 });

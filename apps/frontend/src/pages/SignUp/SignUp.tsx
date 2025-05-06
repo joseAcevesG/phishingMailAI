@@ -17,7 +17,7 @@ import styles from "./SignUp.module.css";
  */
 const SignUp: React.FC = () => {
 	const [selectedMethod, setSelectedMethod] = useState<"magic" | "password">(
-		"magic"
+		"magic",
 	);
 
 	return (

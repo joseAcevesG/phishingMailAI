@@ -13,10 +13,10 @@ vi.mock("../../components/ToggleButtonGroup/ToggleButtonGroup", () => ({
 		setSelectedMethod: (method: "magic" | "password") => void;
 	}) => (
 		<div>
-			<button type="button" onClick={() => setSelectedMethod("magic")}>
+			<button onClick={() => setSelectedMethod("magic")} type="button">
 				Magic
 			</button>
-			<button type="button" onClick={() => setSelectedMethod("password")}>
+			<button onClick={() => setSelectedMethod("password")} type="button">
 				Password
 			</button>
 			<span>Current: {selectedMethod}</span>
@@ -38,15 +38,15 @@ describe("Login", () => {
 		render(
 			<MemoryRouter>
 				<Login />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		expect(
-			screen.getByRole("heading", { name: /welcome to phishing mail ai/i })
+			screen.getByRole("heading", { name: /welcome to phishing mail ai/i }),
 		).toBeInTheDocument();
 		expect(screen.getByText(/please log in to continue/i)).toBeInTheDocument();
 		expect(screen.getByText("MagicLinkMock")).toBeInTheDocument();
 		expect(
-			screen.getByRole("link", { name: /don't have an account/i })
+			screen.getByRole("link", { name: /don't have an account/i }),
 		).toBeInTheDocument();
 		// Password reset link should not be visible initially
 		expect(screen.queryByText(/forgot your password/i)).not.toBeInTheDocument();
@@ -57,13 +57,13 @@ describe("Login", () => {
 		render(
 			<MemoryRouter>
 				<Login />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		// Switch to password method
 		fireEvent.click(screen.getByText("Password"));
 		expect(screen.getByText("PasswordMock")).toBeInTheDocument();
 		expect(
-			screen.getByRole("link", { name: /forgot your password/i })
+			screen.getByRole("link", { name: /forgot your password/i }),
 		).toBeInTheDocument();
 		// MagicLink should not be visible
 		expect(screen.queryByText("MagicLinkMock")).not.toBeInTheDocument();
@@ -74,7 +74,7 @@ describe("Login", () => {
 		render(
 			<MemoryRouter>
 				<Login />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		// Switch to password then back to magic
 		fireEvent.click(screen.getByText("Password"));

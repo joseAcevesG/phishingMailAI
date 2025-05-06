@@ -1,7 +1,7 @@
-// Import vitest and React Testing Library utilities
-import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import { AuthProvider, AuthContext } from "./AuthContext";
+// Import vitest and React Testing Library utilities
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
+import { AuthContext, AuthProvider } from "./AuthContext";
 
 // Mock useNavigate from react-router-dom to capture navigation attempts
 let navigateMock: Mock;
@@ -44,14 +44,14 @@ describe("AuthProvider", () => {
 						) : null
 					}
 				</AuthContext.Consumer>
-			</AuthProvider>
+			</AuthProvider>,
 		);
 
 		// Wait for async state update and verify context values
 		await waitFor(() => {
 			expect(screen.getByTestId("is-auth").textContent).toBe("true");
 			expect(screen.getByTestId("user-email").textContent).toBe(
-				"test@example.com"
+				"test@example.com",
 			);
 			expect(screen.getByTestId("loading").textContent).toBe("false");
 		});
@@ -76,7 +76,7 @@ describe("AuthProvider", () => {
 						) : null
 					}
 				</AuthContext.Consumer>
-			</AuthProvider>
+			</AuthProvider>,
 		);
 
 		// Wait for async state update and verify context values
@@ -100,7 +100,7 @@ describe("AuthProvider", () => {
 						) : null
 					}
 				</AuthContext.Consumer>
-			</AuthProvider>
+			</AuthProvider>,
 		);
 		// Wait for async state update and verify redirect was triggered
 		await waitFor(() => {

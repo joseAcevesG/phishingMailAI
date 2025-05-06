@@ -23,14 +23,14 @@ const Password: React.FC = () => {
 	return (
 		<form
 			className={styles.passwordForm}
-			onSubmit={handlePasswordLogin}
 			data-testid="password-form"
+			onSubmit={handlePasswordLogin}
 		>
 			{/* Email input field */}
 			<div className={styles.inputGroup}>
 				<input
-					name="email"
 					className={styles.emailInput}
+					name="email"
 					onChange={(e) => setEmail(e.target.value)}
 					placeholder="Email"
 					required
@@ -41,8 +41,8 @@ const Password: React.FC = () => {
 			{/* Password input field */}
 			<div className={styles.inputGroup}>
 				<input
-					name="password"
 					className={styles.passwordInput}
+					name="password"
 					onChange={(e) => setPassword(e.target.value)}
 					placeholder="Password"
 					required

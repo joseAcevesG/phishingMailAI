@@ -50,7 +50,7 @@ describe("<SignUp />", () => {
 	it("renders welcome message and toggle group", () => {
 		render(<SignUp />, { wrapper: MemoryRouter });
 		expect(
-			screen.getByText(/welcome to phishing mail ai/i)
+			screen.getByText(/welcome to phishing mail ai/i),
 		).toBeInTheDocument();
 		expect(screen.getByTestId("toggle-group")).toBeInTheDocument();
 	});

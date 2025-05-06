@@ -20,7 +20,7 @@ describe("UploadForm", () => {
 		render(<UploadForm isUploading={false} onAnalyze={mockOnAnalyze} />);
 		expect(screen.getByText(/upload email for analysis/i)).toBeInTheDocument();
 		expect(
-			screen.getByRole("button", { name: /analyze email/i })
+			screen.getByRole("button", { name: /analyze email/i }),
 		).toBeInTheDocument();
 	});
 
@@ -49,7 +49,7 @@ describe("UploadForm", () => {
 		const invalidFile = createFile("not-an-email.txt", "text/plain");
 		await fireEvent.change(input, { target: { files: [invalidFile] } });
 		expect(
-			screen.getByText(/please select a valid .eml file/i)
+			screen.getByText(/please select a valid .eml file/i),
 		).toBeInTheDocument();
 	});
 

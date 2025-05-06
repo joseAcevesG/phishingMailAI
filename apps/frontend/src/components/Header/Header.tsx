@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { useHeaderAuth } from "./useHeaderAuth";
 import styles from "./Header.module.css";
+import { useHeaderAuth } from "./useHeaderAuth";
 
 /**
  * Renders the main header component.

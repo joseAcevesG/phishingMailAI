@@ -12,13 +12,13 @@ describe("Landing", () => {
 		render(
 			<MemoryRouter>
 				<Landing />
-			</MemoryRouter>
+			</MemoryRouter>,
 		);
 		expect(screen.getByText(/welcome to phishingMail ai/i)).toBeInTheDocument();
 		expect(screen.getByText(/secure your inbox/i)).toBeInTheDocument();
 		expect(screen.getByRole("link", { name: /get started/i })).toHaveAttribute(
 			"href",
-			"/login"
+			"/login",
 		);
 	});
 });

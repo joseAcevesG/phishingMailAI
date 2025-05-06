@@ -8,12 +8,12 @@ import {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
-import type { APIAuth, AuthContextType, AuthState } from "../types";
 import { setOnUnauthorized } from "../services/authHandler";
+import type { APIAuth, AuthContextType, AuthState } from "../types";
 
 // context for authentication state
 export const AuthContext = createContext<AuthContextType | undefined>(
-	undefined
+	undefined,
 );
 
 /**
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	// Status check API call
 	const { execute: fetchStatus } = useFetch<APIAuth>(
 		{ url: "/api/auth/status", onUnauthorized: () => {} },
-		false
+		false,
 	);
 
 	const validateStatus = useCallback(async (response: APIAuth) => {

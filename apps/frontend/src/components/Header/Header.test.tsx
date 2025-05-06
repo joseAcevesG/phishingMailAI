@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { describe, expect, it, vi, beforeEach, type Mock } from "vitest";
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
 import Header from "./Header";
 import { useHeaderAuth } from "./useHeaderAuth";
 
@@ -17,7 +17,7 @@ const renderHeader = () =>
 	render(
 		<BrowserRouter>
 			<Header />
-		</BrowserRouter>
+		</BrowserRouter>,
 	);
 
 // Group Header tests
@@ -41,7 +41,7 @@ describe("Header", () => {
 		expect(screen.getByText("History")).toBeInTheDocument();
 		expect(screen.getByText("Settings")).toBeInTheDocument();
 		expect(screen.getByText(/Logged in as/)).toHaveTextContent(
-			"Logged in as user@example.com"
+			"Logged in as user@example.com",
 		);
 		expect(screen.getByRole("button", { name: /logout/i })).toBeInTheDocument();
 	});
@@ -61,7 +61,7 @@ describe("Header", () => {
 		expect(screen.getByText("Sign Up")).toBeInTheDocument();
 		expect(screen.queryByText(/Logged in as/)).not.toBeInTheDocument();
 		expect(
-			screen.queryByRole("button", { name: /logout/i })
+			screen.queryByRole("button", { name: /logout/i }),
 		).not.toBeInTheDocument();
 	});
 
