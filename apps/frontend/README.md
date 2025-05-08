@@ -2,11 +2,11 @@
 
 ## 🔍 Overview
 
-This frontend is a modern, responsive React single-page application (SPA) written in TypeScript and styled with vanilla CSS. It communicates securely with the backend via HTTP-only cookies and integrates Stytch for passwordless authentication using magic links.
+This frontend is a modern, responsive React single-page application (SPA) written in TypeScript and styled with vanilla CSS. It communicates securely with the backend via HTTP-only cookies and integrates Stytch for password or passwordless authentication using magic links.
 
 **Key Features:**
 
-- Authentication via Stytch magic links
+- Authentication via Stytch password or magic links
 - `.eml` file upload with phishing detection results via GPT-4o
 - Reusable components (`UploadForm`, `ResultView`, etc.)
 - Protected routes with React Router
@@ -119,6 +119,22 @@ pnpm run format
 
 ```bash
 pnpm run build:frontend
+```
+
+## 🧪 Test
+
+```bash
+pnpm run test:frontend
+pnpm run test:coverage:frontend
+pnpm run test:e2e
+```
+
+- on frontend directory : frontend not need to run test
+
+```bash
+pnpm run test
+pnpm run test:coverage
+pnpm run test:e2e
 ```
 
 ---

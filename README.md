@@ -75,12 +75,20 @@ pnpm run dev:backend     # Starts backend only
 pnpm run dev:frontend    # Starts frontend only
 ```
 
-### 🔧 Build
+### 🔧 Build and Start (Prod)
+
+- build apps
 
 ```bash
 pnpm run build              # Builds both apps
 pnpm run build:backend      # Backend only
 pnpm run build:frontend     # Frontend only
+```
+
+- start app
+
+```bash
+pnpm run start              # Starts backend providing the builded frontend
 ```
 
 ### ✂️ Lint & Format
@@ -115,9 +123,23 @@ pnpm run check:detailed:backend
 pnpm run check:detailed:frontend
 ```
 
+### 🧪 Test
+
+```bash
+pnpm run test # all-in-one test
+pnpm run test:backend # backend only
+pnpm run test:frontend # frontend only
+pnpm run test:coverage # all-in-one coverage
+pnpm run test:coverage:backend # backend coverage
+pnpm run test:coverage:frontend # frontend coverage
+pnpm run test:e2e # end-to-end tests
+```
+
 ## 📊 Architecture Notes
 
 - **Backend:** Express with MVC, serves static frontend build in production
 - **Frontend:** React (Vite) SPA, minimal UI, secure upload form
 - **Security:** Stytch handles auth, backend validates uploads, all tokens encrypted with `SECRET_KEY` and `SALT`
 - **AI:** GPT-4o used to score likelihood of phishing from `.eml` contents
+
+- **test mail:** you can find phishing mail to test the app on the next link: [phishing mail](https://github.com/rf-peixoto/phishing_pot/tree/main/email)

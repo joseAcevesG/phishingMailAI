@@ -126,6 +126,20 @@ pnpm run lint
 pnpm run format
 ```
 
+## 🧪 Test
+
+```bash
+pnpm run test:backend
+pnpm run test:coverage:backend
+```
+
+- on backend directory : backend not need to run test
+
+```bash
+pnpm run test
+pnpm run test:coverage
+```
+
 ## ⚖️ Build & Start (Prod)
 
 - Build backend:
