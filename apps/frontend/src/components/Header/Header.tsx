@@ -18,7 +18,7 @@ const Header: React.FC = () => {
 		<header className={styles.header}>
 			{/* The logo of the application */}
 			<div className={styles.logo}>
-				<img alt="PhishingMail AI Logo" src="/logo.png" />
+				<img alt="PhishingMail AI Logo" src="/images/logo.png" />
 				<span className={styles.appName}>PhishingMail AI</span>
 			</div>
 
