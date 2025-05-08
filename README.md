@@ -57,6 +57,16 @@ DB_URL=               #required
 OPENAI_API_KEY=       #required
 ```
 
+- Port: The port number to use for the server. Default is 3000.
+- Free Trial Limit: The number of free trial requests allowed before providing a openAI API key. Default is 3.
+- Stytch Project ID: The Stytch project ID for authentication.
+- Stytch Secret: The Stytch secret for authentication.
+- Secret Key: The secret key used for encrypting and decrypting.
+- Salt: The salt used for encrypting and decrypting.
+- Token Key: The token key used for encrypting and decrypting jwt tokens.
+- DB URL: The URL of the MongoDB database.
+- OpenAI API Key: The OpenAI API key for GPT-4o.
+
 ### ⚡ Installation
 
 ```bash
