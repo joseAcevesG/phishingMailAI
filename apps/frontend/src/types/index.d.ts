@@ -25,7 +25,7 @@ export interface FetchConfig {
 	headers?: HeadersInit;
 	body?: unknown;
 	credentials?: RequestCredentials;
-	onUnauthorized?: () => void;
+	onUnauthorized?: (message?: string) => void;
 }
 
 export interface UseFetchReturn<T> {

@@ -51,7 +51,7 @@ const Password: React.FC = () => {
 				/>
 			</div>
 			{/* Show error message if login fails */}
-			{error && <div className={styles.error}>{error}</div>}
+			{error && <div className={styles.errorMessage}>{error}</div>}
 			{/* Submit button is disabled while submitting */}
 			<button
 				className={styles.submitBtn}

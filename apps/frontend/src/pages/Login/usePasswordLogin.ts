@@ -40,6 +40,9 @@ export function usePasswordLogin({ authType }: UsePasswordLoginOptions) {
 			url: "/api/auth/login",
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
+			onUnauthorized: () => {
+				throw new Error("Password or email is incorrect");
+			},
 		},
 		false,
 	);

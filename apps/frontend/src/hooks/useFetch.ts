@@ -85,7 +85,12 @@ export function useFetch<T = unknown>(
 			);
 			// Handle unauthorized (401) responses
 			if (response.status === 401) {
-				if (onUnauthorized) onUnauthorized();
+				const errorData = await response.json().catch(() => null);
+				const message =
+					response.status >= 500
+						? "Something went wrong"
+						: errorData?.message || response.statusText;
+				if (onUnauthorized) onUnauthorized(message);
 				else {
 					alert("your session has expired.\nPlease log in again.");
 					getOnUnauthorized()?.();
